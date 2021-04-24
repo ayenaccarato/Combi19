@@ -15,9 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from Combi19.views import saludo
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+#from Combi19.views import *
+#from django.conf import settings
+from combi19app.views import bienvenida
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('saludo/', saludo)
+    path('bienvenida/', bienvenida)
 ]
+urlpatterns += staticfiles_urlpatterns()
