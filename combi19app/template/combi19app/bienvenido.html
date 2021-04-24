@@ -8,15 +8,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="stylesheet" href= {% static 'css/bootstrap.min.css' %} >
-    <title>Hola Formiculas</title>
+    <title> Bienvenido</title>
   </head>
   <body>
       <div class="container">
         <h1 class="display-1">
-          A ver si funca
+          Bienvenido
         </h1>
       </div>
-
+      <from action="/bienvenida/" method="GET" >
+          <img src="/logo_is.png" class= "img-fluid" alt="">
+        <h5>
+        usuario     <input type="text" name="us"> <br>
+        contraseña  <input type="text" name="contra">
+      </h5>
+      <input type="button" value="Iniciar Sesión">
+      <input type="button" value="¿Olvidaste tu contraseña?"> <br>
+      <input type="button" value="Registrarse">
+      </from>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
     integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
     crossorigin="anonymous"></script>
