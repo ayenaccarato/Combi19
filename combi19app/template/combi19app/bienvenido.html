@@ -1,6 +1,11 @@
-{% load static %}
+{% extends "diseño.html" %}
 
-<!doctype html>
+{% block title %}Bienvenido{% endblock %}
+{% block h1 %}<center>Bienvenido</center>{% endblock %}
+<!-- No lo centre en todas las paginas por si las demas queremos el titulo al costado -->
+<!--{% load static %}-->
+
+<!--<!doctype html>
 <html lang="es">
   <head>
     <meta charset="utf-8">
@@ -11,39 +16,35 @@
   </head>
   <body style="background-color:#adb5b8">
       <div>
-      <!--class="container"-->
+      <class="container"
         <h1 class="display-2" style="background-color:#115571; color:#adb5b8">
           <center>
             Bienvenido
           </center>
         </h1>
-      </div>
-      <from action="/bienvenida/" method="GET" >
-        <div class="container">
-          <center>
-            <img src={% static 'logo_is.png' %} class= "img-fluid" alt="logo">
-            <div class="row">
-              <div class="col-sm">
-                <h5>
-                  <input type="text" name="us" placeholder="usuario"> <br>
-                  <input type="password" name="contra" placeholder="contraseña">
-                </h5>
-              </div>
-            </div>
-          </center>
-        </div>
+      </div>-->
+{% block content %}
+  <form action="/bienvenida/" method="GET">
+    <div class="container">
       <center>
-        <button type="button" class="btn btn-outline-dark">Iniciar Sesión</button> <br>
-        <button type="button" class="btn btn-outline-dark">¿Olvido su contraseña?</button><br>
-        <button type="button" class="btn btn-success">Registrarse</button>
+        <p style="margin: 20px"> <img src={% static 'logo_is.png' %} class= "img-fluid" alt="logo"> </p><br>
+        <div class="row">
+          <div class="col-sm">
+            <h5>
+              <p><input class="col-sm-4 col-form-label" type="text" name="us" placeholder="usuario"> </p>
+              <p><input class="col-sm-4 col-form-label" type="password" name="contra" placeholder="contraseña"></p>
+            </h5>
+          </div>
+        </div>
       </center>
-      </from>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-    crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-    crossorigin="anonymous"></script>
-    <script src= {% static 'js/bootstrap.min.js' %}> </script>
-  </body>
-</html>
+    </div>
+  <center>
+    <p><button type="button" class="btn btn-success">Iniciar Sesión</button></p>
+      <!--<button type=submit value="Iniciar Sesión" class="btn btn-success">-->
+    <p> <button type="button" class="btn btn-outline-dark">¿Olvidó su contraseña?</button></p>
+    <p> <button type="button" class="btn btn-dark">Registrarse</button></p>
+  </center>
+  </form>
+{% endblock %}
+<!--  </body>
+</html>-->

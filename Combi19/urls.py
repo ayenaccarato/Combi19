@@ -18,10 +18,10 @@ from django.urls import path
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 #from Combi19.views import *
 #from django.conf import settings
-from combi19app.views import bienvenida
+from combi19app.views import bienvenida,
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('bienvenida/', bienvenida)
+    path('bienvenida/', bienvenida),
 ]
 urlpatterns += staticfiles_urlpatterns()
