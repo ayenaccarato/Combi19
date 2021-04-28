@@ -25,7 +25,7 @@ class Ciudad (models.Model):
     pais = models.CharField(max_length=20)
 
 class Ruta (models.Model):
-    ID = models.CharField(max_length=30)
+    ident = models.CharField(max_length=30)
     nombre = models.CharField(max_length=30)
 
 class Viaje (models.Model):
