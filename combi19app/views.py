@@ -9,3 +9,9 @@ def bienvenida(request):
     documento = doc.render({})
 
     return HttpResponse(documento)
+
+def registrarse(request):
+    doc = get_template("registrarse.html")
+    documento = doc.render({})
+
+    return HttpResponse(documento)

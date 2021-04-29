@@ -6,17 +6,25 @@ class Usuario (models.Model):
     usuario = models.CharField(max_length=15)
     contraseña = models.CharField(max_length=8)
     dni = models.BigIntegerField(primary_key = True)
-    direccion = models.CharField(max_length=20)
     nombre = models.CharField(max_length=20)
     apellido = models.CharField(max_length=20)
+    email = models.EmailField( max_length=254, blank=True, null=True)
+    direccion = models.CharField(max_length=20)
+    telefono = models.IntegerField()
     tipo_usuario = models.IntegerField()
+
+    def __str__(self):
+        return "El usuario %s con DNI %s, es de tipo %s" % (self.usuario, self.dni, self.tipo_usuario)
 
 class Vehiculo (models.Model):
     patente = models.CharField(max_length=10)
     marca = models.CharField(max_length=20)
     modelo = models.CharField(max_length=20)
-    capacidad = models.IntegerField()
+    capacidad = models.IntegerField( verbose_name="Cantidad de asientos")
     premium = models.BooleanField() # probar con 0 y 1 sino funca
+
+    def __str__(self):
+        return self.patente
 
 class Ciudad (models.Model):
     nombre = models.CharField(max_length=30)

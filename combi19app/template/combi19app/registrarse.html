@@ -1,0 +1,29 @@
+{% extends "diseño.html" %}
+
+{% block title %}Registrate{% endblock %}
+{% block h1 %}<center>Registrate</center>{% endblock %}
+{% block content %}
+  <form action="/registrarse/" method="GET">
+    <div class="container">
+      <center>
+        <div class="row">
+          <div class="col-sm">
+            <h6> <p> Es rápido y fácil </p></h6>
+      
+            <h5>
+              <p><input class="col-sm-4 col-form-label" type="text" name="us" placeholder="Nombre de usuario"> <input class="col-sm-4 col-form-label" type="email" name="em" placeholder="Email"> </p>
+              <p><input class="col-sm-8 col-form-label" type="password" name="contra" placeholder="Contraseña"> </p>
+              <p><input class="col-sm-4 col-form-label" type="text" name="nom" placeholder="Nombre"> <input class="col-sm-4 col-form-label" type="text" name="ap" placeholder="Apellido"> </p>
+              <p><input class="col-sm-8 col-form-label" type="text" name="dni" placeholder="DNI"> </p>
+              <p><input class="col-sm-4 col-form-label" type="text" name="tel" placeholder="Telefono"> <input class="col-sm-4 col-form-label" type="text" name="dire" placeholder="Direccion"> </p>
+            </h5>
+          </div>
+        </div>
+      </center>
+    </div>
+  <center>
+    <p><button type="button" class="btn btn-success">Ok</button></p>
+    <p> <button type="button" class="btn btn-dark">Atras</button></p>
+  </center>
+  </form>
+{% endblock %}
