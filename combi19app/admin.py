@@ -7,7 +7,10 @@ class VehiculoAdmin (admin.ModelAdmin):
     list_display=("patente", "marca", "modelo", "capacidad", "premium")
     search_fields=("patente",)
 
-admin.site.register(Usuario)
+class UsuarioAdmin (admin.ModelAdmin):
+    list_display=("usuario","email","dni","tipo_usuario")
+
+admin.site.register(Usuario, UsuarioAdmin)
 admin.site.register(Vehiculo, VehiculoAdmin)
 admin.site.register(Ciudad)
 admin.site.register(Ruta)

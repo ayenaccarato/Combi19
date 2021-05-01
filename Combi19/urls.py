@@ -18,11 +18,14 @@ from django.urls import path
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 #from Combi19.views import *
 #from django.conf import settings
-from combi19app.views import bienvenida, registrarse
+#from combi19app.views import bienvenida, cambiar_contra, FormularioRegistro
+from combi19app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('bienvenida/', bienvenida),
-    path('registrarse/', registrarse),
+    path('bienvenida/', views.bienvenida),
+    path('registrarse/', views.FormularioRegistro.crear_formulario),
+    path('guardarRegistro/', views.FormularioRegistro.procesar_formulario),
+    path('cambiar_contra/', views.cambiar_contra),
 ]
 urlpatterns += staticfiles_urlpatterns()

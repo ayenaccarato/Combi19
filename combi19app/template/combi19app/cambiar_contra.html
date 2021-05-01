@@ -1,0 +1,32 @@
+{% extends "diseño.html" %}
+
+{% block title %}Registrate{% endblock %}
+{% block h1 %}<center>Cambiar contraseña</center>{% endblock %}
+{% block content %}
+  <form action="/cambiar_contra/" method="GET">
+    <div class="container">
+      <center>
+        <div class="row">
+          <div class="col-sm">
+            <br>
+            <br>
+            <br>
+            <h5>
+              <p><input class="col-sm-4 col-form-label" type="text" name="us" placeholder="usuario"> </p>
+          <!--    <p><input class="col-sm-4 col-form-label" type="password" name="contra" placeholder="nueva contraseña"> </p>
+            </5>
+              <h6> Ingrese nuevamente su contraseña</h6>
+              <h5>
+              <p><input class="col-sm-4 col-form-label" type="password" name="contra2" placeholder="nueva contraseña"> </p>
+            </h5>
+          </div>
+        </div>
+      </center>
+    </div>
+  <center> -->
+  </h5>
+    <p><button type="button" class="btn btn-success">Ok</button></p>
+    <p><a class="btn btn-dark" href="/bienvenida">Cancelar</a></p>
+  </center>
+  </form>
+{% endblock %}

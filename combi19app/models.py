@@ -3,18 +3,26 @@ from django.db import models
 # Create your models here.
 
 class Usuario (models.Model):
-    usuario = models.CharField(max_length=15)
-    contraseña = models.CharField(max_length=8)
+    usuario = models.CharField(max_length=15, unique=True)
+    contraseña = models.CharField(max_length=3000)
     dni = models.BigIntegerField(primary_key = True)
     nombre = models.CharField(max_length=20)
     apellido = models.CharField(max_length=20)
-    email = models.EmailField( max_length=254, blank=True, null=True)
+    email = models.EmailField( max_length=254, unique=True)
     direccion = models.CharField(max_length=20)
     telefono = models.IntegerField()
-    tipo_usuario = models.IntegerField()
+    tipo_usuario = models.IntegerField(default = 3)
+
+    def publish(self):
+        self.save()
 
     def __str__(self):
-        return "El usuario %s con DNI %s, es de tipo %s" % (self.usuario, self.dni, self.tipo_usuario)
+        return "%s %s %s %s" % (self.usuario, self.dni,self.email, self.tipo_usuario)
+
+    class Meta:
+        verbose_name = "Usuario"
+        verbose_name_plural = "Usuarios"
+
 
 class Vehiculo (models.Model):
     patente = models.CharField(max_length=10)

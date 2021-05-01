@@ -24,7 +24,7 @@
         </h1>
       </div>-->
 {% block content %}
-  <form action="/bienvenida/" method="GET">
+  <form action="/bienvenida/" method="POST">
     <div class="container">
       <center>
         <p style="margin: 20px"> <img src={% static 'logo_is.png' %} class= "img-fluid" alt="logo"> </p><br>
@@ -40,9 +40,8 @@
     </div>
   <center>
     <p><button type="button" class="btn btn-success">Iniciar Sesión</button></p>
-      <!--<button type=submit value="Iniciar Sesión" class="btn btn-success">-->
-    <p> <button type="button" class="btn btn-outline-dark">¿Olvidó su contraseña?</button></p>
-    <p> <button type="button" class="btn btn-dark">Registrarse</button></p>
+    <p> <a class="btn btn-outline-dark" href="/cambiar_contra" >¿Olvidó su contraseña?</a></p>
+    <p> <a class="btn btn-dark" href="/registrarse">Registrarse</a></p>
   </center>
   </form>
 {% endblock %}
