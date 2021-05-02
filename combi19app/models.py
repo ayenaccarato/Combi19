@@ -74,11 +74,15 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
 
 class Vehiculo (models.Model):
-    patente = models.CharField(max_length=10)
-    marca = models.CharField(max_length=20)
-    modelo = models.CharField(max_length=20)
+    patente = models.CharField(max_length=10, primary_key=True)
+    marca = models.CharField(max_length=50)
+    modelo = models.CharField(max_length=4)
     capacidad = models.IntegerField( verbose_name="Cantidad de asientos")
     premium = models.BooleanField() # probar con 0 y 1 sino funca
+
+
+    def publish(self):
+            self.save()
 
     def __str__(self):
         return self.patente
@@ -87,11 +91,23 @@ class Ciudad (models.Model):
     nombre = models.CharField(max_length=30)
     provincia = models.CharField(max_length=25)
     codigo_postal = models.IntegerField(primary_key=True)
-    pais = models.CharField(max_length=20)
+    pais = models.CharField(max_length=20, default="Argentina")
+
+    def publish(self):
+        self.save()
+
+    def __str__(self):
+        return "%s, %s, %s, %s" % (self.nombre, self.provincia, self.codigo_postal, self.pais)
+
 
 class Ruta (models.Model):
-    ident = models.CharField(max_length=30)
-    nombre = models.CharField(max_length=30)
+    identificador = models.CharField(max_length=30, primary_key=True)
+    nombre = models.CharField(max_length=30, unique=True)
+    tipo = models.CharField(max_length=30)
+
+    def publish(self):
+        self.save()
+
 
 class Viaje (models.Model):
     fecha_salida = models.DateTimeField()

@@ -26,5 +26,15 @@ urlpatterns = [
     path('registrarse/', views.FormularioRegistro.crear_formulario),
     path('guardarRegistro/', views.FormularioRegistro.procesar_formulario),
     path('cambiar_contra/', views.cambiar_contra),
+    path('agregar_vehiculo/', views.FormularioVehiculo.crear_formulario),
+    path('guardar_vehiculo/', views.FormularioVehiculo.procesar_formulario),
+    path('agregar_ruta/', views.FormularioRuta.crear_formulario),
+    path('guardar_ruta/', views.FormularioRuta.procesar_formulario),
+    path('agregar_ciudad/', views.FormularioCiudad.crear_formulario),
+    path('guardar_ciudad/', views.FormularioCiudad.procesar_formulario),
+    path('listar_ciudades/', views.ListarCiudad.crear_listado),
+    path('listar_ciudades/ver_detalle_ciudad/<int:codigo_postal>/',views.ListarCiudad.mostrar_detalle),
+    path('listar_ciudades/eliminar_ciudad/<int:codigo_postal>/',views.EliminarCiudad.eliminar_ciudad),
+    path('home/', views.home)
 ]
 urlpatterns += staticfiles_urlpatterns()

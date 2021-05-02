@@ -1,0 +1,97 @@
+{% extends "diseño.html" %}
+
+{% block title %}Agregar_ciudad{% endblock %}
+{% block h1 %}<center>Agregar ciudad</center>{% endblock %}
+{% block content %}
+  {% if form.errors %}
+    <div class= 'alert alert-danger' role='alert'>
+      fallo en el registro
+    </div>
+    {% endif %}
+  <form action="/guardar_ciudad/" method="POST">
+    {% csrf_token %}
+    {% if mensaje == "ok" %}
+      <div class='alert alert-success' role='alert'>
+        La ciudad se registro exitosamente!
+      </div>
+    {% endif %}
+    {% if mensaje == "not_ok" %}
+      {% for i in errores %}
+        {% if i == 1 %}
+          <div class= 'alert alert-danger' role='alert'>
+              Fallo en el registro de la ciudad. El codigo postal ingresado ya esta registrado
+            </div>
+        {% else %}
+          {% if i == 2 %}
+            <div class= 'alert alert-danger' role='alert'>
+              Fallo en el registro de la ciudad. El nombre ingresado ya esta registrado para esa provincia
+            </div>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    <div class="container">
+      <center>
+        <div class="row">
+          <div class="col-sm">
+            <h4> <p style="margin: 40px">Complete el formulario </p></h4>
+            <h5>
+              <br>
+              <p> <input class="col-sm-12 col-form-label" type="text" pattern="[0-9]{4}" title= "Ingrese 4 numeros" name="codigo_postal" placeholder="Codigo postal"></p>
+              <p> <input class="col-sm-12 col-form-label" type="text" pattern="[A-Z0-9 ]+" title= "Ingrese un nombre valido en mayusculas, sin caracteres espaciales" name="nombre" placeholder="Ingrese el nombre en mayusculas"></p>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="provincia" for="inputGroupSelect01">Provincia</label>
+                </div>
+                <select class="custom-select" type="text" name="provincia" id="provincia">
+                  <option value="Buenos Aires">Buenos Aires</option>
+                  <option value="Catamarca">Catamarca</option>
+                  <option value="Chaco">Chaco</option>
+                  <option value="Cordoba">Cordoba</option>
+                  <option value="Corrientes">Corrientes</option>
+                  <option value="Entre Rios">Entre Rios</option>
+                  <option value="Formosa">Formosa</option>
+                  <option value="Jujuy">Jujuy</option>
+                  <option value="La Pampa">La Pampa</option>
+                  <option value="La rioja">La Rioja</option>
+                  <option value="Mendoza">Mendoza</option>
+                  <option value="Misiones">Misiones</option>
+                  <option value="Neuquen">Neuquen</option>
+                  <option value="Rio Negro">Rio Negro</option>
+                  <option value="Corrientes">Salta</option>
+                  <option value="San Juan">San Juan</option>
+                  <option value="San Luis">San Luis</option>
+                  <option value="Santa Cruz">Santa Cruz</option>
+                  <option value="Santa Fe">Santa Fe</option>
+                  <option value="Santiago Del Estero">Santiago Del Estero</option>
+                  <option value="Corrientes">Tierra Del Fuego</option>
+                  <option value="Corrientes">Tucuman</option>
+                </select>
+              </div>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" name="pais" for="inputGroupSelect01">Pais</label>
+                </div>
+                <select class="custom-select" type="text" name="pais" id="pais">
+                  <option value="Argentina">Argentina</option>
+                </select>
+              </div>
+            </h5>
+          </div>
+        </div>
+      </center>
+    </div>
+  <center>
+    <br>
+    <br>
+    <br>
+      <p>
+        <button style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Ok</button>
+      </p>
+      <p>
+        <a class="btn btn-dark" href="/home">Cancelar</a>
+      </p>
+</center>
+  </form>
+{% endblock %}

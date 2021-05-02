@@ -1,0 +1,93 @@
+{% extends "diseño.html" %}
+
+{% block content %}
+
+<center>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+   <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
+ </li>
+ <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Usuarios
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+      <a class="dropdown-item" href="#">Agregar chofer</a>
+      <a class="dropdown-item" href="#">Eliminar chofer</a>
+      <a class="dropdown-item" href="#">Editar chofer?</a>
+      <a class="dropdown-item" href="#">Eliminar usuario</a>
+      <a class="dropdown-item" href="#">Listado de choferes</a>
+      <a class="dropdown-item" href="#">Listado de usuarios?</a>
+      <a class="dropdown-item" href="#">Listado de choferes</a>
+      <a class="dropdown-item" href="#">Ver detalle de chofer</a>
+    </div>
+</li>
+<li>
+     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+       Viajes
+     </a>
+     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+       <a class="dropdown-item" href="#">Agregar viaje</a>
+       <a class="dropdown-item" href="#">Eliminar viaje</a>
+       <a class="dropdown-item" href="#">Editar viaje</a>
+       <a class="dropdown-item" href="#">Listado de viajes</a>
+       <a class="dropdown-item" href="#">Ver detalle de viaje</a>
+     </div>
+ </li>
+ <li>
+     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+       Vehiculos
+     </a>
+     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+       <a class="dropdown-item" href="/agregar_vehiculo">Agregar vehiculo</a>
+       <a class="dropdown-item" href="#">Eliminar vehiculo</a>
+       <a class="dropdown-item" href="#">Editar vehiculo</a>
+       <a class="dropdown-item" href="#">Listado de vehiculos</a>
+       <a class="dropdown-item" href="#">Ver detalle de vehiculo</a>
+     </div>
+ </li>
+ <li>
+     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink4" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+       Ciudades
+     </a>
+     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+       <a class="dropdown-item" href="/agregar_ciudad">Agregar ciudad</a>
+       <a class="dropdown-item" href="#">Eliminar ciudad</a>
+       <a class="dropdown-item" href="#">Editar ciudad</a>
+       <a class="dropdown-item" href="/listar_ciudades">Listado de ciudades</a>
+       <a class="dropdown-item" href="#">Ver detalle de ciudad</a>
+     </div>
+ </li>
+ <li>
+     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink5" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+       Rutas
+     </a>
+     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+       <a class="dropdown-item" href="/agregar_ruta">Agregar Ruta</a>
+       <a class="dropdown-item" href="#">Eliminar ruta</a>
+       <a class="dropdown-item" href="#">Editar ruta</a>
+       <a class="dropdown-item" href="#">Listado de rutas</a>
+       <a class="dropdown-item" href="#">Ver detalle de ruta</a>
+     </div>
+</li>
+</ul>
+</div>
+</nav>
+</center>
+<div class="alert alert-success" role="alert">
+  <h4 class="alert-heading">Hola administrador!</h4>
+  <p> Actualmente hay: </p>
+  <p>  - ... viajes activos </p>
+  <p>  - ... Usuarios </p>
+  <p>  - ... choferes </p>
+  <p>  - ... Vehiculos </p>
+  <p>  - ... ciudades cargadas </p>
+  <p>  - ... rutas cargadas </p>
+</div>
+
+{% endblock %}

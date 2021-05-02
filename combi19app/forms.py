@@ -1,5 +1,5 @@
 from django import forms
-from combi19app.models import Usuario
+from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad
 #from django.contrib.auth import get_user_model
 
 #Usuario = get_user_model()
@@ -25,3 +25,30 @@ class Registro (forms.ModelForm):
         if commit:
             usuario.save()
         return usuario
+
+class Registro_vehiculo (forms.ModelForm):
+    class Meta:
+        model = Vehiculo
+        fields = ('patente',
+                   'marca',
+                   'modelo',
+                   'capacidad',
+                   'premium',
+                   )
+
+class Registro_ruta (forms.ModelForm):
+    class Meta:
+        model = Ruta
+        fields = ('identificador',
+                  'nombre',
+                  'tipo',
+                  )
+
+class Registro_ciudad (forms.ModelForm):
+    class Meta:
+        model = Ciudad
+        fields = ('nombre',
+                   'provincia',
+                   'codigo_postal',
+                   'pais',
+                   )

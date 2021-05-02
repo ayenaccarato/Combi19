@@ -1,0 +1,70 @@
+{% extends "diseño.html" %}
+
+{% block title %}Agregar_ruta{% endblock %}
+{% block h1 %}<center>Agregar ruta</center>{% endblock %}
+{% block content %}
+  {% if form.errors %}
+    <div class= 'alert alert-danger' role='alert'>
+      fallo en el registro
+    </div>
+    {% endif %}
+
+  <form action="/guardar_ruta/" method="POST">
+    {% csrf_token %}
+    {% if mensaje == "ok" %}
+      <div class='alert alert-success' role='alert'>
+        La ruta se registro exitosamente!
+      </div>
+    {% endif %}
+    {% if mensaje == "not_ok" %}
+      {% for i in errores %}
+        {% if i == 1 %}
+          <div class= 'alert alert-danger' role='alert'>
+              Fallo en el registro de la ruta. El identificador ingresado ya esta registrado
+            </div>
+        {% else %}
+          {% if i == 2 %}
+            <div class= 'alert alert-danger' role='alert'>
+              Fallo en el registro de la ruta. El nombre ingresado ya esta registrado
+            </div>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+
+    <div class="container">
+      <center>
+        <div class="row">
+          <div class="col-sm">
+            <h4> <p style="margin: 40px">Complete el formulario </p></h4>
+            <h5>
+              <br>
+              <p> <input class="col-sm-12 col-form-label" type="text" pattern="[A-Za-z0-9 ]+" title= "Ingrese un identificador sin caracteres especiales" name="identificador" placeholder="Identificador"></p>
+              <p> <input class="col-sm-12 col-form-label" type="text" pattern="[A-Za-z0-9 ]+" title= "Ingrese un nombre sin caracteres especiales" name="nombre" placeholder="Nombre"></p>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="tipo" for="inputGroupSelect01">Tipo</label>
+                </div>
+                <select class="custom-select" type="text" name="tipo" id="tipo">
+                  <option value="Ruta nacional">Ruta nacional</option>
+                  <option value="Ruta provincial">Ruta provincial</option>
+                </select>
+              </div>
+            </h5>
+          </div>
+        </div>
+      </center>
+    </div>
+  <center>
+    <br>
+    <br>
+    <br>
+      <p>
+        <button style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Ok</button>
+      </p>
+      <p>
+        <a class="btn btn-dark" href="/home">Cancelar</a>
+      </p>
+</center>
+  </form>
+{% endblock %}
