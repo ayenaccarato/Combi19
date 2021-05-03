@@ -5,15 +5,16 @@ from combi19app.forms import Registro, Registro_vehiculo, Registro_ruta, Registr
 from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import UpdateView
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login
 # Create your views here.
 
 def home (request):
     return render (request, "home.html")
 
-def bienvenida(request):
+def login(request):
 
-    return render (request, "bienvenido.html")
-
+    return render (request, "registration/login.html")
 
 def cambiar_contra(request):
 
@@ -69,7 +70,7 @@ def errores_ciudad(ciudad):
     return set(lista)
 
 class FormularioRegistro (HttpRequest):
-
+    @login_required
     def crear_formulario(request):
         registro = Registro()
         return render (request, "registrarse.html", {"dato":registro})

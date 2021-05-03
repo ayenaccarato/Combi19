@@ -17,9 +17,10 @@ class Usuario_Manager(BaseUserManager):
         us.save(using=self._db)
         return us
 
-    def create_superuser(self, usuario, email, dni, nombre, apellido, direccion, telefono, password):
+    def create_superuser(self, usuario, password, email, dni, nombre, apellido, direccion, telefono):
         us = self.create_user(
             usuario=usuario,
+            password=password,
             email=email,
             dni=dni,
             nombre = nombre,
@@ -28,8 +29,7 @@ class Usuario_Manager(BaseUserManager):
             telefono=telefono
         )
         # us.super_usuario = True
-        us.admin = True
-        us.is_staff = True
+        us.is_admin = True
         us.is_superuser = True
         us.is_active= True
         us.save(using=self._db)
@@ -46,8 +46,10 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     direccion = models.CharField(max_length=20)
     telefono = models.IntegerField()
     #is_active = models.BooleanField(default= True)
-    staff = models.BooleanField(default= False)
-    admin = models.BooleanField(default=False)
+    #staff = models.BooleanField(default= False)
+    #admin = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True, verbose_name='account is activated')
+    is_admin = models.BooleanField(default=False, verbose_name='staff account')
     # super_usuario = models.BooleanField(default=False)
     #tipo_usuario = models.IntegerField(default = 3)
     objects = Usuario_Manager()
@@ -61,13 +63,13 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return "%s %s %s %s" % (self.usuario, self.dni,self.email, self.tipo_usuario)
 
-    @property
-    def is_admin(self):
-        return self.admin
+#    @property
+#    def is_admin(self):
+#        return self.is_admin
 
     @property
     def is_staff(self):
-        return self.staff
+        return self.is_admin
     #class Meta:
     #    verbose_name = "Usuario"
     #    verbose_name_plural = "Usuarios"

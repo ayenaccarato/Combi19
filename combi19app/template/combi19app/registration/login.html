@@ -24,22 +24,34 @@
         </h1>
       </div>-->
 {% block content %}
-  <form action="/bienvenida/" method="POST">
+  <form class="user" id="form-login" method="post" action="">
     <div class="container">
       <center>
         <p style="margin: 20px"> <img src={% static 'logo_is.png' %} class= "img-fluid" alt="logo"> </p><br>
         <div class="row">
           <div class="col-sm">
-            <h5>
-              <p><input class="col-sm-4 col-form-label" type="text" name="us" placeholder="usuario"> </p>
-              <p><input class="col-sm-4 col-form-label" type="password" name="contra" placeholder="contraseña"></p>
-            </h5>
+              {% csrf_token %}
+              <div class="form-group">
+                {% if form.error_messages %}
+                      <div class="alert alert-danger alert-dismissible" role="alert">
+                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria hidden="true">&times;</span>
+                          </button>
+                          <strong>Error: </strong>{{ form.get_invalid_login_error }}
+                      </div>
+            {% endif %}
+              </div>
+              <h5>
+                <p><input class="col-sm-4 col-form-label" type="text" id="idusername" name="username" placeholder="usuario"></p>
+                <p><input class="col-sm-4 col-form-label" type="password" id="id_password" name="password" placeholder="contraseña" ></p>
+              </h5>
           </div>
         </div>
       </center>
     </div>
   <center>
-    <p><button type="button" class="btn btn-success">Iniciar Sesión</button></p>
+      <!--<button type=submit value="Iniciar Sesión" class="btn btn-success">-->
+    <p><button type="submit" class="btn btn-success">Iniciar Sesión</button></p>
     <p> <a class="btn btn-outline-dark" href="/cambiar_contra" >¿Olvidó su contraseña?</a></p>
     <p> <a class="btn btn-dark" href="/registrarse">Registrarse</a></p>
   </center>

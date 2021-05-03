@@ -9,10 +9,10 @@ class VehiculoAdmin (admin.ModelAdmin):
     search_fields=("patente",)
 
 #UserAdmin
-class UsuarioAdmin (UserAdmin):
+class UsuarioAdmin (admin.ModelAdmin):
     #model = Usuario
     list_display = ['email', 'admin']
-    list_filter = ['admin', 'staff']
+    list_filter = ['admin']
     ordering = ['email']
     filter_horizontal = ()
     search_fields = ['email']
@@ -22,7 +22,7 @@ class UsuarioAdmin (UserAdmin):
     #list_display=("usuario","email","dni","tipo_usuario")
     #list_filter = ['admin', 'staff']
 
-admin.site.register(Usuario, UsuarioAdmin)
+admin.site.register(Usuario)
 admin.site.register(Vehiculo, VehiculoAdmin)
 admin.site.register(Ciudad)
 admin.site.register(Ruta)

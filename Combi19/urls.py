@@ -14,15 +14,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include, re_path
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.contrib.auth import views as auth_views
+from django.contrib.auth.views import LoginView, logout_then_login
 #from Combi19.views import *
 #from combi19app.views import bienvenida, cambiar_contra, FormularioRegistro
 from combi19app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('bienvenida/', views.bienvenida),
     path('registrarse/', views.FormularioRegistro.crear_formulario),
     path('guardarRegistro/', views.FormularioRegistro.procesar_formulario),
     path('cambiar_contra/', views.cambiar_contra),
@@ -35,6 +36,8 @@ urlpatterns = [
     path('listar_ciudades/', views.ListarCiudad.crear_listado),
     path('listar_ciudades/ver_detalle_ciudad/<int:codigo_postal>/',views.ListarCiudad.mostrar_detalle),
     path('listar_ciudades/eliminar_ciudad/<int:codigo_postal>/',views.EliminarCiudad.eliminar_ciudad),
-    path('home/', views.home)
+    path('home/', views.home),
+    path('accounts/', include ('django.contrib.auth.urls')),
+    path('', auth_views.LoginView.as_view(template_name ="registration/login.html"), name='login'),
 ]
 urlpatterns += staticfiles_urlpatterns()
