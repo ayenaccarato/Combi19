@@ -25,6 +25,7 @@ from combi19app import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('registrarse/', views.FormularioRegistro.crear_formulario),
+    path('registrar_chofer/', views.FormularioRegistroChofer.crear_formulario),
     path('guardarRegistro/', views.FormularioRegistro.procesar_formulario),
     path('cambiar_contra/', views.cambiar_contra),
     path('agregar_vehiculo/', views.FormularioVehiculo.crear_formulario),

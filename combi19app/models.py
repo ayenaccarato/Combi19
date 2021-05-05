@@ -32,6 +32,7 @@ class Usuario_Manager(BaseUserManager):
         us.is_admin = True
         us.is_superuser = True
         us.is_active= True
+        us.tipo_usuario= 1
         us.save(using=self._db)
         return us
 
@@ -51,7 +52,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True, verbose_name='account is activated')
     is_admin = models.BooleanField(default=False, verbose_name='staff account')
     # super_usuario = models.BooleanField(default=False)
-    #tipo_usuario = models.IntegerField(default = 3)
+    tipo_usuario = models.IntegerField(default = 3)
     objects = Usuario_Manager()
 
     USERNAME_FIELD = 'usuario'

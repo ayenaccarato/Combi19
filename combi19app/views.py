@@ -8,9 +8,12 @@ from django.views.generic.edit import UpdateView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 # Create your views here.
-
+@login_required
 def home (request):
-    return render (request, "home.html")
+    if request.user.tipo_usuario == 1:
+        return render (request, "home.html")
+    else:
+        return render (request,"homePasajeros.html")
 
 def login(request):
 
@@ -70,7 +73,7 @@ def errores_ciudad(ciudad):
     return set(lista)
 
 class FormularioRegistro (HttpRequest):
-    @login_required
+
     def crear_formulario(request):
         registro = Registro()
         return render (request, "registrarse.html", {"dato":registro})
@@ -87,6 +90,21 @@ class FormularioRegistro (HttpRequest):
             registro = Registro()
             return render(request, "registrarse.html", {"mensaje": "not_ok", "errores": confirmacion})
 
+class FormularioRegistroChofer (HttpRequest):
+    def crear_formulario(request):
+        registro = Registro()
+        return render (request, "registrar_chofer.html", {"dato":registro})
+    @csrf_exempt
+    def procesar_formulario (request):
+        registro = Registro(request.POST)
+        if registro.is_valid():
+            registro.save_chofer()
+            registro = Registro()
+            return render(request, "registrar_chofer.html", {"dato": registro, "mensaje": "ok"})
+        else:
+            confirmacion=errores(registro)
+            registro = Registro()
+            return render(request, "registrarse.html", {"mensaje": "not_ok", "errores": confirmacion})
 
 class FormularioVehiculo (HttpRequest):
 

@@ -26,6 +26,14 @@ class Registro (forms.ModelForm):
             usuario.save()
         return usuario
 
+    def save_chofer(self, commit=True):
+        usuario = super().save(commit= False)
+        usuario.set_password(self.cleaned_data['password'])
+        usuario.tipo_usuario=2
+        if commit:
+            usuario.save()
+        return usuario
+
 class Registro_vehiculo (forms.ModelForm):
     class Meta:
         model = Vehiculo
