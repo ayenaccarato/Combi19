@@ -29,6 +29,11 @@ urlpatterns = [
     path('cambiar_contra/', views.cambiar_contra),
     path('agregar_vehiculo/', views.FormularioVehiculo.crear_formulario),
     path('guardar_vehiculo/', views.FormularioVehiculo.procesar_formulario),
+    path('listar_vehiculos/', views.ListarVehiculos.crear_listado, name='listarVehiculos'),
+    path('listar_vehiculos/ver_detalle_vehiculo/<patente_vehiculo>/',views.ListarVehiculos.mostrar_detalle),
+    path('listar_vehiculos/eliminar_vehiculo/<patente_vehiculo>/',views.EliminarVehiculo.eliminar_vehiculo),
+    path('listar_vehiculos/editar_vehiculo/<patente_vehiculo>', views.FormularioVehiculo.editar, name = "editarVehiculo"),
+    path('actualizar_vehiculo/<patente_vehiculo>', views.FormularioVehiculo.actualizar, name = "actualizarVehiculo"),
     path('agregar_ruta/', views.FormularioRuta.crear_formulario),
     path('guardar_ruta/', views.FormularioRuta.procesar_formulario),
     path('agregar_ciudad/', views.FormularioCiudad.crear_formulario),
@@ -39,5 +44,6 @@ urlpatterns = [
     path('home/', views.home),
     path('accounts/', include ('django.contrib.auth.urls')),
     path('', auth_views.LoginView.as_view(template_name ="registration/login.html"), name='login'),
+
 ]
 urlpatterns += staticfiles_urlpatterns()

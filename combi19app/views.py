@@ -104,6 +104,40 @@ class FormularioVehiculo (HttpRequest):
             vehiculo = Registro_vehiculo()
             return render (request, "agregar_vehiculo.html", {"mensaje": "not_ok"})
 
+    def editar(request, patente_vehiculo):
+        vehiculo = Vehiculo.objects.get(patente=patente_vehiculo)
+        form = Registro_vehiculo(instance=vehiculo)
+        return render (request, "modificar_vehiculo.html", {"form":form, "vehiculo":vehiculo})
+
+    def actualizar(request, patente_vehiculo):
+        vehiculo = Vehiculo.objects.get(patente=patente_vehiculo)
+        form = Registro_vehiculo(request.POST, instance = vehiculo)
+        if form.is_valid():
+        #    db.connections.close_all()
+            form.save()
+            return render (request, "modificar_vehiculo.html", {"form":form, "vehiculo":vehiculo, "mensaje": "ok"})
+        else:
+            return render (request, "modificar_vehiculo.html", {"form":form, "vehiculo":vehiculo})
+
+class ListarVehiculos(HttpRequest):
+
+    def crear_listado(request):
+        vehiculos = Vehiculo.objects.all()
+        contexto = {'vehiculos': vehiculos, 'cantidad':len(vehiculos)}
+        return render (request, "listar_vehiculos.html", contexto)
+
+    def mostrar_detalle(request, patente_vehiculo):
+        detalle= Vehiculo.objects.get(pk=patente_vehiculo)
+        return render (request, "listar_vehiculos.html", {"dato":detalle, "mensaje":"detalle"})
+
+class EliminarVehiculo(HttpRequest):
+
+    def eliminar_vehiculo(request, patente_vehiculo):
+        vehiculo_eliminado = Vehiculo.objects.get(pk=patente_vehiculo)
+        vehiculo_eliminado.delete()
+        vehiculo = Vehiculo.objects.all()
+        return render (request, "listar_vehiculos.html", {"vehiculos": vehiculo, "mensaje":"eliminado", "cantidad": len(vehiculo)})
+
 class FormularioRuta (HttpRequest):
 
     def crear_formulario(request):

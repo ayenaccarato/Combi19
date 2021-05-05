@@ -1,0 +1,91 @@
+{% extends "diseño.html" %}
+{% block title %}Listar_vehiculos{% endblock %}
+{% block h1 %}<center>Listado de vehiculos</center>{% endblock %}
+
+{% block content %}
+    {% csrf_token %}
+
+    {% if mensaje == "detalle" %}
+    <p style="float: right;">
+      <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_vehiculos" type="submit" class="btn btn-success" name=nombre >Volver a los listados</a>
+    </p>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <td>Patente</td>
+        <td>Marca</td>
+        <td>Modelo</td>
+        <td>Capacidad</td>
+        <td>Premium</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{dato.patente}}</td>
+      <td>{{dato.marca}}</td>
+      <td>{{dato.modelo}}</td>
+      <td>{{dato.capacidad}}</td>
+      {% if dato.premium %}
+        <td>Si</td>
+      {% else %}
+        <td>No</td>
+      {% endif %}
+    </tr>
+
+
+
+    {% else %}
+
+      {% if mensaje == "eliminado"%}
+        <div class='alert alert-success' role='alert'>
+          El vehiculo se elimino exitosamente!
+        </div>
+      {% endif %}
+
+    {% if vehiculos %}
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <td>Patente</td>
+              <td>Marca</td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </thead>
+          <tbody>
+            {% for vehiculo in vehiculos %}
+            <tr>
+              <th scope="row">{{vehiculo.patente}}</th>
+              <td>{{vehiculo.marca}}</td>
+              <td> <a class="btn btn-primary" href= "ver_detalle_vehiculo/{{vehiculo.patente}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver detalle</a>
+                <td> <a class="btn btn-warning" href= "editar_vehiculo/{{vehiculo.patente}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Editar</a>  </td>
+                <td> <a class="btn btn-danger" href= "eliminar_vehiculo/{{vehiculo.patente}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Eliminar</a>  </td>
+            </td>
+
+            </tr>
+            {% endfor %}
+              <br>
+              <br>
+              <div class="alert alert-success" role="alert">
+                Actualmente hay {{cantidad}} vehiculos cargados.
+              </div>
+      {% else %}
+        <div class="jumbotron jumbotron-fluid">
+          <div class="container">
+            <h1 class="display-4">Ups!</h1>
+            <p class="lead">No hay vehiculos cargados.</p>
+          </div>
+        </div>
+      </tbody>
+      </table>
+      {% endif %}
+
+  {% endif %}
+{% endblock %}
