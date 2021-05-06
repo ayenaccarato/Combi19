@@ -104,9 +104,12 @@ class Ciudad (models.Model):
 
 
 class Ruta (models.Model):
-    identificador = models.CharField(max_length=30, primary_key=True)
-    nombre = models.CharField(max_length=30, unique=True)
-    tipo = models.CharField(max_length=30)
+    origen = models.CharField(max_length=30)
+    destino = models.CharField(max_length=30)
+    nombre = models.CharField(max_length=30, primary_key=True)
+    km = models.IntegerField()
+    duracion = models.IntegerField()
+    duracion_en = models.CharField(max_length=10)
 
     def publish(self):
         self.save()

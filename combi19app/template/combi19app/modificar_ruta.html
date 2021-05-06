@@ -1,0 +1,103 @@
+{% extends "diseño.html" %}
+
+{% block title %}Editar_ruta{% endblock %}
+{% block h1 %}<center>Editar ruta</center>{% endblock %}
+{% block content %}
+  {% if form.errors %}
+    <div class= 'alert alert-danger' role='alert'>
+      fallo en el registro
+    </div>
+    {% endif %}
+
+  <form action="/actualizar_ruta/{{rutas.nombre}}/" method="POST">
+    {% csrf_token %}
+    {% if mensaje == "ok" %}
+      <div class='alert alert-success' role='alert'>
+        La ruta se actualizó exitosamente!
+      </div>
+    {% endif %}
+    {% if mensaje == "not_ok" %}
+      {% for i in errores %}
+        {% if i == 1 %}
+          <div class= 'alert alert-danger' role='alert'>
+              Fallo en el registro de la ruta. El nombre ingresado ya esta registrado
+            </div>
+        {% else %}
+          {% if i == 2 %}
+            <div class= 'alert alert-danger' role='alert'>
+              Fallo en el registro de la ruta. No se pueden realizar viajes dentro de la misma ciudad
+            </div>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+    <div class= "container">
+      <center>
+        <div class= "row">
+          <div class="col-sm">
+            <h4> <p style="margin: 40px">Actualice los datos </p></h4>
+            <h5>
+              <br>
+              <p>
+                <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="origen" for="inputGroupSelect01">Ciudad origen</label>
+                  <select class="col-sm col-form-label custom-select-md" type="text" name="origen" id="origen">
+                    <option disabled=True> --Seleccione-- </option>
+                      {% for i in ciudades %}
+                          <option value= "{{i.nombre}}">{{i.nombre}} ({{i.nombre}}-{{i.provincia}}-{{i.pais}})</option>
+                      {% endfor %}
+                  </select>
+                </div>
+              </p>
+              <p>
+                <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="destino" for="inputGroupSelect01">Ciudad destino</label>
+                  <select class="col-sm col-form-label custom-select-md" type="text" name="destino" id="destino">
+                    <option disabled=True> --Seleccione-- </option>
+                      {% for i in ciudades %}
+                          <option value= "{{i.nombre}}">{{i.nombre}} ({{i.nombre}}-{{i.provincia}}-{{i.pais}})</option>
+                      {% endfor %}
+                  </select>
+                </div>
+              </p>
+              <p>
+                <input class="col-sm-12 col-form-label" type="text" name="nombre" placeholder="Nombre" id="nombre">
+              </p>
+              <p>
+                <input class="col-sm-12 col-form-label" type="text" pattern="[0-9]+" title= "Ingrese los km de la ruta" name="km" placeholder="Km" id="km">
+              </p>
+              <div class="input-group">
+                  <input class="col-sm-10 col-form-label" type="text" name="duracion" placeholder="Duración" id="duracion">
+                  <select class="col-sm col-form-label custom-select-md" name= "duracion_en" id="duracion_en">
+                    <option disabled=True>--Seleccione--</option>
+                    <option class="dropdown-item" value="horas">Hora/s</option>
+                    <option class="dropdown-item" value="minutos">Minutos</option>
+                  </select>
+              </div>
+              </div>
+            </h5>
+          </div>
+        </div>
+      </center>
+    </div]>
+  <center>
+    <br>
+    <br>
+    <br>
+      <p>
+        <button style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Guardar</button>
+      </p>
+      <p>
+        <a class="btn btn-dark" href="/home">Cancelar</a>
+      </p>
+</center>
+  </form>
+  <script>
+    document.getElementById("origen").value = "{{rutas.origen}}"
+    document.getElementById("destino").value = "{{rutas.destino}}"
+    document.getElementById("nombre").value = "{{rutas.nombre}}"
+    document.getElementById("km").value = "{{rutas.km}}"
+    document.getElementById("duracion").value = "{{rutas.duracion}}"
+    document.getElementById("duracion_en").value = "{{rutas.duracion_en}}"
+  </script>
+{% endblock %}

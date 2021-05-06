@@ -1,0 +1,101 @@
+{% extends "diseño.html" %}
+{% block title %}Listar rutas|{% endblock %}
+{% block h1 %}
+  <center>Listado de rutas</center>
+{% endblock %}
+<p>
+  <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_ruta" type="submit" class="btn btn-success" name=nombre >Agregar ruta</a>
+</p>
+{% block content %}
+    {% csrf_token %}
+    <p style="float: right;">
+      <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_ruta" type="submit" class="btn btn-success" name=nombre >Agregar ruta</a>
+    </p>
+    <br>
+    <br>
+    {% if mensaje == "detalle" %}
+      <p style="float: right;">
+        <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_rutas" type="submit" class="btn btn-success" name=nombre >Volver a los listados</a>
+      </p>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <td>Nombre</td>
+          <td>Origen</td>
+          <td>Destino</td>
+          <td>Km</td>
+          <td>Duración</td>
+          <td>Duración en</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{dato.nombre}}</td>
+        <td>{{dato.origen}}</td>
+        <td>{{dato.destino}}</td>
+        <td>{{dato.km}}</td>
+        <td>{{dato.duracion}}</td>
+        <td>{{dato.duracion_en}}</td>
+      </tr>
+
+
+    {% else %}
+
+
+      {% if mensaje == "eliminado"%}
+        <div class='alert alert-success' role='alert'>
+          La ruta se elimino exitosamente!
+        </div>
+      {% else %}
+        {% if mensaje == "editado" %}
+        <div class='alert alert-success' role='alert'>
+          La ruta se modificó exitosamente!
+        </div>
+        {% endif %}
+      {% endif %}
+      {% if rutas %}
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <td>Nombre</td>
+              <td>Origen</td>
+              <td>Destino</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </thead>
+          <tbody>
+            {% for ruta in rutas %}
+            <tr>
+              <td scope="row">{{ruta.nombre}}</td>
+              <td>{{ruta.origen}}</td>
+              <td>{{ruta.destino}}</td>
+              <td> <a class="btn btn-primary" href= "ver_detalle_ruta/{{ruta.nombre}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver detalle</a>
+                <td> <a class="btn btn-warning" href= "modificar_ruta/{{ruta.nombre}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Editar</a>  </td>
+                <td> <a class="btn btn-danger" href= "eliminar_ruta/{{ruta.nombre}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Eliminar</a>  </td>
+              </td>
+            </tr>
+            {% endfor %}
+            <br>
+            <br>
+            <div class="alert alert-success" role="alert">
+              Actualmente hay {{cantidad}} rutas cargadas.
+            </div>
+        {% else %}
+          <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+              <h1 class="display-4">Ups!</h1>
+              <p class="lead">No hay rutas cargadas.</p>
+            </div>
+          </div>
+        </tbody>
+      </table>
+    {% endif %}
+  {% endif %}
+{% endblock %}

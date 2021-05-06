@@ -14,12 +14,12 @@
     {% csrf_token %}
     {% if mensaje == "ok" %}
       <div class='alert alert-success' role='alert'>
-        El vehiculo se registro exitosamente!
+        El vehículo se registró exitosamente!
       </div>
     {% endif %}
     {% if mensaje == "not_ok" %}
       <div class= 'alert alert-danger' role='alert'>
-        Fallo en el registro del vehiculo. La patente ingresada ya esta registrada
+        Fallo en el registro del vehiculo. La patente ingresada ya está registrada
       </div>
     {% endif %}
 
@@ -37,6 +37,7 @@
                   <label class="input-group-text" type="text" name="marca" for="inputGroupSelect01">Marca</label>
                 </div>
                 <select class="custom-select" type="text" name="marca" id="marca">
+                  <option disabled=True selected>--Seleccione una marca--</option>
                   <option value="Mercedes-Benz">Mercedes-Benz</option>
                   <option value="Agrale">Agrale</option>
                   <option value="Renault">Renault</option>
@@ -51,7 +52,8 @@
                   <label class="input-group-text" name="modelo" for="inputGroupSelect01">Modelo</label>
                 </div>
                 <select class="custom-select" type="text" name="modelo" id="modelo">
-                  <option selected>2000</option>
+                  <option disabled=True selected>--Seleccione un modelo--</option>
+                  <option value="2000">2000</option>
                   <option value="2001">2001</option>
                   <option value="2002">2002</option>
                   <option value="2003">2003</option>
@@ -81,6 +83,7 @@
                   <label class="input-group-text" name="capacidad" for="inputGroupSelect01">Cantidad de asientos</label>
                 </div>
                 <select class="custom-select" type=IntegerField name="capacidad" id="capacidad">
+                  <option disabled=True selected>--Seleccione la capacidad--</option>
                   <option value="10">10</option>
                   <option value="11">11</option>
                   <option value="12">12</option>

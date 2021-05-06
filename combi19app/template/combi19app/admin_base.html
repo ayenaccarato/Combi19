@@ -28,7 +28,7 @@
       <a class="dropdown-item" href="#">Ver detalle de chofer</a>
     </div>
 </li>
-<li>
+<li class="nav-item dropdown">
      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
        Viajes
      </a>
@@ -37,10 +37,9 @@
        <a class="dropdown-item" href="#">Eliminar viaje</a>
        <a class="dropdown-item" href="#">Editar viaje</a>
        <a class="dropdown-item" href="#">Listado de viajes</a>
-       <a class="dropdown-item" href="#">Ver detalle de viaje</a>
      </div>
  </li>
- <li>
+ <li class="nav-item dropdown">
      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
        Vehiculos
      </a>
@@ -49,10 +48,9 @@
        <a class="dropdown-item" href="#">Eliminar vehiculo</a>
        <a class="dropdown-item" href="#">Editar vehiculo</a>
        <a class="dropdown-item" href="{% url 'listarVehiculos' %}">Listado de vehiculos</a>
-       <a class="dropdown-item" href="#">Ver detalle de vehiculo</a>
      </div>
  </li>
- <li>
+ <li class="nav-item dropdown">
      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink4" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
        Ciudades
      </a>
@@ -64,7 +62,7 @@
        <a class="dropdown-item" href="#">Ver detalle de ciudad</a>
      </div>
  </li>
- <li>
+ <li class="nav-item dropdown">
      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink5" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
        Rutas
      </a>
@@ -72,8 +70,7 @@
        <a class="dropdown-item" href="/agregar_ruta">Agregar Ruta</a>
        <a class="dropdown-item" href="#">Eliminar ruta</a>
        <a class="dropdown-item" href="#">Editar ruta</a>
-       <a class="dropdown-item" href="#">Listado de rutas</a>
-       <a class="dropdown-item" href="#">Ver detalle de ruta</a>
+       <a class="dropdown-item" href="/listar_ciudades">Listado de rutas</a>
      </div>
 </li>
 <div class ="ml-auto">

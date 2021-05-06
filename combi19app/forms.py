@@ -47,9 +47,12 @@ class Registro_vehiculo (forms.ModelForm):
 class Registro_ruta (forms.ModelForm):
     class Meta:
         model = Ruta
-        fields = ('identificador',
+        fields = ('origen',
+                  'destino',
                   'nombre',
-                  'tipo',
+                  'km',
+                  'duracion',
+                  'duracion_en'
                   )
 
 class Registro_ciudad (forms.ModelForm):

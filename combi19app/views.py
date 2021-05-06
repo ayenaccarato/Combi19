@@ -7,6 +7,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
+from django import db
+db.connections.close_all()
 # Create your views here.
 @login_required
 def home (request):
@@ -47,9 +49,9 @@ def errores(registro):
 def errores_ruta(ruta):
     lista = []
 
-    if ruta.cleaned_data.get('identificador') == None:
-        lista+=[1]
     if ruta.cleaned_data.get('nombre') == None:
+        lista+=[1]
+    if ruta.cleaned_data.get('origen') == ruta.cleaned_data.get('destino'):
         lista+=[2]
 
     return set(lista)
@@ -160,18 +162,36 @@ class FormularioRuta (HttpRequest):
 
     def crear_formulario(request):
         ruta = Registro_ruta()
-        return render (request, "agregar_ruta.html", {"dato": ruta})
+        ciudad = Ciudad.objects.all()
+        return render (request, "agregar_ruta.html", {"dato": ruta, "ciudades": ciudad})
 
+    @csrf_exempt
     def procesar_formulario(request):
         ruta = Registro_ruta(request.POST)
+        ciudad = Ciudad.objects.all()
         if ruta.is_valid():
-            ruta.save()
-            ruta = Registro_ruta()
-            return render (request, "agregar_ruta.html", {"dato": ruta, "mensaje": "ok"})
-        else:
             confirmacion=errores_ruta(ruta)
-            ruta = Registro_ruta()
-            return render (request, "agregar_ruta.html", {"mensaje": "not_ok", "errores":confirmacion})
+            if len(confirmacion) == 0:
+                ruta.save()
+                ruta = Registro_ruta()
+                return render (request, "agregar_ruta.html", {"dato": ruta, "mensaje": "ok", "ciudades": ciudad})
+        confirmacion=errores_ruta(ruta)
+        ruta = Registro_ruta()
+        return render (request, "agregar_ruta.html", {"mensaje": "not_ok", "errores":confirmacion, "ciudades": ciudad})
+
+    def editar_ruta(request, nombre):
+        ruta = Ruta.objects.get(nombre=nombre)
+        registro = Registro_ruta(instance=ruta)
+        ciudad = Ciudad.objects.all()
+        return render(request, "modificar_ruta.html", {"dato": registro, "rutas": ruta, "ciudades": ciudad})
+
+    def actualizar_ruta(request, nombre):
+        ruta = Ruta.objects.get(nombre=nombre)
+        registro = Registro_ruta(request.POST, instance=ruta)
+        if registro.is_valid():
+            registro.save()
+        rutas = Ruta.objects.all()
+        return render (request, "listar_rutas.html", {"rutas": rutas, "mensaje": "editado"})
 
 class FormularioCiudad (HttpRequest):
 
@@ -210,3 +230,21 @@ class EliminarCiudad (HttpRequest):
         ciudad_eliminada.delete()
         ciudad = Ciudad.objects.all()
         return render (request, "listar_ciudades.html", {"ciudades": ciudad, "mensaje":"eliminado", "cantidad": len(ciudad)})
+
+class ListarRuta (HttpRequest):
+
+    def crear_listado(request):
+        ruta = Ruta.objects.all()
+        print(ruta)
+        contexto = {'rutas': ruta, 'cantidad':len(ruta)}
+        return render (request, "listar_rutas.html", contexto)
+
+    def mostrar_detalle(request, nombre):
+        detalle= Ruta.objects.get(pk=nombre)
+        return render (request, "listar_rutas.html", {"dato":detalle, "mensaje":"detalle"})
+
+    def eliminar_ruta(request, nombre):
+        ruta_eliminada = Ruta.objects.get(pk=nombre)
+        ruta_eliminada.delete()
+        ruta = Ruta.objects.all()
+        return render (request, "listar_rutas.html", {"rutas": ruta, "mensaje":"eliminado", "cantidad": len(ruta)})
