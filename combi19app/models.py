@@ -81,7 +81,7 @@ class Vehiculo (models.Model):
     marca = models.CharField(max_length=50)
     modelo = models.CharField(max_length=4)
     capacidad = models.IntegerField( verbose_name="Cantidad de asientos")
-    premium = models.BooleanField() # probar con 0 y 1 sino funca
+    premium = models.BooleanField()
 
 
     def publish(self):
@@ -118,12 +118,20 @@ class Ruta (models.Model):
 class Viaje (models.Model):
     fecha_salida = models.DateTimeField()
     fecha_llegada = models.DateTimeField('%m/%d/%Y %H:%M') # fijarse si es ida y vuelta
-    ciudad_origen = models.ForeignKey(Ciudad, related_name = 'ciudad_origen', on_delete=models.PROTECT)
-    ciudad_destino = models.ForeignKey(Ciudad, related_name = 'ciudad_destino', on_delete=models.PROTECT)
-    chofer = models.ForeignKey(Usuario, on_delete=models.PROTECT)
-    vehiculo = models.ForeignKey(Vehiculo, on_delete=models.PROTECT)
+    hora_salida = models.CharField(max_length=10)
+    am_pm_salida = models.CharField(max_length=10)
+    hora_llegada = models.CharField(max_length=10)
+    am_pm_llegada = models.CharField(max_length=10)
+    ruta = models.ForeignKey(Ruta, related_name='+', on_delete=models.PROTECT)
+    ciudad_origen = models.ForeignKey(Ciudad, related_name='+', on_delete=models.PROTECT)
+    ciudad_destino = models.ForeignKey(Ciudad, related_name='+',on_delete=models.PROTECT)
+    chofer = models.ForeignKey(Usuario, related_name='+', on_delete=models.PROTECT)
+    vehiculo = models.ForeignKey(Vehiculo, related_name='+', on_delete=models.PROTECT)
     asientos_total = models.IntegerField()
     asientos_disponibles = models.IntegerField()
+
+    def publish(self):
+        self.save()
 
 class Tarjeta(models.Model):
     nro = models.BigIntegerField()
@@ -135,16 +143,3 @@ class Pasajes(models.Model):
     nro_viaje = models.ForeignKey(Viaje, on_delete=models.PROTECT)
     estado = models.CharField(max_length=20)
     tarjeta = models.ForeignKey(Tarjeta, on_delete=models.PROTECT)
-
-
-
-
-
-
-#     usuario =
-#     nombre = models.CharField(max_length=30)
-#     apellido = models.CharField(max_length=50)
-#     dni = models.IntegerField()
-#     direccion = models.CharField(max_length=50)
-#     telefono = models.
-#     email =

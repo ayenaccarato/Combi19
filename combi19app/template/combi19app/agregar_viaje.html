@@ -1,0 +1,266 @@
+{% extends "diseño.html" %}
+{% load static %}
+
+{% block title %}Agregar_viaje{% endblock %}
+{% block h1 %}<center>Agregar viaje</center>{% endblock %}
+{% block content %}
+  {% if form.errors %}
+    <div class= 'alert alert-danger' role='alert'>
+      fallo en el registro
+    </div>
+    {% endif %}
+
+  <form action="/guardar_viaje/" method="POST">
+    {% csrf_token %}
+    {% if mensaje == "ok" %}
+      <div class='alert alert-success' role='alert'>
+        El viaje se registro exitosamente!
+      </div>
+    {% endif %}
+    {% if mensaje == "not_ok" %}
+      {% for i in errores %}
+        {% if i == 1 %}
+          <div class= 'alert alert-danger' role='alert'>
+              Fallo en el registro de la ruta. El nombre ingresado ya esta registrado
+            </div>
+        {% else %}
+          {% if i == 2 %}
+            <div class= 'alert alert-danger' role='alert'>
+              Fallo en el registro de la ruta. No se pueden realizar viajes dentro de la misma ciudad
+            </div>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+
+    <div class="container">
+      <center>
+        <div class="row">
+          <div class="col-sm">
+            <h5> <p style="margin: 40px">Complete la informacion de las fechas </p></h5>
+            <h5>
+              <div class="input-group">
+                <label class="input-group-text" type="date" name="fecha_salida" for="inputGroupSelect01">Fecha salida</label>
+                <select class="input-group input-group-sm mb-3" name= "dia" id="dia">
+                <option disabled=True selected>--Seleccione día--</option>
+                  {% for i in dias %}
+                    <option class="dropdown-item" value="{{i}}">{{i}}</option>
+                  {% endfor %}
+                </select>
+                <label class="input-group-text" type="text" name="p" for="inputGroupSelect01">/</label>
+                <select class=class="input-group input-group-sm mb-3" name= "mes" id="mes">
+                    <option disabled=True selected>--Seleccione mes--</option>
+                    <option class="dropdown-item" value="01">Enero</option>
+                    <option class="dropdown-item" value="02">Febrero</option>
+                    <option class="dropdown-item" value="03">Marzo</option>
+                    <option class="dropdown-item" value="04">Abril</option>
+                    <option class="dropdown-item" value="05">Mayo</option>
+                    <option class="dropdown-item" value="06">Junio</option>
+                    <option class="dropdown-item" value="07">Julio</option>
+                    <option class="dropdown-item" value="08">Agosto</option>
+                    <option class="dropdown-item" value="09">Septiembre</option>
+                    <option class="dropdown-item" value="10">Octubre</option>
+                    <option class="dropdown-item" value="11">Noviembre</option>
+                    <option class="dropdown-item" value="12">Diciembre</option>
+                  </select>
+                  <label class="input-group-text" type="text" name="p" for="inputGroupSelect01">/</label>
+                  <select class=class="input-group input-group-sm mb-3" name= "año" id="año">
+                    <option disabled=True selected>--Seleccione año--</option>
+                    <option class="dropdown-item" value="2021">2021</option>
+                    <option class="dropdown-item" value="2022">2022</option>
+                  </select>
+                </div>
+                  <div class="input-group">
+                  <label class="input-group-text" type="text" name="hora_salida" for="inputGroupSelect01">Hora salida  </label>
+                  <select class="input-group input-group-sm mb-3" name= "horas_de_salida" id="hora_de_salida">
+                    <option disabled=True selected>--Seleccione hora--</option>
+                    <option class="dropdown-item" value="1">01</option>
+                    <option class="dropdown-item" value="2">02</option>
+                    <option class="dropdown-item" value="3">03</option>
+                    <option class="dropdown-item" value="4">04</option>
+                    <option class="dropdown-item" value="5">05</option>
+                    <option class="dropdown-item" value="6">06</option>
+                    <option class="dropdown-item" value="7">07</option>
+                    <option class="dropdown-item" value="8">08</option>
+                    <option class="dropdown-item" value="9">09</option>
+                    <option class="dropdown-item" value="10">10</option>
+                    <option class="dropdown-item" value="11">11</option>
+                    <option class="dropdown-item" value="12">12</option>
+                  </select>
+                  <label class="input-group-text" type="text" name="p" for="inputGroupSelect01">:</label>
+                  <select class="input-group input-group-sm mb-3" name= "minutos_de_salida" id="minutos_de_salida">
+                    <option disabled=True selected>--Seleccione minutos--</option>
+                    {% for i in minutos %}
+                      <option class="dropdown-item" value="{{i}}">{{i}}</option>
+                    {% endfor %}
+                  </select>
+                  <label class="input-group-text" type="text" name="p" for="inputGroupSelect01">-</label>
+                  <select class="input-group input-group-sm mb-3" name= "horas_de_salida" id="hora_de_salida">
+                    <option disabled=True selected>--Seleccione horario--</option>
+                    <option class="dropdown-item" value="AM">AM</option>
+                    <option class="dropdown-item" value="PM">PM</option>
+                  </select>
+              </div>
+              <br>
+              <div class="input-group">
+                <label class="input-group-text" type="text" name="fecha_salida" for="inputGroupSelect01">Fecha llegada</label>
+                <select class="input-group input-group-sm mb-3" name= "dia" id="dia">
+                <option disabled=True selected>--Seleccione día--</option>
+                  {% for i in dias %}
+                    <option class="dropdown-item" value="{{i}}">{{i}}</option>
+                  {% endfor %}
+                </select>
+                <label class="input-group-text" type="text" name="p" for="inputGroupSelect01">/</label>
+                <select class="input-group input-group-sm mb-3" name= "mes" id="mes">
+                    <option disabled=True selected>--Seleccione mes--</option>
+                    <option class="dropdown-item" value="01">Enero</option>
+                    <option class="dropdown-item" value="02">Febrero</option>
+                    <option class="dropdown-item" value="03">Marzo</option>
+                    <option class="dropdown-item" value="04">Abril</option>
+                    <option class="dropdown-item" value="05">Mayo</option>
+                    <option class="dropdown-item" value="06">Junio</option>
+                    <option class="dropdown-item" value="07">Julio</option>
+                    <option class="dropdown-item" value="08">Agosto</option>
+                    <option class="dropdown-item" value="09">Septiembre</option>
+                    <option class="dropdown-item" value="10">Octubre</option>
+                    <option class="dropdown-item" value="11">Noviembre</option>
+                    <option class="dropdown-item" value="12">Diciembre</option>
+                  </select>
+                  <label class="input-group-text" type="text" name="p" for="inputGroupSelect01">/</label>
+                  <select class="input-group input-group-sm mb-3" name= "año" id="año">
+                    <option disabled=True selected>--Seleccione año--</option>
+                    <option class="dropdown-item" value="2021">2021</option>
+                    <option class="dropdown-item" value="2022">2022</option>
+                  </select>
+                </div>
+              <div class="input-group">
+                  <label class="input-group-text" type="text" name="hora_salida" for="inputGroupSelect01">Hora llegada  </label>
+                  <select class="input-group input-group-sm mb-3" name= "horas_de_salida" id="hora_de_salida">
+                    <option disabled=True selected>--Seleccione hora--</option>
+                    <option class="dropdown-item" value="1">01</option>
+                    <option class="dropdown-item" value="2">02</option>
+                    <option class="dropdown-item" value="3">03</option>
+                    <option class="dropdown-item" value="4">04</option>
+                    <option class="dropdown-item" value="5">05</option>
+                    <option class="dropdown-item" value="6">06</option>
+                    <option class="dropdown-item" value="7">07</option>
+                    <option class="dropdown-item" value="8">08</option>
+                    <option class="dropdown-item" value="9">09</option>
+                    <option class="dropdown-item" value="10">10</option>
+                    <option class="dropdown-item" value="11">11</option>
+                    <option class="dropdown-item" value="12">12</option>
+                  </select>
+                  <label class="input-group-text" type="text" name="p" for="inputGroupSelect01">:</label>
+                  <select class="input-group input-group-sm mb-3" name= "minutos_de_salida" id="minutos_de_salida">
+                    <option disabled=True selected>--Seleccione minutos--</option>
+                    {% for i in minutos %}
+                      <option class="dropdown-item" value="{{i}}">{{i}}</option>
+                    {% endfor %}
+                  </select>
+                  <label class="input-group-text" type="text" name="p" for="inputGroupSelect01">-</label>
+                  <select class="input-group input-group-sm mb-3" name= "horas_de_salida" id="hora_de_salida">
+                    <option disabled=True selected>--Seleccione horario--</option>
+                    <option class="dropdown-item" value="AM">AM</option>
+                    <option class="dropdown-item" value="PM">PM</option>
+                  </select>
+              </div>
+              <br>
+              <h5> <p style="margin: 40px">Complete la informacion general </p></h5>
+                <p>
+                  <div class="input-group-prepend">
+                    <label class="input-group-text" type="text" name="choferes" for="inputGroupSelect01">Chofer</label>
+                    <select class="col-sm col-form-label custom-select-md" type="text" name="chofer" id="chofer">
+                      <option disabled=True selected> --Seleccione-- </option>
+                        {% for i in choferes %}
+                          {% if i.tipo_usuario == 2 %}
+                            <option value= "{{i.dni}}">{{i.nombre}} {{i.apellido}} / DNI {{i.dni}}</option>
+                            {% endif %}
+                          {% endfor %}
+                    </select>
+                  </div>
+                </p>
+              <p>
+                <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="vehiculo" for="inputGroupSelect01">Vehiculo</label>
+                  <select class="col-sm col-form-label custom-select-md" type="text" name="vehiculo" id="vehiculo">
+                    <option disabled=True selected> --Seleccione-- </option>
+                      {% for i in vehiculos %}
+                        {% if i.premium %}
+                          <option value= "{{i.patente}}">Patente: {{i.patente}} / Marca: {{i.marca}} / Cantidad de asientos: {{i.capacidad}} / Tipo de asiento: semi cama</option>
+                        {% else %}
+                            <option value= "{{i.patente}}">Patente: {{i.patente}} / Marca: {{i.marca}} / Cantidad de asientos: {{i.capacidad}} / Tipo de asiento: cama</option>
+                        {% endif %}
+                      {% endfor %}
+                  </select>
+                </div>
+              </p>
+              <p>
+                <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="ciudad_origen" for="inputGroupSelect01">Ciudad de origen</label>
+                  <select class="col-sm col-form-label custom-select-md" type="text" name="ciudad_origen" id="ciudad_origen">
+                    <option disabled=True selected> --Seleccione-- </option>
+                      {% for i in ciudades %}
+                          <option value= "{{i.codigo_postal}}">{{i.nombre}} ({{i.nombre}}-{{i.provincia}}-{{i.pais}})</option>
+                      {% endfor %}
+                  </select>
+                </div>
+              </p>
+              <p>
+                <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="ciudad_destino" for="inputGroupSelect01">Ciudad de destino</label>
+                  <select class="col-sm col-form-label custom-select-md" type="text" name="ciudad_destino" id="ciudad_destino">
+                    <option disabled=True selected> --Seleccione-- </option>
+                      {% for i in ciudades %}
+                          <option value= "{{i.codigo_postal}}">{{i.nombre}} ({{i.nombre}}-{{i.provincia}}-{{i.pais}})</option>
+                      {% endfor %}
+                  </select>
+                </div>
+              </p>
+              <p>
+                <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="ruta" for="inputGroupSelect01">Ruta</label>
+                  <select class="col-sm col-form-label custom-select-md" type="text" name="ruta" id="ruta">
+                    <option disabled=True selected> --Seleccione-- </option>
+                      {% for i in rutas %}
+                          <option value= "{{i.nombre}}">{{i.nombre}}</option>
+                      {% endfor %}
+                  </select>
+                </div>
+              </p>
+            </h5>
+          </div>
+        </div>
+      </center>
+    </div>
+  <center>
+    <br>
+    <br>
+    <br>
+
+
+          <p>
+            <button style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Ok</button>
+          </p>
+          <p>
+            <a class="btn btn-dark" href="/home">Cancelar</a>
+          </p>
+    </center>
+
+
+    <script>
+      function calendario(){
+        $('.dates #user1').datepicker({
+          'format': 'dd-mm-yyyy',
+          'autoclose':true
+        });
+      };
+      </script>
+      <div class='dates'>
+          <label>Choose DOB</label>
+            <input onclick="calendario()" type="text" autocomplete="off" id="user1" class="form-control" placeholder="dd-mm-yyyy"/>
+          </div>
+    {% endblock %}
+    <link rel="stylesheet" type = "text/css" href= {% static 'css/bootstrap-datepicker.css' %} >
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script type = "text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type = "text/javascipt" src= {% static 'js/bootstrap-datepicker.js' %} ></script>

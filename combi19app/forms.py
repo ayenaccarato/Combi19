@@ -1,8 +1,6 @@
 from django import forms
-from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad
-#from django.contrib.auth import get_user_model
+from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje
 
-#Usuario = get_user_model()
 
 class Registro (forms.ModelForm):
     #password = forms.CharField(label='Contraseña', widget= forms.CharField(max_length=10))
@@ -63,3 +61,21 @@ class Registro_ciudad (forms.ModelForm):
                    'codigo_postal',
                    'pais',
                    )
+class Registro_viaje (forms.ModelForm):
+    class Meta:
+        model = Viaje
+        fields = ('fecha_salida',
+                  'fecha_llegada',
+                  'hora_salida',
+                  'am_pm_salida',
+                  'hora_llegada',
+                  'am_pm_llegada',
+                  'ruta',
+                  'ciudad_origen',
+                  'ciudad_destino',
+                  'chofer',
+                  'vehiculo',
+                  'asientos_total',
+                  'asientos_disponibles',
+                  )
+        widgets = {'fecha_salida': forms.DateInput(attrs={'tipe': 'date'}), 'fecha_llegada': forms.DateInput(attrs={'tipe': 'date'})}

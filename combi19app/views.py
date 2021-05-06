@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.template.loader import get_template
 from django.http import HttpResponse, HttpRequest
-from combi19app.forms import Registro, Registro_vehiculo, Registro_ruta, Registro_ciudad
-from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad
+from combi19app.forms import Registro, Registro_vehiculo, Registro_ruta, Registro_ciudad, Registro_viaje
+from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.decorators import login_required
@@ -74,6 +74,13 @@ def errores_ciudad(ciudad):
 
     return set(lista)
 
+def calcular_minutos():
+    minutos=[]
+    for i in range(0,60):
+        minutos+=[i]
+    return minutos
+
+
 class FormularioRegistro (HttpRequest):
 
     def crear_formulario(request):
@@ -106,7 +113,7 @@ class FormularioRegistroChofer (HttpRequest):
         else:
             confirmacion=errores(registro)
             registro = Registro()
-            return render(request, "registrarse.html", {"mensaje": "not_ok", "errores": confirmacion})
+            return render(request, "registrar_chofer.html", {"mensaje": "not_ok", "errores": confirmacion})
 
 class FormularioVehiculo (HttpRequest):
 
@@ -248,3 +255,35 @@ class ListarRuta (HttpRequest):
         ruta_eliminada.delete()
         ruta = Ruta.objects.all()
         return render (request, "listar_rutas.html", {"rutas": ruta, "mensaje":"eliminado", "cantidad": len(ruta)})
+
+
+class FormularioViaje (HttpRequest):
+
+    def crear_formulario(request):
+        viaje = Registro_viaje()
+        minutos = calcular_minutos()
+        dias = calcular_dias()
+        choferes = Usuario.objects.all
+        vehiculos = Vehiculo.objects.all
+        ciudades = Ciudad.objects.all
+        rutas = Ruta.objects.all
+        return render (request, "agregar_viaje.html", {"dato": viaje,"dias":dias, "minutos":minutos, "choferes":choferes, "vehiculos": vehiculos, "ciudades":ciudades, "rutas":rutas})
+
+    def procesar_formulario(request):
+        viaje = Registro_viaje(request.POST)
+        minutos = calcular_minutos()
+        dias = calcular_dias()
+        choferes = Usuario.objects.all
+        vehiculos = Vehiculo.objects.all
+        ciudades = Ciudad.objects.all
+        rutas = Ruta.objects.all
+        if viaje.is_valid():
+            #confirmacion=errores_ciudad(ciudad)
+            #if len(confirmacion) == 0:
+            viaje.save()
+            viaje = Registro_viaje()
+            return render (request, "agregar_viaje.html", {"dato": viaje, "dias":dias, "minutos":minutos, "choferes":choferes, "vehiculos": vehiculos, "ciudades":ciudades, "rutas":rutas})
+        else:
+            #confirmacion=errores_ciudad(ciudad)
+            viaje = Registro_viaje()
+            return render (request, "agregar_viaje.html", {"mensaje": "not_ok", "minutos":minutos, "choferes":choferes, "vehiculos": vehiculos, "ciudades":ciudades, "rutas":rutas})
