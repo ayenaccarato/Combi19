@@ -80,6 +80,11 @@ def calcular_minutos():
         minutos+=[i]
     return minutos
 
+def calcular_dias():
+    dias=[]
+    for i in range(1,32):
+        dias+=[i]
+    return dias
 
 class FormularioRegistro (HttpRequest):
 

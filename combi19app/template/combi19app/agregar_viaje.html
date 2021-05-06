@@ -4,6 +4,7 @@
 {% block title %}Agregar_viaje{% endblock %}
 {% block h1 %}<center>Agregar viaje</center>{% endblock %}
 {% block content %}
+
   {% if form.errors %}
     <div class= 'alert alert-danger' role='alert'>
       fallo en el registro
@@ -239,28 +240,15 @@
 
 
           <p>
-            <button style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Ok</button>
+            <button style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Agregar</button>
           </p>
           <p>
             <a class="btn btn-dark" href="/home">Cancelar</a>
           </p>
     </center>
 
-
-    <script>
-      function calendario(){
-        $('.dates #user1').datepicker({
-          'format': 'dd-mm-yyyy',
-          'autoclose':true
-        });
-      };
-      </script>
-      <div class='dates'>
+      <div class="dates">
           <label>Choose DOB</label>
-            <input onclick="calendario()" type="text" autocomplete="off" id="user1" class="form-control" placeholder="dd-mm-yyyy"/>
+            <input readonly="" type="text" autocomplete="off" class="form-control" id="fecha" placeholder="dd-mm-yyyy"/>
           </div>
     {% endblock %}
-    <link rel="stylesheet" type = "text/css" href= {% static 'css/bootstrap-datepicker.css' %} >
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script type = "text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script type = "text/javascipt" src= {% static 'js/bootstrap-datepicker.js' %} ></script>

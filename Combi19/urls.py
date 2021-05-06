@@ -25,6 +25,7 @@ from combi19app import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('registrarse/', views.FormularioRegistro.crear_formulario),
+    path('guardarRegistro/', views.FormularioRegistro.procesar_formulario),
     path('registrar_chofer/', views.FormularioRegistroChofer.crear_formulario),
     path('guardarRegistroChofer/', views.FormularioRegistroChofer.procesar_formulario),
     path('cambiar_contra/', views.cambiar_contra),
@@ -53,7 +54,7 @@ urlpatterns = [
     path('guardar_viaje/', views.FormularioViaje.procesar_formulario),
     path('home/', views.home),
     path('accounts/', include ('django.contrib.auth.urls')),
-    path('', auth_views.LoginView.as_view(template_name ="registration/login.html"), name='login'),
+    path('', views.home),
 
 ]
 urlpatterns += staticfiles_urlpatterns()
