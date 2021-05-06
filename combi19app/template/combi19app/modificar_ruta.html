@@ -61,9 +61,6 @@
                 </div>
               </p>
               <p>
-                <input class="col-sm-12 col-form-label" type="text" name="nombre" placeholder="Nombre" id="nombre">
-              </p>
-              <p>
                 <input class="col-sm-12 col-form-label" type="text" pattern="[0-9]+" title= "Ingrese los km de la ruta" name="km" placeholder="Km" id="km">
               </p>
               <div class="input-group">
@@ -95,7 +92,6 @@
   <script>
     document.getElementById("origen").value = "{{rutas.origen}}"
     document.getElementById("destino").value = "{{rutas.destino}}"
-    document.getElementById("nombre").value = "{{rutas.nombre}}"
     document.getElementById("km").value = "{{rutas.km}}"
     document.getElementById("duracion").value = "{{rutas.duracion}}"
     document.getElementById("duracion_en").value = "{{rutas.duracion_en}}"
