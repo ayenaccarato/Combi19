@@ -7,7 +7,7 @@
 
     {% if mensaje == "detalle" %}
       <p style="float: right;">
-        <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_ciudades" type="submit" class="btn btn-success" name=nombre >Volver a los listados</a>
+        <a id="detalle_ciudad" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_ciudades" type="submit" class="btn btn-success" name=nombre >Volver a los listados</a>
       </p>
       <br>
       <br>
@@ -73,7 +73,7 @@
             <br>
             <br>
             <div class="alert alert-success" role="alert">
-              Actualmente hay {{cantidad}} ciudades cargadas a la base de datos.
+              Actualmente hay {{cantidad}} ciudades cargadas.
             </div>
         {% else %}
           <p style="float: right;">

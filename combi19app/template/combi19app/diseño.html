@@ -32,11 +32,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
   integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
   crossorigin="anonymous"></script>
-  <script src= {% static 'js/bootstrap.min.js' %}> </script>
+  <script src={% static 'js/bootstrap.min.js' %}> </script>
   <script src={% static 'libs/js/bootstrap-datepicker.min.js' %}></script>
   <script src={% static 'libs/locales/bootstrap-datepicker.es.min.js' %}></script>
 
-  <script>
+  <script >
           $(document).ready(function() {
 
               $('#boton-modal').on('click', function() {
@@ -46,6 +46,7 @@
 
               })
 
+
               $('#fecha').datepicker({
                   language: "es",
                   todayBtn: "linked",
@@ -53,9 +54,31 @@
                   format: "dd/mm/yyyy",
                   multidate: false,
                   todayHighlight: true,
-                  autoclose: true
+                  autoclose: true,
+                  startDate: new Date(),
+                  endDate: "31/12/2021"
 
               });
+
+              $('#fecha2').datepicker({
+                  language: "es",
+                  todayBtn: "linked",
+                  clearBtn: true,
+                  format: "dd/mm/yyyy",
+                  multidate: false,
+                  todayHighlight: true,
+                  autoclose: true,
+                  startDate: new Date(),
+                  endDate: "31/12/2021"
+
+              });
+              window.onload = function() {
+              Calendar.setup({
+                inputField: "fecha",
+                ifFormat:   "%d / %m / %Y",
+                button:     "selector"
+              });
+            }
 
           })
   </script>

@@ -61,15 +61,14 @@ class Registro_ciudad (forms.ModelForm):
                    'codigo_postal',
                    'pais',
                    )
+
 class Registro_viaje (forms.ModelForm):
     class Meta:
         model = Viaje
         fields = ('fecha_salida',
                   'fecha_llegada',
                   'hora_salida',
-                  'am_pm_salida',
                   'hora_llegada',
-                  'am_pm_llegada',
                   'ruta',
                   'ciudad_origen',
                   'ciudad_destino',
@@ -77,5 +76,13 @@ class Registro_viaje (forms.ModelForm):
                   'vehiculo',
                   'asientos_total',
                   'asientos_disponibles',
+                  'vendidos'
                   )
-        widgets = {'fecha_salida': forms.DateInput(attrs={'tipe': 'date'}), 'fecha_llegada': forms.DateInput(attrs={'tipe': 'date'})}
+
+    def save_viaje(self, vehiculo, commit=True):
+        viaje = super().save(commit= False)
+        viaje.asientos_total = vehiculo.capacidad
+        viaje.asientos_disponibles = vehiculo.capacidad
+        if commit:
+            viaje.save()
+        return viaje

@@ -74,17 +74,22 @@ def errores_ciudad(ciudad):
 
     return set(lista)
 
+def errores_viaje(viaje):
+    lista=[]
+
+    if viaje.cleaned_data.get('ciudad_origen') == viaje.cleaned_data.get('ciudad_destino'):
+        lista+=[1]
+    if viaje.cleaned_data.get('fecha_salida') > viaje.cleaned_data.get('fecha_llegada'):
+        lista+=[2]
+
+    return set(lista)
+
 def calcular_minutos():
     minutos=[]
     for i in range(0,60):
         minutos+=[i]
     return minutos
 
-def calcular_dias():
-    dias=[]
-    for i in range(1,32):
-        dias+=[i]
-    return dias
 
 class FormularioRegistro (HttpRequest):
 
@@ -227,11 +232,11 @@ class FormularioCiudad (HttpRequest):
     def procesar_formulario(request):
         ciudad = Registro_ciudad(request.POST)
         if ciudad.is_valid():
-         confirmacion=errores_ciudad(ciudad)
-         if len(confirmacion) == 0:
-             ciudad.save()
-             ciudad = Registro_ciudad()
-             return render (request, "agregar_ciudad.html", {"dato": ciudad, "mensaje": "ok"})
+            confirmacion=errores_ciudad(ciudad)
+            if len(confirmacion) == 0:
+                ciudad.save()
+                ciudad = Registro_ciudad()
+                return render (request, "agregar_ciudad.html", {"dato": ciudad, "mensaje": "ok"})
         confirmacion=errores_ciudad(ciudad)
         ciudad = Registro_ciudad()
         return render (request, "agregar_ciudad.html", {"mensaje": "not_ok", "errores":confirmacion})
@@ -280,31 +285,47 @@ class FormularioViaje (HttpRequest):
     def crear_formulario(request):
         viaje = Registro_viaje()
         minutos = calcular_minutos()
-        dias = calcular_dias()
-        choferes = Usuario.objects.all
-        vehiculos = Vehiculo.objects.all
-        ciudades = Ciudad.objects.all
-        rutas = Ruta.objects.all
-        return render (request, "agregar_viaje.html", {"dato": viaje,"dias":dias, "minutos":minutos, "choferes":choferes, "vehiculos": vehiculos, "ciudades":ciudades, "rutas":rutas})
+        choferes = Usuario.objects.all()
+        vehiculos = Vehiculo.objects.all()
+        ciudades = Ciudad.objects.all()
+        rutas = Ruta.objects.all()
+        return render (request, "agregar_viaje.html", {"dato": viaje, "minutos":minutos, "choferes":choferes, "vehiculos": vehiculos, "ciudades":ciudades, "rutas":rutas})
 
     def procesar_formulario(request):
         viaje = Registro_viaje(request.POST)
         minutos = calcular_minutos()
-        dias = calcular_dias()
-        choferes = Usuario.objects.all
-        vehiculos = Vehiculo.objects.all
-        ciudades = Ciudad.objects.all
-        rutas = Ruta.objects.all
+        choferes = Usuario.objects.all()
+        vehiculos = Vehiculo.objects.all()
+        ciudades = Ciudad.objects.all()
+        rutas = Ruta.objects.all()
         if viaje.is_valid():
-            #confirmacion=errores_ciudad(ciudad)
-            #if len(confirmacion) == 0:
-            viaje.save()
-            viaje = Registro_viaje()
-            return render (request, "agregar_viaje.html", {"dato": viaje, "dias":dias, "minutos":minutos, "choferes":choferes, "vehiculos": vehiculos, "ciudades":ciudades, "rutas":rutas})
-        else:
-            #confirmacion=errores_ciudad(ciudad)
-            viaje = Registro_viaje()
-            return render (request, "agregar_viaje.html", {"mensaje": "not_ok", "minutos":minutos, "choferes":choferes, "vehiculos": vehiculos, "ciudades":ciudades, "rutas":rutas})
+            confirmacion = errores_viaje(viaje)
+            if len(confirmacion) == 0:
+                v = Vehiculo.objects.get(patente=viaje.cleaned_data.get('vehiculo'))
+                viaje.save_viaje(v)
+                viaje = Registro_viaje()
+                return render (request, "agregar_viaje.html", {"dato": viaje, "mensaje":"ok", "minutos":minutos, "choferes":choferes, "vehiculos": vehiculos, "ciudades":ciudades, "rutas":rutas})
+        confirmacion=errores_viaje(viaje)
+        viaje = Registro_viaje()
+        return render (request, "agregar_viaje.html", {"errores":confirmacion, "mensaje": "not_ok", "minutos":minutos, "choferes":choferes, "vehiculos": vehiculos, "ciudades":ciudades, "rutas":rutas})
+
+class ListarViajes(HttpRequest):
+
+    def crear_listado(request):
+        viaje = Viaje.objects.all()
+        contexto = {'viajes': viaje, 'cantidad':len(viaje)}
+        return render (request, "listar_viajes.html", contexto)
+
+    def mostrar_detalle(request, id_viaje):
+        detalle= Viaje.objects.get(id=id_viaje)
+        cp=detalle.ciudad_origen
+        #ciudad_or = Ciudad.objects.filter(codigo_postal=cp)
+        #ruta = Ruta.objects.get(nombre=detalle.ruta)
+        #vehiculo = Vehiculo.objects.get(patente=detalle.vehiculo)
+        #chofer = Chofer.objects.get(dni=detalle.chofer)
+        return render (request, "listar_viajes.html", {"dato":detalle, "mensaje":"detalle"})
+
+
 
 class ListarChofer(HttpRequest):
 

@@ -62,7 +62,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
         self.save()
 
     def __str__(self):
-        return "%s %s %s %s" % (self.usuario, self.dni,self.email, self.tipo_usuario)
+        return str(self.dni)
 
 #    @property
 #    def is_admin(self):
@@ -100,7 +100,7 @@ class Ciudad (models.Model):
         self.save()
 
     def __str__(self):
-        return "%s, %s, %s, %s" % (self.nombre, self.provincia, self.codigo_postal, self.pais)
+        return str(self.codigo_postal)
 
 
 class Ruta (models.Model):
@@ -114,21 +114,22 @@ class Ruta (models.Model):
     def publish(self):
         self.save()
 
+    def __str__(self):
+        return self.nombre
 
 class Viaje (models.Model):
     fecha_salida = models.DateTimeField()
     fecha_llegada = models.DateTimeField('%m/%d/%Y %H:%M') # fijarse si es ida y vuelta
-    hora_salida = models.CharField(max_length=10)
-    am_pm_salida = models.CharField(max_length=10)
-    hora_llegada = models.CharField(max_length=10)
-    am_pm_llegada = models.CharField(max_length=10)
+    hora_salida = models.CharField(max_length=20)
+    hora_llegada = models.CharField(max_length=20)
     ruta = models.ForeignKey(Ruta, related_name='+', on_delete=models.PROTECT)
     ciudad_origen = models.ForeignKey(Ciudad, related_name='+', on_delete=models.PROTECT)
     ciudad_destino = models.ForeignKey(Ciudad, related_name='+',on_delete=models.PROTECT)
     chofer = models.ForeignKey(Usuario, related_name='+', on_delete=models.PROTECT)
     vehiculo = models.ForeignKey(Vehiculo, related_name='+', on_delete=models.PROTECT)
-    asientos_total = models.IntegerField()
-    asientos_disponibles = models.IntegerField()
+    asientos_total = models.IntegerField(default=0)
+    asientos_disponibles = models.IntegerField(default=0)
+    vendidos = models.IntegerField()
 
     def publish(self):
         self.save()

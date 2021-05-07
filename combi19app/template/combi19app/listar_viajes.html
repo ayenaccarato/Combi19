@@ -1,0 +1,130 @@
+{% extends "diseño.html" %}
+{% block title %}Listar_viajes{% endblock %}
+{% block h1 %}<center>Listado de viajes</center>{% endblock %}
+[html] <link id="nombre_que_quieras" href="listar_ciudades.html" rel="import" />  [/html]
+
+{% block content %}
+    {% csrf_token %}
+
+    {% if mensaje == "detalle" %}
+    <p style="float: right;">
+      <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_viajes" type="submit" class="btn btn-success" name=nombre >Volver a los listados</a>
+      <a id="boton1" style= "display:none; margin:0px 20px; padding-top:10px;padding-bottom:10px;padding-left:10px;padding-right:10px;" href="/listar_viajes/ver_detalle_viaje/{{dato.id}}" type="submit" class="btn btn-success" name="volver">Atras</a>
+    </p>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <td>Viaje</td>
+        <td>Fecha de salida</td>
+        <td>Hora de salida</td>
+        <td>Ciudad de origen</td>
+        <td>Fecha de llegada</td>
+        <td>Hora de llegada</td>
+        <td>Ciudad de destino</td>
+        <td>Ruta</td>
+        <td>Chofer</td>
+        <td>Vehiculo</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{dato.id}}</td>
+      <td>{{dato.fecha_salida}}</td>
+      <td>{{dato.hora_salida}}</td>
+      <td>{{dato.ciudad_origen}}
+      <a style= "margin:0px 20px; padding-top:10px;padding-bottom:10px;padding-left:10px;padding-right:10px;" href="/listar_ciudades/ver_detalle_ciudad/{{dato.ciudad_origen}}" type="submit" class="btn btn-success" name=nombre >Ver</a>
+      </td>
+      <td>{{dato.fecha_llegada}}</td>
+      <td>{{dato.hora_llegada}}</td>
+      <td>{{dato.ciudad_destino}}
+      <a onclick="aparecerBoton()" style= "margin:0px 20px; padding-top:10px;padding-bottom:10px;padding-left:10px;padding-right:10px;" href="/listar_ciudades/ver_detalle_ciudad/{{dato.ciudad_destino}}" type="submit" class="btn btn-success" name=nombre >Ver</a></td>
+      <td>{{dato.ruta}}
+      <a style= "margin:0px 20px; padding-top:10px;padding-bottom:10px;padding-left:10px;padding-right:10px;" href="/listar_rutas/ver_detalle_ruta/{{dato.ruta}}" type="submit" class="btn btn-success" name=nombre >Ver</a>
+      </td>
+      <td>{{dato.chofer}}
+      <a style= "margin:0px 20px; padding-top:10px;padding-bottom:10px;padding-left:10px;padding-right:10px;" href="/listar_choferes/ver_detalle_chofer/{{dato.chofer}}" type="submit" class="btn btn-success" name=nombre >Ver</a>
+      </td>
+      <td>{{dato.vehiculo}}
+      <a style= "margin:0px 20px; padding-top:10px;padding-bottom:10px;padding-left:10px;padding-right:10px;" href="/listar_vehiculos/ver_detalle_vehiculo/{{dato.vehiculo}}" type="submit" class="btn btn-success" name=nombre >Ver</a>
+      </td>
+    </tr>
+  </table>
+
+    {% else %}
+
+      {% if mensaje == "eliminado"%}
+        <div class='alert alert-success' role='alert'>
+          El viaje se elimino exitosamente!
+        </div>
+      {% endif %}
+
+    {% if viajes %}
+        <p style= "float: right;">
+          <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_viaje" type="submit" class="btn btn-success" name=nombre>Agregar viaje</a>
+        </p>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <td>Viaje</td>
+              <td>Fecha de salida</td>
+              <td>Ciudad de origen</td>
+              <td>Ciudad de destino</td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </thead>
+          <tbody>
+            {% for viaje in viajes %}
+            <tr>
+              <td>{{viaje.id}}</td>
+              <td>{{viaje.fecha_salida}}</td>
+              <td>{{viaje.ciudad_origen}}</td>
+              <td>{{viaje.ciudad_destino}}</td>
+              <td> <a class="btn btn-primary" href= "ver_detalle_viaje/{{viaje.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver detalle</a>
+                <td> <a class="btn btn-warning" href= "editar_viaje/{{viaje.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Editar</a>  </td>
+                <td> <a class="btn btn-danger" href= "eliminar_viaje/{{viaje.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Eliminar</a>  </td>
+            </td>
+
+            </tr>
+            {% endfor %}
+              <br>
+              <br>
+              <div class="alert alert-success" role="alert">
+                Actualmente hay {{cantidad}} viajes cargados.
+              </div>
+      {% else %}
+        <p style= "float: right;">
+            <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_viaje" type="submit" class="btn btn-success" name=nombre>Agregar viaje</a>
+        </p>
+        <br>
+        <br>
+        <br>
+        <div class="jumbotron jumbotron-fluid">
+          <div class="container">
+            <h1 class="display-4">Ups!</h1>
+            <p class="lead">No hay viajes cargados.</p>
+          </div>
+        </div>
+      </tbody>
+      </table>
+      {% endif %}
+
+  {% endif %}
+<script>
+  function aparecerBoton(){
+  //  document.getElementById('boton1').style.display = 'block'
+    var getImport = document.quearySelector('link[rel=import]');
+    var getImport = document.getElementById('nombre_que_quieras');
+    document.getElementById('detalle_ciudad').value = 'Atras'
+    document.getElementById('detalle_ciudad').href = '/listar_viajes/ver_detalle_viaje/{{dato.id}}'
+    console.log(document.getElementById('detalle_ciudad').href)
+  }
+</script>
+{% endblock %}
