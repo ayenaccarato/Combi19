@@ -49,6 +49,9 @@
       {% endif %}
 
     {% if vehiculos %}
+        <p style= "float: right;">
+          <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_vehiculos" type="submit" class="btn btn-success" name=nombre>Agregar vehículo</a>
+        </p>
         <table class="table table-bordered">
           <thead>
             <tr>
@@ -77,6 +80,12 @@
                 Actualmente hay {{cantidad}} vehiculos cargados.
               </div>
       {% else %}
+        <p style= "float: right;">
+            <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_vehiculos" type="submit" class="btn btn-success" name=nombre>Agregar vehículo</a>
+        </p>
+        <br>
+        <br>
+        <br>
         <div class="jumbotron jumbotron-fluid">
           <div class="container">
             <h1 class="display-4">Ups!</h1>

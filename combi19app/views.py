@@ -120,6 +120,19 @@ class FormularioRegistroChofer (HttpRequest):
             registro = Registro()
             return render(request, "registrar_chofer.html", {"mensaje": "not_ok", "errores": confirmacion})
 
+    def editar_chofer(request, dni):
+        chofer = Usuario.objects.get(dni=dni)
+        registro = Registro(instance=chofer)
+        return render(request, "modificar_chofer.html", {"dato": registro, "choferes": chofer})
+
+    def actualizar_chofer(request, dni):
+        chofer = Usuario.objects.get(dni=dni)
+        registro = Registro(request.POST, instance=chofer)
+        if registro.is_valid():
+            registro.save()
+        choferes = Usuario.objects.filter(tipo_usuario=2)
+        return render (request, "listar_choferes.html", {"choferes": choferes, "mensaje": "editado", "cantidad": len(choferes)})
+
 class FormularioVehiculo (HttpRequest):
 
     def crear_formulario(request):
@@ -292,3 +305,21 @@ class FormularioViaje (HttpRequest):
             #confirmacion=errores_ciudad(ciudad)
             viaje = Registro_viaje()
             return render (request, "agregar_viaje.html", {"mensaje": "not_ok", "minutos":minutos, "choferes":choferes, "vehiculos": vehiculos, "ciudades":ciudades, "rutas":rutas})
+
+class ListarChofer(HttpRequest):
+
+    @csrf_exempt
+    def crear_listado(request):
+        chofer = Usuario.objects.filter(tipo_usuario=2)
+        contexto = {'choferes': chofer, 'cantidad': len(chofer)}
+        return render (request, "listar_choferes.html", contexto)
+
+    def mostrar_detalle(request, dni):
+        detalle = Usuario.objects.get(pk=dni)
+        return render (request, "listar_choferes.html", {"dato": detalle, "mensaje":"detalle"})
+
+    def eliminar_chofer(request, dni):
+        chofer_eliminado = Usuario.objects.get(pk=dni)
+        chofer_eliminado.delete()
+        chofer = Usuario.objects.filter(tipo_usuario=2)
+        return render (request, "listar_choferes.html", {"choferes": chofer, "mensaje":"eliminado", "cantidad": len(chofer)})

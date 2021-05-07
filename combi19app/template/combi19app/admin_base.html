@@ -13,66 +13,21 @@
       <li class="nav-item active">
    <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
  </li>
- <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      Usuarios
-    </a>
-    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-      <a class="dropdown-item" href="/registrar_chofer">Agregar chofer</a>
-      <a class="dropdown-item" href="#">Eliminar chofer</a>
-      <a class="dropdown-item" href="#">Editar chofer?</a>
-      <a class="dropdown-item" href="#">Eliminar usuario</a>
-      <a class="dropdown-item" href="#">Listado de choferes</a>
-      <a class="dropdown-item" href="#">Listado de usuarios?</a>
-      <a class="dropdown-item" href="#">Listado de choferes</a>
-      <a class="dropdown-item" href="#">Ver detalle de chofer</a>
-    </div>
+ <li class="nav-item">
+    <a class="nav-link" href="/listar_choferes">Choferes</a>
 </li>
-<li class="nav-item dropdown">
-     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-       Viajes
-     </a>
-     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-       <a class="dropdown-item" href="#">Agregar viaje</a>
-       <a class="dropdown-item" href="#">Eliminar viaje</a>
-       <a class="dropdown-item" href="#">Editar viaje</a>
-       <a class="dropdown-item" href="#">Listado de viajes</a>
-     </div>
+<li class="nav-item">
+  <a class="nav-link" href="#">Viajes</a>
  </li>
- <li class="nav-item dropdown">
-     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-       Vehiculos
-     </a>
-     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-       <a class="dropdown-item" href="/agregar_vehiculo">Agregar vehiculo</a>
-       <a class="dropdown-item" href="#">Eliminar vehiculo</a>
-       <a class="dropdown-item" href="#">Editar vehiculo</a>
-       <a class="dropdown-item" href="{% url 'listarVehiculos' %}">Listado de vehiculos</a>
-     </div>
+ <li class="nav-item">
+   <a class="nav-link" href="{% url 'listarVehiculos' %}">Vehiculos</a>
  </li>
- <li class="nav-item dropdown">
-     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink4" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-       Ciudades
-     </a>
-     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-       <a class="dropdown-item" href="/agregar_ciudad">Agregar ciudad</a>
-       <a class="dropdown-item" href="#">Eliminar ciudad</a>
-       <a class="dropdown-item" href="#">Editar ciudad</a>
-       <a class="dropdown-item" href="/listar_ciudades">Listado de ciudades</a>
-       <a class="dropdown-item" href="#">Ver detalle de ciudad</a>
-     </div>
+ <li class="nav-item">
+    <a class="nav-link" href="/listar_ciudades">Ciudades</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/listar_rutas">Rutas</a>
  </li>
- <li class="nav-item dropdown">
-     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink5" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-       Rutas
-     </a>
-     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-       <a class="dropdown-item" href="/agregar_ruta">Agregar Ruta</a>
-       <a class="dropdown-item" href="#">Eliminar ruta</a>
-       <a class="dropdown-item" href="#">Editar ruta</a>
-       <a class="dropdown-item" href="/listar_ciudades">Listado de rutas</a>
-     </div>
-</li>
 <div class ="ml-auto">
 <a class="nav-item px-2 mr-auto active ml-auto">  <a class="btn btn-secondary float-right" aria-labelledby="navbarDropdownMenuLink" style="text-align:right;" href="{% url 'logout' %}">Logout</a>
 </a>
