@@ -128,15 +128,15 @@
                 </div>
                   <select class="custom-select" name= "hora_de_llegada" id="hora_de_llegada">
                     <option disabled=True selected>--Seleccione hora--</option>
-                    <option class="dropdown-item" value="1">01</option>
-                    <option class="dropdown-item" value="2">02</option>
-                    <option class="dropdown-item" value="3">03</option>
-                    <option class="dropdown-item" value="4">04</option>
-                    <option class="dropdown-item" value="5">05</option>
-                    <option class="dropdown-item" value="6">06</option>
-                    <option class="dropdown-item" value="7">07</option>
-                    <option class="dropdown-item" value="8">08</option>
-                    <option class="dropdown-item" value="9">09</option>
+                    <option class="dropdown-item" value="01">01</option>
+                    <option class="dropdown-item" value="02">02</option>
+                    <option class="dropdown-item" value="03">03</option>
+                    <option class="dropdown-item" value="04">04</option>
+                    <option class="dropdown-item" value="05">05</option>
+                    <option class="dropdown-item" value="06">06</option>
+                    <option class="dropdown-item" value="07">07</option>
+                    <option class="dropdown-item" value="08">08</option>
+                    <option class="dropdown-item" value="09">09</option>
                     <option class="dropdown-item" value="10">10</option>
                     <option class="dropdown-item" value="11">11</option>
                     <option class="dropdown-item" value="12">12</option>
@@ -253,7 +253,7 @@
     document.getElementById('vendidos').value = 0
     document.getElementById('asientos_total').value=0
     document.getElementById('asientos_disponibles').value=0
-    document.getElementById('fecha_salida').value = document.getElementById('fecha').value.replace('00:00:00','')
+    document.getElementById('fecha').value = document.getElementById('fecha').value.replace('00:00:00+00:00','')
   }
 
 

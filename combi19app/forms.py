@@ -3,7 +3,6 @@ from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje
 
 
 class Registro (forms.ModelForm):
-    #password = forms.CharField(label='Contraseña', widget= forms.CharField(max_length=10))
 
     class Meta:
         model = Usuario
@@ -31,6 +30,19 @@ class Registro (forms.ModelForm):
         if commit:
             usuario.save()
         return usuario
+
+class Registro_chofer (forms.ModelForm):
+
+    class Meta:
+        model = Usuario
+        fields = ('usuario',
+                   'nombre',
+                   'apellido',
+                   'dni',
+                   'direccion',
+                   'email',
+                   'telefono',
+                   )
 
 class Registro_vehiculo (forms.ModelForm):
     class Meta:
@@ -83,6 +95,14 @@ class Registro_viaje (forms.ModelForm):
         viaje = super().save(commit= False)
         viaje.asientos_total = vehiculo.capacidad
         viaje.asientos_disponibles = vehiculo.capacidad
+        if commit:
+            viaje.save()
+        return viaje
+
+    def save_viaje2(self, fechas, commit=True):
+        viaje = super().save(commit= False)
+        viaje.fecha_salida = fechas.fecha_salida
+        viaje.fecha_llegada = fechas.fecha_llegada
         if commit:
             viaje.save()
         return viaje

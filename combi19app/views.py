@@ -283,6 +283,16 @@ class ListarRuta (HttpRequest):
         return render (request, "listar_rutas.html", {"rutas": ruta, "mensaje":"eliminado", "cantidad": len(ruta)})
 
 
+def errores_viajes(viaje, dato):
+
+    if viaje.cleaned_data.get('fecha_salida') == None:
+        viaje.fecha_salida = dato.fecha_salida
+        print('viaje salida', viaje.fecha_salida)
+    if viaje.cleaned_data.get('fecha_llegada') == None:
+        viaje.fecha_llegada = dato.fecha_llegada
+
+    return viaje
+
 class FormularioViaje (HttpRequest):
 
     def crear_formulario(request):
@@ -311,6 +321,72 @@ class FormularioViaje (HttpRequest):
         confirmacion=errores_viaje(viaje)
         viaje = Registro_viaje()
         return render (request, "agregar_viaje.html", {"errores":confirmacion, "mensaje": "not_ok", "minutos":minutos, "choferes":choferes, "vehiculos": vehiculos, "ciudades":ciudades, "rutas":rutas})
+
+    def editar_viaje(request, id_viaje):
+        viaje = Viaje.objects.get(id=id_viaje)
+        registro = Registro_viaje(instance=viaje)
+        minutos = calcular_minutos()
+        choferes = Usuario.objects.all()
+        vehiculos = Vehiculo.objects.all()
+        rutas = Ruta.objects.all()
+        ciudades = Ciudad.objects.all()
+        return render(request, "modificar_viaje.html", {"dato": registro, "viajes": viaje, "rutas": rutas, "ciudades": ciudades, "minutos": minutos, "vehiculos": vehiculos, "choferes": choferes})
+
+    @csrf_exempt
+    def actualizar_viaje(request, id_viaje):
+        viaje = Viaje.objects.get(id=id_viaje)
+        registro = Registro_viaje(request.POST, instance=viaje)
+        if registro.is_valid():
+            print("entroooo")
+            v = Vehiculo.objects.get(patente=viaje.cleaned_data.get('vehiculo'))
+            registro.save_viaje(v)
+        else:
+            dato = errores_viajes(registro, viaje)
+
+            print('elseee')
+            print('fecha_salida', dato.cleaned_data.get('fecha_salida'))
+            print('fecha_llegada', dato.cleaned_data.get('fecha_llegada'))
+            print('hora_salida', dato.cleaned_data.get('hora_salida'))
+            print('hora_llegada', dato.cleaned_data.get('hora_llegada'))
+            print('ruta', dato.cleaned_data.get('ruta'))
+            print('ciudad_origen', dato.cleaned_data.get('ciudad_origen'))
+            print('ciudad_destino', dato.cleaned_data.get('ciudad_destino'))
+            print('chofer', dato.cleaned_data.get('chofer'))
+            print('vehiculo', dato.cleaned_data.get('vehiculo'))
+            print('asientos_total', dato.cleaned_data.get('asientos_total'))
+            print('asientos_disponibles', dato.cleaned_data.get('asientos_disponibles'))
+            print('vendidos', dato.cleaned_data.get('vendidos'))
+            if dato.is_valid():
+                dato.save_viaje2(dato)
+                print('adentrooooo')
+                print('fecha_salida', dato.cleaned_data.get('fecha_salida'))
+                print('fecha_llegada', dato.cleaned_data.get('fecha_llegada'))
+                print('hora_salida', dato.cleaned_data.get('hora_salida'))
+                print('hora_llegada', dato.cleaned_data.get('hora_llegada'))
+                print('ruta', dato.cleaned_data.get('ruta'))
+                print('ciudad_origen', dato.cleaned_data.get('ciudad_origen'))
+                print('ciudad_destino', dato.cleaned_data.get('ciudad_destino'))
+                print('chofer', dato.cleaned_data.get('chofer'))
+                print('vehiculo', dato.cleaned_data.get('vehiculo'))
+                print('asientos_total', dato.cleaned_data.get('asientos_total'))
+                print('asientos_disponibles', dato.cleaned_data.get('asientos_disponibles'))
+                print('vendidos', dato.cleaned_data.get('vendidos'))
+
+        print('afueraaaa')
+        print('fecha_salida', registro.cleaned_data.get('fecha_salida'))
+        print('fecha_llegada', registro.cleaned_data.get('fecha_llegada'))
+        print('hora_salida', registro.cleaned_data.get('hora_salida'))
+        print('hora_llegada', registro.cleaned_data.get('hora_llegada'))
+        print('ruta', registro.cleaned_data.get('ruta'))
+        print('ciudad_origen', registro.cleaned_data.get('ciudad_origen'))
+        print('ciudad_destino', registro.cleaned_data.get('ciudad_destino'))
+        print('chofer', registro.cleaned_data.get('chofer'))
+        print('vehiculo', registro.cleaned_data.get('vehiculo'))
+        print('asientos_total', registro.cleaned_data.get('asientos_total'))
+        print('asientos_disponibles', registro.cleaned_data.get('asientos_disponibles'))
+        print('vendidos', registro.cleaned_data.get('vendidos'))
+        viajes = Viaje.objects.all()
+        return render (request, "listar_viajes.html", {"viajes": viajes, "mensaje": "editado", "cantidad": len(viajes)})
 
 class ListarViajes(HttpRequest):
 

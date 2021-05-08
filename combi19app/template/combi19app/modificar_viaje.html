@@ -1,4 +1,4 @@
-{% extends "admin_base.html" %}
+{% extends "diseño.html" %}
 {% load static %}
 {% block title %}Editar_viaje{% endblock %}
 {% block h1 %}<center>Editar viaje</center>{% endblock %}
@@ -10,8 +10,13 @@
     </div>
     {% endif %}
 
-  <form action="/actualizar_viaje/{{dato.id}}" method="POST">
+  <form action="/actualizar_viaje/{{viajes.id}}/" method="POST">
     {% csrf_token %}
+    {% if mensaje == "ok" %}
+      <div class='alert alert-success' role='alert'>
+        El viaje se actualizó exitosamente!
+      </div>
+    {% endif %}
     {% if mensaje == "not_ok" %}
       {% for i in errores %}
         {% if i == 1 %}
@@ -23,23 +28,23 @@
             <div class= 'alert alert-danger' role='alert'>
               Fallo en el registro del viaje. Fecha de llegada expirada
             </div>
+          {% endif %}
         {% endif %}
-      {% endif %}
-    {% endfor %}
-  {% endif %}
+      {% endfor %}
+    {% endif %}
 
     <div class="container">
       <center>
         <div class="row">
           <div class="col-sm">
-            <h5> <p style="margin: 40px">Actualize los datos</p></h5>
+            <h5> <p style="margin: 40px">Actualice el formulario</p></h5>
             <h5>
 
 
               <div class="dates">
                 <div class="input-group">
                   <div class="input-group-prepend">
-                      <label class="input-group-text" type="text" name="fecha_salida1" for="inputGroupSelect01">Fecha de salida  </label>
+                      <label class="input-group-text" type="text" name="fecha_salidaa" for="inputGroupSelect01">Fecha de salida  </label>
                   </div>
                     <input readonly="" type="text" autocomplete="off" class="form-control" name="fecha_salida" id="fecha" placeholder="dd-mm-aaaa"/>
                   </div>
@@ -49,10 +54,10 @@
 
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                      <label class="input-group-text" type="text" name="hora" for="inputGroupSelect01">Hora salida  </label>
+                      <label class="input-group-text" type="text" name="hora" for="inputGroupSelect01">Hora salida</label>
                     </div>
                     <select class="custom-select" name= "hora_de_salida" id="hora_de_salida">
-                      <option disabled=True selected>--Seleccione hora--</option>
+                      <option disabled=True>--Seleccione hora--</option>
                       <option class="dropdown-item" value="01">01</option>
                       <option class="dropdown-item" value="02">02</option>
                       <option class="dropdown-item" value="03">03</option>
@@ -70,20 +75,20 @@
                       <label class="input-group-text"  type="text" name="dos_puntos" for="inputGroupSelect01">:</label>
                     </div>
                     <select class="custom-select" name= "minuto_de_salida" id="minuto_de_salida">
-                      <option disabled=True selected>--Seleccione minutos--</option>
+                      <option disabled=True>--Seleccione minutos--</option>
                       {% for i in minutos %}
                         {% if i < 10 %}
                           <option class="dropdown-item" value="0{{i}}">0{{i}}</option>
-                          {% else %}
+                        {% else %}
                           <option class="dropdown-item" value="{{i}}">{{i}}</option>
-                          {% endif %}
+                        {% endif %}
                     {% endfor %}
                     </select>
                     <div class="input-group-prepend">
                       <label class="input-group-text" type="text" name="p" for="inputGroupSelect01">-</label>
                     </div>
                     <select class="custom-select" name= "horario_de_salida" id="horario_de_salida">
-                      <option disabled=True selected>--Seleccione horario--</option>
+                      <option disabled=True>--Seleccione horario--</option>
                       <option class="dropdown-item" value="AM">AM</option>
                       <option class="dropdown-item" value="PM">PM</option>
                     </select>
@@ -94,11 +99,11 @@
                         <label class="input-group-text col-sm col-form-label" type="text" name="ciudad_origen" for="inputGroupSelect01">Ciudad de origen</label>
                       </div>
                         <select class="form-select col-sm " type="text" name="ciudad_origen" id="ciudad_origen">
-                          <option disabled=True selected> --Seleccione-- </option>
+                          <option disabled=True> --Seleccione-- </option>
                             {% for i in ciudades %}
                                 <option value= "{{i}}">{{i.nombre}} ({{i.nombre}}-{{i.provincia}}-{{i.pais}})</option>
                             {% endfor %}
-                      </select>
+                        </select>
                     </div>
                   </p>
 
@@ -122,16 +127,16 @@
                     <label class="input-group-text" type="text" name="hora_llegada1" for="inputGroupSelect01">Hora llegada  </label>
                 </div>
                   <select class="custom-select" name= "hora_de_llegada" id="hora_de_llegada">
-                    <option disabled=True selected>--Seleccione hora--</option>
-                    <option class="dropdown-item" value="1">01</option>
-                    <option class="dropdown-item" value="2">02</option>
-                    <option class="dropdown-item" value="3">03</option>
-                    <option class="dropdown-item" value="4">04</option>
-                    <option class="dropdown-item" value="5">05</option>
-                    <option class="dropdown-item" value="6">06</option>
-                    <option class="dropdown-item" value="7">07</option>
-                    <option class="dropdown-item" value="8">08</option>
-                    <option class="dropdown-item" value="9">09</option>
+                    <option disabled=True>--Seleccione hora--</option>
+                    <option class="dropdown-item" value="01">01</option>
+                    <option class="dropdown-item" value="02">02</option>
+                    <option class="dropdown-item" value="03">03</option>
+                    <option class="dropdown-item" value="04">04</option>
+                    <option class="dropdown-item" value="05">05</option>
+                    <option class="dropdown-item" value="06">06</option>
+                    <option class="dropdown-item" value="07">07</option>
+                    <option class="dropdown-item" value="08">08</option>
+                    <option class="dropdown-item" value="09">09</option>
                     <option class="dropdown-item" value="10">10</option>
                     <option class="dropdown-item" value="11">11</option>
                     <option class="dropdown-item" value="12">12</option>
@@ -140,7 +145,7 @@
                     <label class="input-group-text" type="text" name="p" for="inputGroupSelect01">:</label>
                   </div>
                   <select class="custom-select" name= "minuto_de_llegada" id="minuto_de_llegada">
-                    <option disabled=True selected>--Seleccione minutos--</option>
+                    <option disabled=True>--Seleccione minutos--</option>
                     {% for i in minutos %}
                       {% if i < 10 %}
                         <option class="dropdown-item" value="0{{i}}">0{{i}}</option>
@@ -153,7 +158,7 @@
                     <label class="input-group-text" type="text" name="p" for="inputGroupSelect01">-</label>
                   </div>
                   <select class="custom-select" name= "horario_de_llegada" id="horario_de_llegada">
-                    <option disabled=True selected>--Seleccione horario--</option>
+                    <option disabled=True>--Seleccione horario--</option>
                     <option class="dropdown-item" value="AM">AM</option>
                     <option class="dropdown-item" value="PM">PM</option>
                   </select>
@@ -164,7 +169,7 @@
                     <label class="input-group-text" type="text" name="ciudad_destino" for="inputGroupSelect01">Ciudad de destino</label>
                   </div>
                   <select class="form-select col-sm" type="text" name="ciudad_destino" id="ciudad_destino">
-                    <option disabled=True selected> --Seleccione-- </option>
+                    <option disabled=True> --Seleccione-- </option>
                       {% for i in ciudades %}
                           <option value= "{{i}}">{{i.nombre}} ({{i.nombre}}-{{i.provincia}}-{{i.pais}})</option>
                       {% endfor %}
@@ -180,14 +185,13 @@
                     <label class="input-group-text" type="text" name="ruta" for="inputGroupSelect01">Ruta</label>
                   </div>
                   <select class="form-select col-sm" type="text" name="ruta" id="ruta">
-                    <option disabled=True selected> --Seleccione-- </option>
+                    <option disabled=True> --Seleccione-- </option>
                       {% for i in rutas %}
                           <option value= "{{i}}">{{i.nombre}}</option>
                       {% endfor %}
                   </select>
                 </div>
               </p>
-
               <p> <input hidden type="text" name="hora_salida" placeholder="hora salida" id="hora_salida"></p>
               <p> <input hidden type="text" name="hora_llegada" placeholder="hora llegada" id="hora_llegada"></p>
               <p> <input hidden type="text" name="asientos_total" placeholder="asientos_total" id="asientos_total"></p>
@@ -199,7 +203,7 @@
                     <label class="input-group-text" type="text" name="chofer" for="inputGroupSelect01">Chofer</label>
                   </div>
                     <select class="form-select col-sm" type="text" name="chofer" id="chofer">
-                      <option disabled=True selected> --Seleccione-- </option>
+                      <option disabled=True> --Seleccione-- </option>
                         {% for i in choferes %}
                           {% if i.tipo_usuario == 2 %}
                             <option value= "{{i}}">{{i.nombre}} {{i.apellido}} / DNI {{i.dni}}</option>
@@ -214,7 +218,7 @@
                     <label class="input-group-text" type="text" name="vehiculo" for="inputGroupSelect01">Vehiculo</label>
                   </div>
                   <select class="form-select col-sm" type="text" name="vehiculo" id="vehiculo">
-                    <option disabled=True selected> --Seleccione-- </option>
+                    <option disabled=True> --Seleccione-- </option>
                       {% for i in vehiculos %}
                         {% if i.premium %}
                           <option value= "{{i}}">Patente: {{i.patente}} / Marca: {{i.marca}} / Cantidad de asientos: {{i.capacidad}} / Tipo de asiento: semi cama</option>
@@ -242,17 +246,35 @@
 
 </form>
 <script>
+  document.getElementById('fecha').value = "{{viajes.fecha_salida}}"
+  document.getElementById('fecha2').value = "{{viajes.fecha_llegada}}"
+  document.getElementById('hora_de_salida').value = "{{viajes.hora_salida}}".replace(':', '').replace(' ','').match(/.{0,2}/g)[0]
+  document.getElementById('minuto_de_salida').value = "{{viajes.hora_salida}}".replace(':', '').replace(' ','').match(/.{0,2}/g)[1]
+  document.getElementById('horario_de_salida').value = "{{viajes.hora_salida}}".replace(':', '').replace(' ','').match(/.{0,2}/g)[2]
+  document.getElementById('hora_de_llegada').value = "{{viajes.hora_llegada}}".replace(':', '').replace(' ','').match(/.{0,2}/g)[0]
+  document.getElementById('minuto_de_llegada').value = "{{viajes.hora_llegada}}".replace(':', '').replace(' ','').match(/.{0,2}/g)[1]
+  document.getElementById('horario_de_llegada').value = "{{viajes.hora_llegada}}".replace(':', '').replace(' ','').match(/.{0,2}/g)[2]
+  document.getElementById('ruta').value = "{{viajes.ruta}}"
+  document.getElementById('ciudad_origen').value = "{{viajes.ciudad_origen}}"
+  document.getElementById('ciudad_destino').value = "{{viajes.ciudad_destino}}"
+  document.getElementById('chofer').value = "{{viajes.chofer}}"
+  document.getElementById('vehiculo').value = "{{viajes.vehiculo}}"
+  document.getElementById('hora_salida').value = (document.getElementById('hora_de_salida').value + ":" + document.getElementById('minuto_de_salida').value + " " + document.getElementById('horario_de_salida').value)
+  document.getElementById('hora_llegada').value = (document.getElementById('hora_de_llegada').value + ":" + document.getElementById('minuto_de_llegada').value + " " + document.getElementById('horario_de_llegada').value)
+  document.getElementById('asientos_total').value = "{{viajes.asientos_total}}"
+  document.getElementById('asientos_disponibles').value = "{{viajes.asientos_disponibles}}"
+  document.getElementById('vendidos').value = "{{viajes.vendidos}}"
+
   function horario(){
+    document.getElementById('fecha').value = document.getElementById('fecha').value
+    document.getElementById('fecha2').value = document.getElementById('fecha2').value
     document.getElementById('hora_salida').value = (document.getElementById('hora_de_salida').value + ":" + document.getElementById('minuto_de_salida').value + " " + document.getElementById('horario_de_salida').value)
     document.getElementById('hora_llegada').value = (document.getElementById('hora_de_llegada').value + ":" + document.getElementById('minuto_de_llegada').value + " " + document.getElementById('horario_de_llegada').value)
-    document.getElementById('vendidos').value = 0
-    document.getElementById('asientos_total').value=0
-    document.getElementById('asientos_disponibles').value=0
-    document.getElementById('fecha_salida').value = document.getElementById('fecha').value.replace('00:00:00','')
+    document.getElementById('vendidos').value = document.getElementById('vendidos').value
+    document.getElementById('asientos_total').value=  document.getElementById('asientos_total').value
+    document.getElementById('asientos_disponibles').value= document.getElementById('asientos_disponibles').value
+
   }
-
-
-
 </script>
 
 
