@@ -13,7 +13,13 @@ db.connections.close_all()
 @login_required
 def home (request):
     if request.user.tipo_usuario == 1:
-        return render (request, "home.html")
+        ciudades = Ciudad.objects.all()
+        rutas = Ruta.objects.all()
+        vehiculos = Vehiculo.objects.all()
+        viajes = Viaje.objects.all()
+        choferes = Usuario.objects.filter(tipo_usuario=2)
+        usuarios = Usuario.objects.filter(tipo_usuario=3)
+        return render (request, "home.html", {"ciudades":len(ciudades), "rutas":len(rutas), "choferes":len(choferes), "vehiculos":len(vehiculos), "viajes":len(viajes), "usuarios":len(usuarios), "nombre": request.user.nombre})
     else:
         return render (request,"homePasajeros.html")
 
@@ -30,12 +36,8 @@ def cambiar_contra(request):
 def errores(registro):
     lista = []
 
-    if registro.cleaned_data.get('usuario') == None:
-        lista+=[1]
     if registro.cleaned_data.get('dni') == None:
-        lista+=[2]
-    if registro.cleaned_data.get('email') == None:
-        lista+=[3]
+        lista+=[1]
     # user= Usuario.objects.all().__str__()
     # base_de_datos=user.replace('<QuerySet [', '').replace('1>,', '1').replace('2>,', '2').replace('3>,', '3').replace('<Usuario: ', '').replace('>', '').replace(']', '').split(' ')
     # lista_de_usuarios=[]
@@ -58,19 +60,9 @@ def errores_ruta(ruta):
 
 def errores_ciudad(ciudad):
     lista = []
-    lista_de_nombre = []
 
     if ciudad.cleaned_data.get('codigo_postal') == None:
         lista+=[1]
-    c = Ciudad.objects.all().__str__()
-    base_de_datos=c.replace('<QuerySet [', '').replace('<Ciudad: ', '').replace('>', '').replace('>]>', '').replace(']','').split(',')
-
-    for i in range(0,len(base_de_datos),4):
-         lista_de_nombre.append(base_de_datos[i:i+4])
-
-    for i in lista_de_nombre:
-        if i[0].strip() == ciudad.cleaned_data.get('nombre'):
-            lista+=[2]
 
     return set(lista)
 
@@ -165,9 +157,8 @@ class FormularioVehiculo (HttpRequest):
         if form.is_valid():
         #    db.connections.close_all()
             form.save()
-            return render (request, "modificar_vehiculo.html", {"form":form, "vehiculo":vehiculo, "mensaje": "ok"})
-        else:
-            return render (request, "modificar_vehiculo.html", {"form":form, "vehiculo":vehiculo})
+            vehiculos= Vehiculo.objects.all()
+            return render (request, "listar_vehiculos.html", {"form":form,"vehiculos":vehiculos, "vehiculo":vehiculo, "mensaje": "editado"})
 
 class ListarVehiculos(HttpRequest):
 
@@ -241,6 +232,19 @@ class FormularioCiudad (HttpRequest):
         ciudad = Registro_ciudad()
         return render (request, "agregar_ciudad.html", {"mensaje": "not_ok", "errores":confirmacion})
 
+    def editar(request, codigo_postal):
+        ciudad = Ciudad.objects.get(codigo_postal=codigo_postal)
+        form = Registro_ciudad(instance=ciudad)
+        return render (request, "modificar_ciudad.html", {"form":form, "ciudad":ciudad})
+
+    def actualizar(request, codigo_postal):
+        ciudad = Ciudad.objects.get(codigo_postal=codigo_postal)
+        form = Registro_ciudad(request.POST, instance = ciudad)
+        if form.is_valid():
+            form.save()
+            ciudades= Ciudad.objects.all()
+            return render (request, "listar_ciudades.html", {"form":form, "ciudad":ciudad, "mensaje": "ok", "ciudades":ciudades, "mensaje": "editado"})
+
 class ListarCiudad (HttpRequest):
 
     def crear_listado(request):
@@ -265,7 +269,6 @@ class ListarRuta (HttpRequest):
 
     def crear_listado(request):
         ruta = Ruta.objects.all()
-        print(ruta)
         contexto = {'rutas': ruta, 'cantidad':len(ruta)}
         return render (request, "listar_rutas.html", contexto)
 
@@ -318,11 +321,6 @@ class ListarViajes(HttpRequest):
 
     def mostrar_detalle(request, id_viaje):
         detalle= Viaje.objects.get(id=id_viaje)
-        cp=detalle.ciudad_origen
-        #ciudad_or = Ciudad.objects.filter(codigo_postal=cp)
-        #ruta = Ruta.objects.get(nombre=detalle.ruta)
-        #vehiculo = Vehiculo.objects.get(patente=detalle.vehiculo)
-        #chofer = Chofer.objects.get(dni=detalle.chofer)
         return render (request, "listar_viajes.html", {"dato":detalle, "mensaje":"detalle"})
 
 

@@ -1,4 +1,4 @@
-{% extends "diseño.html" %}
+{% extends "admin_base.html" %}
 
 {% block title %}Agregar_ciudad{% endblock %}
 {% block h1 %}<center>Agregar ciudad</center>{% endblock %}
@@ -21,12 +21,6 @@
           <div class= 'alert alert-danger' role='alert'>
               Fallo en el registro de la ciudad. El código postal ingresado ya está registrado
             </div>
-        {% else %}
-          {% if i == 2 %}
-            <div class= 'alert alert-danger' role='alert'>
-              Fallo en el registro de la ciudad. El nombre ingresado ya está registrado para esa provincia
-            </div>
-          {% endif %}
         {% endif %}
       {% endfor %}
     {% endif %}
@@ -39,7 +33,7 @@
             <h5>
               <br>
               <p> <input class="col-sm-12 col-form-label" type="text" pattern="[0-9]{4}" title= "Ingrese 4 numeros" name="codigo_postal" placeholder="Código postal"></p>
-              <p> <input class="col-sm-12 col-form-label" type="text" pattern="[A-Z0-9 ]+" title= "Ingrese un nombre valido en mayusculas, sin caracteres espaciales" name="nombre" placeholder="Ingrese el nombre en mayúsculas"></p>
+              <p> <input class="col-sm-12 col-form-label" type="text" name="nombre" placeholder="Nombre"></p>
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
                   <label class="input-group-text" type="text" name="provincia" for="inputGroupSelect01">Provincia</label>

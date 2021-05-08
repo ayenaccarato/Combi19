@@ -1,4 +1,4 @@
-{% extends "diseño.html" %}
+{% extends "admin_base.html" %}
 
 {% block title %}Agregar_chofer{% endblock %}
 {% block h1 %}<center>Registrar chofer</center>{% endblock %}
@@ -19,20 +19,10 @@
     {% if mensaje == "not_ok" %}
       {% for i in errores %}
         {% if i == 1 %}
-          <div class= 'alert alert-danger' role='alert'>
-              Fallo en el registro. El nombre de usuario ingresado ya esta registrado
-            </div>
-        {% else %}
-          {% if i == 2 %}
             <div class= 'alert alert-danger' role='alert'>
               Fallo en el registro. El dni ingresado ya esta registrado
             </div>
-          {% else %}
-              <div class= 'alert alert-danger' role='alert'>
-                Fallo en el registro. El email ingresado ya esta registrado
-              </div>
           {% endif %}
-        {% endif %}
       {% endfor %}
     {% endif %}
 
@@ -44,7 +34,7 @@
             <h4> <p style="margin: 40px">A continuacion ingrese los datos del chofer </p></h4>
             <h5>
               <p> <input class="col-sm-4 col-form-label" type="text" name="usuario" placeholder="Nombre de usuario"> <input class="col-sm-4 col-form-label" type="email" pattern= "[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{1,5}" title= "Ingrese un mail valido" name="email" placeholder="Email"> </p>
-              <p><input class="col-sm-8 col-form-label" type="password" pattern="^([A-Za-z0-9]+){6,}"title= "La contraseña debe empezar con una letra, contener al menos un digito y como minimo 6 caracteres" name="password" placeholder="Contraseña"> </p>
+              <p><input class="col-sm-8 col-form-label" type="password" pattern="{6,}"title= "La contraseña debe contener al menos 6 caracteres" name="password" placeholder="Contraseña"> </p>
               <p><input class="col-sm-4 col-form-label" type="text" name="nombre" placeholder="Nombre"> <input class="col-sm-4 col-form-label" type="text" name="apellido" placeholder="Apellido"> </p>
               <p><input class="col-sm-8 col-form-label" type="text" name="dni" placeholder="DNI"</p>
               <p><input class="col-sm-4 col-form-label" type="text" name="telefono" placeholder="Telefono"> <input class="col-sm-4 col-form-label" type="text" name="direccion" placeholder="Direccion"> </p>
@@ -55,10 +45,10 @@
     </div>
   <center>
       <p>
-        <button style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Agregar</button>
+        <button style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Registrar</button>
       </p>
       <p>
-        <a class="btn btn-dark" href="/home">Atras</a>
+        <a class="btn btn-dark" href="/home">Cancelar</a>
       </p>
 </center>
   </form>

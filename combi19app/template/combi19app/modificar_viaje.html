@@ -1,7 +1,7 @@
 {% extends "admin_base.html" %}
 {% load static %}
-{% block title %}Agregar_viaje{% endblock %}
-{% block h1 %}<center>Agregar viaje</center>{% endblock %}
+{% block title %}Editar_viaje{% endblock %}
+{% block h1 %}<center>Editar viaje</center>{% endblock %}
 {% block content %}
 
   {% if form.errors %}
@@ -10,13 +10,8 @@
     </div>
     {% endif %}
 
-  <form action="/guardar_viaje/" method="POST">
+  <form action="/actualizar_viaje/{{dato.id}}" method="POST">
     {% csrf_token %}
-    {% if mensaje == "ok" %}
-      <div class='alert alert-success' role='alert'>
-        El viaje se registro exitosamente!
-      </div>
-    {% endif %}
     {% if mensaje == "not_ok" %}
       {% for i in errores %}
         {% if i == 1 %}
@@ -37,7 +32,7 @@
       <center>
         <div class="row">
           <div class="col-sm">
-            <h5> <p style="margin: 40px">Complete el formulario</p></h5>
+            <h5> <p style="margin: 40px">Actualize los datos</p></h5>
             <h5>
 
 
@@ -238,7 +233,7 @@
   <center>
     <br>
     <p>
-      <button onclick="horario()" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Agregar</button>
+      <button onclick="horario()" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Guardar</button>
     </p>
     <p>
       <a class="btn btn-dark" href="/home">Cancelar</a>

@@ -1,4 +1,4 @@
-{% extends "diseño.html" %}
+{% extends "admin_base.html" %}
 {% block title %}Listar_viajes{% endblock %}
 {% block h1 %}<center>Listado de viajes</center>{% endblock %}
 [html] <link id="nombre_que_quieras" href="listar_ciudades.html" rel="import" />  [/html]
@@ -121,7 +121,7 @@
   function aparecerBoton(){
   //  document.getElementById('boton1').style.display = 'block'
     var getImport = document.quearySelector('link[rel=import]');
-    var getImport = document.getElementById('nombre_que_quieras');
+    var getImport += document.getElementById('nombre_que_quieras');
     document.getElementById('detalle_ciudad').value = 'Atras'
     document.getElementById('detalle_ciudad').href = '/listar_viajes/ver_detalle_viaje/{{dato.id}}'
     console.log(document.getElementById('detalle_ciudad').href)

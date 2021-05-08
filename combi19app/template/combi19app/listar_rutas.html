@@ -1,10 +1,17 @@
-{% extends "diseño.html" %}
+{% extends "admin_base.html" %}
 {% block title %}Listar rutas|{% endblock %}
 {% block h1 %}
   <center>Listado de rutas</center>
 {% endblock %}
 {% block content %}
     {% csrf_token %}
+    <p style= "float: right;">
+        <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_ruta" type="submit" class="btn btn-success" name=nombre >Agregar ruta</a>
+      </p>
+      <br>
+      <br>
+      <br>
+      <br>
     {% if mensaje == "detalle" %}
       <p style="float: right;">
         <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_rutas" type="submit" class="btn btn-success" name=nombre >Volver a los listados</a>
@@ -52,12 +59,6 @@
         {% endif %}
       {% endif %}
       {% if rutas %}
-        <p style= "float: right;">
-            <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_ruta" type="submit" class="btn btn-success" name=nombre >Agregar ruta</a>
-          </p>
-          <br>
-          <br>
-          <br>
         <table class="table table-bordered">
           <thead>
             <tr>
@@ -80,18 +81,10 @@
               </td>
             </tr>
             {% endfor %}
-            <br>
-            <br>
             <div class="alert alert-success" role="alert">
               Actualmente hay {{cantidad}} rutas cargadas.
             </div>
         {% else %}
-          <p style= "float: right;">
-            <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_ruta" type="submit" class="btn btn-success" name=nombre >Agregar ruta</a>
-          </p>
-          <br>
-          <br>
-          <br>
           <div class="jumbotron jumbotron-fluid">
             <div class="container">
               <h1 class="display-4">Ups!</h1>

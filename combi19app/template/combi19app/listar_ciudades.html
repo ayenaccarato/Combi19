@@ -1,10 +1,16 @@
-{% extends "diseño.html" %}
+{% extends "admin_base.html" %}
 {% block title %}Listar_ciudades{% endblock %}
 {% block h1 %}<center>Listado de ciudades</center>{% endblock %}
 
 {% block content %}
     {% csrf_token %}
-
+    <p style="float: right;">
+      <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_ciudad" type="submit" class="btn btn-success" name=nombre >Agregar ciudad</a>
+    </p>
+    <br>
+    <br>
+    <br>
+    <br>
     {% if mensaje == "detalle" %}
       <p style="float: right;">
         <a id="detalle_ciudad" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_ciudades" type="submit" class="btn btn-success" name=nombre >Volver a los listados</a>
@@ -40,15 +46,15 @@
         <div class='alert alert-success' role='alert'>
           La ciudad se elimino exitosamente!
         </div>
+      {% else %}
+        {% if mensaje == "editado" %}
+          <div class='alert alert-success' role='alert'>
+            La ciudad se modificó exitosamente!
+          </div>
+          {% endif %}
       {% endif %}
 
       {% if ciudades %}
-        <br>
-        <p style="float: right;">
-          <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_ciudad" type="submit" class="btn btn-success" name=nombre >Agregar ciudad</a>
-        </p>
-        <br>
-        <br>
         <table class="table table-bordered">
           <thead>
             <tr>
@@ -70,18 +76,10 @@
               </td>
             </tr>
             {% endfor %}
-            <br>
-            <br>
             <div class="alert alert-success" role="alert">
               Actualmente hay {{cantidad}} ciudades cargadas.
             </div>
         {% else %}
-          <p style="float: right;">
-            <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_ciudad" type="submit" class="btn btn-success" name=nombre >Agregar ciudad</a>
-          </p>
-          <br>
-          <br>
-          <br>
           <div class="jumbotron jumbotron-fluid">
             <div class="container">
               <h1 class="display-4">Ups!</h1>

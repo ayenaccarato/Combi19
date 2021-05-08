@@ -50,6 +50,8 @@ urlpatterns = [
     path('listar_ciudades/', views.ListarCiudad.crear_listado),
     path('listar_ciudades/ver_detalle_ciudad/<int:codigo_postal>/',views.ListarCiudad.mostrar_detalle),
     path('listar_ciudades/eliminar_ciudad/<int:codigo_postal>/',views.EliminarCiudad.eliminar_ciudad),
+    path('listar_ciudades/editar_ciudad/<int:codigo_postal>/', views.FormularioCiudad.editar, name = "editarCiudad"),
+    path('listar_ciudades/editar_ciudad/<int:codigo_postal>/actualizarCiudad/', views.FormularioCiudad.actualizar, name = "actualizarCiudad"),
     path('listar_choferes/', views.ListarChofer.crear_listado),
     path('actualizar_chofer/<int:dni>/', views.FormularioRegistroChofer.actualizar_chofer),
     path('listar_choferes/ver_detalle_chofer/<int:dni>/',views.ListarChofer.mostrar_detalle),

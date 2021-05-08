@@ -1,10 +1,17 @@
-{% extends "diseño.html" %}
+{% extends "admin_base.html" %}
 {% block title %}Listar choferes{% endblock %}
 {% block h1 %}
   <center>Listado de choferes</center>
 {% endblock %}
 {% block content %}
     {% csrf_token %}
+    <p style="float: right;">
+      <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/registrar_chofer" type="submit" class="btn btn-success" name=nombre >Agregar chofer</a>
+    </p>
+    <br>
+    <br>
+    <br>
+    <br>
     {% if mensaje == "detalle" %}
       <p style="float: right;">
         <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_choferes" type="submit" class="btn btn-success" name=nombre >Volver a los listados</a>
@@ -54,15 +61,9 @@
         {% endif %}
       {% endif %}
       {% if choferes %}
-        <p style="float: right;">
-          <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/registrar_chofer" type="submit" class="btn btn-success" name=nombre >Agregar chofer</a>
-        </p>
-        <br>
-        <br>
         <table class="table table-bordered">
           <thead>
             <tr>
-              <td>Nombre de usuario</td>
               <td>Nombre</td>
               <td>Apellido</td>
               <td>Dni</td>
@@ -73,7 +74,6 @@
           <tbody>
             {% for chofer in choferes %}
             <tr>
-              <td scope="row">{{chofer.usuario}}</td>
               <td>{{chofer.nombre}}</td>
               <td>{{chofer.apellido}}</td>
               <td>{{chofer.dni}}</td>
@@ -83,18 +83,10 @@
               </td>
             </tr>
             {% endfor %}
-            <br>
-            <br>
             <div class="alert alert-success" role="alert">
               Actualmente hay {{cantidad}} choferes cargados.
             </div>
         {% else %}
-          <p style="float: right;">
-            <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/registrar_chofer" type="submit" class="btn btn-success" name=nombre >Agregar chofer</a>
-          </p>
-          <br>
-          <br>
-          <br>
           <div class="jumbotron jumbotron-fluid">
             <div class="container">
               <h1 class="display-4">Ups!</h1>

@@ -1,4 +1,4 @@
-{% extends "diseño.html" %}
+{% extends "admin_base.html" %}
 
 {% block title %}Agregar_ruta{% endblock %}
 {% block h1 %}<center>Agregar ruta</center>{% endblock %}
@@ -22,12 +22,6 @@
           <div class= 'alert alert-danger' role='alert'>
               Fallo en el registro de la ruta. El nombre ingresado ya esta registrado
             </div>
-        {% else %}
-          {% if i == 2 %}
-            <div class= 'alert alert-danger' role='alert'>
-              Fallo en el registro de la ruta. No se pueden realizar viajes dentro de la misma ciudad
-            </div>
-        {% endif %}
       {% endif %}
     {% endfor %}
   {% endif %}

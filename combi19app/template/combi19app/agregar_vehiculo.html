@@ -1,5 +1,5 @@
 
-{% extends "diseño.html" %}
+{% extends "admin_base.html" %}
 
 {% block title %}Agregar_vehiculo{% endblock %}
 {% block h1 %}<center>Agregar vehiculo</center>{% endblock %}
@@ -31,7 +31,7 @@
             <h4> <p style="margin: 40px">Complete el formulario </p></h4>
             <h5>
               <br>
-              <p> <input class="col-sm-12 col-form-label" type="text" pattern="[A-Z]{3,3}[0-9]{3,3}" title= "Ingrese una patente con formato valido. Por ejemplo 'ABC123'" name="patente" placeholder="Ingrese la patente sin espacios"></p>
+              <p> <input class="col-sm-12 col-form-label" type="text" pattern="[A-Za-z]{3,3}[0-9]{3,3}" title= "Ingrese una patente con formato valido. Por ejemplo 'ABC123' o 'abc123'" name="patente" placeholder="Ingrese la patente sin espacios"></p>
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
                   <label class="input-group-text" type="text" name="marca" for="inputGroupSelect01">Marca</label>
