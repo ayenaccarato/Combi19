@@ -3,9 +3,8 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 
 # Create your models here.
 class Usuario_Manager(BaseUserManager):
-    def create_user(self, usuario, email, dni, nombre, apellido, direccion, telefono, password=None):
+    def create_user(self, email, dni, nombre, apellido, direccion, telefono, password=None):
         us = self.model(
-            usuario=usuario,
             email= self.normalize_email(email),
             dni=dni,
             nombre = nombre,
@@ -17,9 +16,8 @@ class Usuario_Manager(BaseUserManager):
         us.save(using=self._db)
         return us
 
-    def create_superuser(self, usuario, password, email, dni, nombre, apellido, direccion, telefono):
+    def create_superuser(self, password, email, dni, nombre, apellido, direccion, telefono):
         us = self.create_user(
-            usuario=usuario,
             password=password,
             email=email,
             dni=dni,
@@ -38,7 +36,7 @@ class Usuario_Manager(BaseUserManager):
 
 
 class Usuario(AbstractBaseUser, PermissionsMixin):
-    usuario = models.CharField(max_length=15, unique=True)
+    #usuario = models.CharField(max_length=15, unique=True)
     #contraseña = models.CharField(max_length=3000)
     dni = models.BigIntegerField(primary_key = True)
     nombre = models.CharField(max_length=20)
@@ -55,8 +53,8 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     tipo_usuario = models.IntegerField(default = 3)
     objects = Usuario_Manager()
 
-    USERNAME_FIELD = 'usuario'
-    REQUIRED_FIELDS = ['dni', 'email', 'nombre', 'apellido', 'direccion', 'telefono']
+    USERNAME_FIELD = 'dni'
+    REQUIRED_FIELDS = ['email', 'nombre', 'apellido', 'direccion', 'telefono']
 
     def publish(self):
         self.save()

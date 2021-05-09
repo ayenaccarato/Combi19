@@ -44,7 +44,38 @@
       {% endif %}
     </tr>
 
-
+    {% elif mensaje == "detalleViajeVehiculo" %}
+    <p style="float: right;">
+      <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_viajes" type="submit" class="btn btn-success" name=nombre >Volver a los listados</a>
+    </p>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <td>Patente</td>
+        <td>Marca</td>
+        <td>Modelo</td>
+        <td>Capacidad</td>
+        <td>Premium</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{dato.patente}}</td>
+      <td>{{dato.marca}}</td>
+      <td>{{dato.modelo}}</td>
+      <td>{{dato.capacidad}}</td>
+      {% if dato.premium %}
+        <td>Si</td>
+      {% else %}
+        <td>No</td>
+      {% endif %}
+    </tr>
 
     {% else %}
 

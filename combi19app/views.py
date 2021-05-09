@@ -171,6 +171,10 @@ class ListarVehiculos(HttpRequest):
         detalle= Vehiculo.objects.get(pk=patente_vehiculo)
         return render (request, "listar_vehiculos.html", {"dato":detalle, "mensaje":"detalle"})
 
+    def mostrar_detalle_viaje_vehiculo(request, patente_vehiculo):
+        detalle= Vehiculo.objects.get(pk=patente_vehiculo)
+        return render (request, "listar_vehiculos.html", {"dato":detalle, "mensaje":"detalleViajeVehiculo"})
+
 class EliminarVehiculo(HttpRequest):
 
     def eliminar_vehiculo(request, patente_vehiculo):
@@ -257,6 +261,10 @@ class ListarCiudad (HttpRequest):
         detalle= Ciudad.objects.get(pk=codigo_postal)
         return render (request, "listar_ciudades.html", {"dato":detalle, "mensaje":"detalle"})
 
+    def mostrar_detalle_viaje_ciudad(request, codigo_postal):
+        detalle= Ciudad.objects.get(pk=codigo_postal)
+        return render (request, "listar_ciudades.html", {"dato":detalle, "mensaje":"detalleViajeCiudad"})
+
 class EliminarCiudad (HttpRequest):
 
     def eliminar_ciudad(request, codigo_postal):
@@ -275,6 +283,10 @@ class ListarRuta (HttpRequest):
     def mostrar_detalle(request, nombre):
         detalle= Ruta.objects.get(pk=nombre)
         return render (request, "listar_rutas.html", {"dato":detalle, "mensaje":"detalle"})
+
+    def mostrar_detalle_viaje_ruta(request, nombre):
+        detalle= Ruta.objects.get(pk=nombre)
+        return render (request, "listar_rutas.html", {"dato":detalle, "mensaje":"detalleViajeRuta"})
 
     def eliminar_ruta(request, nombre):
         ruta_eliminada = Ruta.objects.get(pk=nombre)
@@ -412,6 +424,10 @@ class ListarChofer(HttpRequest):
     def mostrar_detalle(request, dni):
         detalle = Usuario.objects.get(pk=dni)
         return render (request, "listar_choferes.html", {"dato": detalle, "mensaje":"detalle"})
+
+    def mostrar_detalle_viaje_chofer(request, dni):
+        detalle = Usuario.objects.get(pk=dni)
+        return render (request, "listar_choferes.html", {"dato": detalle, "mensaje":"detalleViajeChofer"})
 
     def eliminar_chofer(request, dni):
         chofer_eliminado = Usuario.objects.get(pk=dni)

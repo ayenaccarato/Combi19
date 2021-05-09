@@ -6,8 +6,7 @@ class Registro (forms.ModelForm):
 
     class Meta:
         model = Usuario
-        fields = ('usuario',
-                   'password',
+        fields = ( 'password',
                    'nombre',
                    'apellido',
                    'dni',
@@ -35,8 +34,7 @@ class Registro_chofer (forms.ModelForm):
 
     class Meta:
         model = Usuario
-        fields = ('usuario',
-                   'nombre',
+        fields = ( 'nombre',
                    'apellido',
                    'dni',
                    'direccion',
