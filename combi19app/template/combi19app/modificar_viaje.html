@@ -3,6 +3,9 @@
 {% block title %}Editar_viaje{% endblock %}
 {% block h1 %}<center>Editar viaje</center>{% endblock %}
 {% block content %}
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+crossorigin="anonymous"></script>
 
   {% if form.errors %}
     <div class= 'alert alert-danger' role='alert'>
@@ -44,9 +47,9 @@
               <div class="dates">
                 <div class="input-group">
                   <div class="input-group-prepend">
-                      <label class="input-group-text" type="text" name="fecha_salidaa" for="inputGroupSelect01">Fecha de salida  </label>
+                      <label class="input-group-text" type="text" name="fecha_salida_label" for="inputGroupSelect01">Fecha de salida  </label>
                   </div>
-                    <input readonly="" type="text" autocomplete="off" class="form-control" name="fecha_salida" id="fecha" placeholder="dd-mm-aaaa"/>
+                    <input type="text" autocomplete="off" class="form-control" name="fecha_salida" id="fecha" placeholder="dd-mm-aaaa"/>
                   </div>
                 </div>
 
@@ -112,7 +115,7 @@
               <div class="dates">
                 <div class="input-group">
                   <div class="input-group-prepend">
-                      <label class="input-group-text" type="text" name="fecha_llegada1" for="inputGroupSelect01">Fecha de llegada  </label>
+                      <label class="input-group-text" type="text" name="fecha_llegada_label" for="inputGroupSelect01">Fecha de llegada  </label>
                   </div>
                     <input readonly="" type="text" autocomplete="off" class="form-control" name= "fecha_llegada" id="fecha2" placeholder="dd-mm-aaaa"/>
                   </div>
@@ -215,15 +218,15 @@
               <p>
                 <div class="input-group">
                   <div class="input-group-prepend">
-                    <label class="input-group-text" type="text" name="vehiculo" for="inputGroupSelect01">Vehiculo</label>
+                    <label class="input-group-text" type="text" name="vehiculoLabel" for="inputGroupSelect01">Vehiculo</label>
                   </div>
                   <select class="form-select col-sm" type="text" name="vehiculo" id="vehiculo">
                     <option disabled=True> --Seleccione-- </option>
                       {% for i in vehiculos %}
                         {% if i.premium %}
-                          <option value= "{{i}}">Patente: {{i.patente}} / Marca: {{i.marca}} / Cantidad de asientos: {{i.capacidad}} / Tipo de asiento: semi cama</option>
+                          <option value= "{{i.patente}}">Patente: {{i.patente}} / Marca: {{i.marca}} / Cantidad de asientos: {{i.capacidad}} / Tipo de asiento: semi cama</option>
                         {% else %}
-                            <option value= "{{i}}">Patente: {{i.patente}} / Marca: {{i.marca}} / Cantidad de asientos: {{i.capacidad}} / Tipo de asiento: cama</option>
+                            <option value= "{{i.patente}}">Patente: {{i.patente}} / Marca: {{i.marca}} / Cantidad de asientos: {{i.capacidad}} / Tipo de asiento: cama</option>
                         {% endif %}
                       {% endfor %}
                   </select>
@@ -246,8 +249,24 @@
 
 </form>
 <script>
-  document.getElementById('fecha').value = "{{viajes.fecha_salida}}"
-  document.getElementById('fecha2').value = "{{viajes.fecha_llegada}}"
+
+
+  var date = new Date("{{viajes.fecha_salida}}");
+  var date2 = new Date("{{viajes.fecha_llegada}}");
+  function formatDate(date) {
+                var day = date.getDate();
+                if (day < 10) {
+                    day = "0" + day;
+                }
+                var month = date.getMonth() + 1;
+                if (month < 10) {
+                    month = "0" + month;
+                }
+                var year = date.getFullYear();
+                return day + "/" + month + "/" + year;
+            }
+  document.getElementById('fecha').value = formatDate(date)
+  document.getElementById('fecha2').value = formatDate(date2)
   document.getElementById('hora_de_salida').value = "{{viajes.hora_salida}}".replace(':', '').replace(' ','').match(/.{0,2}/g)[0]
   document.getElementById('minuto_de_salida').value = "{{viajes.hora_salida}}".replace(':', '').replace(' ','').match(/.{0,2}/g)[1]
   document.getElementById('horario_de_salida').value = "{{viajes.hora_salida}}".replace(':', '').replace(' ','').match(/.{0,2}/g)[2]
@@ -258,21 +277,23 @@
   document.getElementById('ciudad_origen').value = "{{viajes.ciudad_origen}}"
   document.getElementById('ciudad_destino').value = "{{viajes.ciudad_destino}}"
   document.getElementById('chofer').value = "{{viajes.chofer}}"
-  document.getElementById('vehiculo').value = "{{viajes.vehiculo}}"
+  document.getElementById('vehiculo').value = {{viajes.vehiculo}}
   document.getElementById('hora_salida').value = (document.getElementById('hora_de_salida').value + ":" + document.getElementById('minuto_de_salida').value + " " + document.getElementById('horario_de_salida').value)
   document.getElementById('hora_llegada').value = (document.getElementById('hora_de_llegada').value + ":" + document.getElementById('minuto_de_llegada').value + " " + document.getElementById('horario_de_llegada').value)
-  document.getElementById('asientos_total').value = "{{viajes.asientos_total}}"
-  document.getElementById('asientos_disponibles').value = "{{viajes.asientos_disponibles}}"
-  document.getElementById('vendidos').value = "{{viajes.vendidos}}"
+  //document.getElementById('asientos_total').value = "{{viajes.asientos_total}}"
+//  document.getElementById('asientos_disponibles').value = "{{viajes.asientos_disponibles}}"
+//  document.getElementById('vendidos').value = "{{viajes.vendidos}}"
 
   function horario(){
-    document.getElementById('fecha').value = document.getElementById('fecha').value
-    document.getElementById('fecha2').value = document.getElementById('fecha2').value
+    document.getElementById('vendidos').value = 0
+    document.getElementById('asientos_total').value=0
+    document.getElementById('asientos_disponibles').value=0
     document.getElementById('hora_salida').value = (document.getElementById('hora_de_salida').value + ":" + document.getElementById('minuto_de_salida').value + " " + document.getElementById('horario_de_salida').value)
     document.getElementById('hora_llegada').value = (document.getElementById('hora_de_llegada').value + ":" + document.getElementById('minuto_de_llegada').value + " " + document.getElementById('horario_de_llegada').value)
-    document.getElementById('vendidos').value = document.getElementById('vendidos').value
-    document.getElementById('asientos_total').value=  document.getElementById('asientos_total').value
-    document.getElementById('asientos_disponibles').value= document.getElementById('asientos_disponibles').value
+  //  document.getElementById('vendidos').value = document.getElementById('vendidos').value
+  // document.getElementById('asientos_total').value=  document.getElementById('asientos_total').value
+  //  document.getElementById('asientos_disponibles').value= document.getElementById('asientos_disponibles').value
+    document.getElementById('vehiculo').value = document.getElementById('vehiculo').value
 
   }
 </script>

@@ -359,7 +359,7 @@ class FormularioViaje (HttpRequest):
         registro = Registro_viaje(request.POST, instance=viaje)
         if registro.is_valid():
             print("entroooo")
-            v = Vehiculo.objects.get(patente=viaje.cleaned_data.get('vehiculo'))
+            v = Vehiculo.objects.get(patente=registro.cleaned_data.get('vehiculo'))
             registro.save_viaje(v)
         else:
             dato = errores_viajes(registro, viaje)
