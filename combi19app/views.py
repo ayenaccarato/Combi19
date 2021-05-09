@@ -227,7 +227,7 @@ class FormularioRuta (HttpRequest):
                 ruta.save()
                 ruta = Registro_ruta()
                 return render (request, "agregar_ruta.html", {"dato": ruta, "mensaje": "ok", "ciudades": ciudad})
-                
+
         confirmacion=errores_ruta(ruta)
         ruta = Registro_ruta()
         return render (request, "agregar_ruta.html", {"mensaje": "not_ok", "errores":confirmacion, "ciudades": ciudad})
@@ -275,7 +275,7 @@ class FormularioCiudad (HttpRequest):
         ciudad = Ciudad.objects.get(codigo_postal=codigo_postal)
         form = Registro_ciudad(request.POST, instance = ciudad)
         if form.is_valid():
-            form.save()
+            form.save_ciudad()
             response = redirect('/listar_ciudades/')
             return response
             #ciudades= Ciudad.objects.all()
