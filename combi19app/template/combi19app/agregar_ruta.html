@@ -21,7 +21,12 @@
         {% if i == 1 %}
           <div class= 'alert alert-danger' role='alert'>
               Fallo en el registro de la ruta. El nombre ingresado ya esta registrado
-            </div>
+          </div>
+      {% endif %}
+      {% if i == 2 %}
+        <div class= 'alert alert-danger' role='alert'>
+            No se pueden realizar viajes dentro de la misma ciudad.
+        </div>
       {% endif %}
     {% endfor %}
   {% endif %}
@@ -78,7 +83,7 @@
         <button onclick="consola()" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Agregar</button>
       </p>
       <p>
-        <a class="btn btn-dark" href="/home">Cancelar</a>
+        <a class="btn btn-dark" href="/listar_rutas">Cancelar</a>
       </p>
 </center>
 {{ form }}

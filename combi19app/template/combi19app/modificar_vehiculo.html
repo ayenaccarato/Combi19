@@ -31,7 +31,11 @@
             <h4> <p style="margin: 40px">Actualice los datos </p></h4>
             <h5>
               <br>
-              <p> <input readonly id="patente"  class="col-sm-12 col-form-label" type="text" pattern="[A-Z]{3,3}[0-9]{3,3}" title= "Ingrese una patente con formato valido. Por ejemplo 'ABC123'"name="patente" placeholder="Ingrese la patente sin espacios"></p>
+                <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="patente" for="inputGroupSelect01">Patente</label>
+                  <input readonly style="background-color: #adb5b8;" id="patente"  class="col-sm col-form-label" type="text" pattern="[A-Z]{3,3}[0-9]{3,3}" title= "La patente no se puede modificar" name="patente" placeholder="Ingrese la patente sin espacios">
+                </div>
+                <br>
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
                   <label class="input-group-text" type="text" name="marca" for="inputGroupSelect01">Marca</label>

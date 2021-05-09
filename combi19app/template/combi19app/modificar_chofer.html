@@ -43,27 +43,36 @@
           <div class="col-sm">
             <h4> <p style="margin: 40px">A continuación actualice los datos del chofer </p></h4>
             <h5>
+              <div class= "input-group-prepend">
+                <label class="input-group-text" type="text" name="dni_label" for="inputGroupSelect01">DNI</label>
+                <input readonly style= "background-color: #adb5b8;" class="col-sm col-form-label" type="text" name="dni" placeholder="DNI" id="dni">
+              </div>
+              <br>
               <div class="input-group-prepend">
                 <label class="input-group-text" type="text" name="email" for="inputGroupSelect01">Email</label>
                 <input class="col-sm col-form-label" type="email" pattern= "[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{1,5}" title= "Ingrese un mail valido" name="email" placeholder="Email" id="email">
               </div>
+              <br>
               <div class="input-group-prepend">
                 <label class="input-group-text" type="text" name="nombre" for="inputGroupSelect01">Nombre</label>
                 <input class="col-sm col-form-label" type="text" name="nombre" placeholder="Nombre" id="nombre">
               </div>
+              <br>
               <div class="input-group-prepend">
                 <label class="input-group-text" type="text" name="apellido" for="inputGroupSelect01">Apellido</label>
                 <input class="col-sm col-form-label" type="text" name="apellido" placeholder="Apellido" id="apellido">
               </div>
+              <br>
               <div class="input-group-prepend">
                 <label class="input-group-text" type="text" name="telefono" for="inputGroupSelect01">Teléfono</label>
                 <input class="col-sm col-form-label" type="text" name="telefono" placeholder="Telefono" id="telefono">
               </div>
+              <br>
               <div class="input-group-prepend">
                 <label class="input-group-text" type="text" name="direccion" for="inputGroupSelect01">Dirección</label>
                 <input class="col-sm col-form-label" type="text" name="direccion" placeholder="Direccion" id="direccion">
               </div>
-              <p><input hidden class="col-sm-8 col-form-label" type="text" name="dni" placeholder="DNI" id="dni"> </p>
+
             </h5>
           </div>
         </div>

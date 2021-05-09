@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.template.loader import get_template
 from django.http import HttpResponse, HttpRequest
-from combi19app.forms import Registro, Registro_vehiculo, Registro_ruta, Registro_ciudad, Registro_viaje
+from combi19app.forms import Registro, Registro_vehiculo, Registro_ruta, Registro_ciudad, Registro_viaje, Registro_chofer
 from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import UpdateView
@@ -227,6 +227,7 @@ class FormularioRuta (HttpRequest):
                 ruta.save()
                 ruta = Registro_ruta()
                 return render (request, "agregar_ruta.html", {"dato": ruta, "mensaje": "ok", "ciudades": ciudad})
+                
         confirmacion=errores_ruta(ruta)
         ruta = Registro_ruta()
         return render (request, "agregar_ruta.html", {"mensaje": "not_ok", "errores":confirmacion, "ciudades": ciudad})

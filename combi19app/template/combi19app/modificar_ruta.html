@@ -39,6 +39,11 @@
             <h5>
               <br>
               <p>
+                <div class= "input-group-prepend">
+                  <label class="input-group-text" type="text" name="nombre_label" for="inputGroupSelect01">Nombre</label>
+                  <input readonly style= "background-color: #adb5b8;" class="col-sm col-form-label" type="text" name="nombre" title="El nombre no puede ser modificado" placeholder="Nombre" id="nombre">
+                </div>
+                <br>
                 <div class="input-group-prepend">
                   <label class="input-group-text" type="text" name="origen" for="inputGroupSelect01">Ciudad origen</label>
                   <select class="col-sm col-form-label custom-select-md" type="text" name="origen" id="origen">
@@ -60,14 +65,14 @@
                   </select>
                 </div>
               </p>
-              <p>
-                <input class="col-sm-12 col-form-label" type="text" name="nombre" placeholder="Nombre" id="nombre">
-              </p>
-              <p>
-                <input class="col-sm-12 col-form-label" type="text" pattern="[0-9]+" title= "Ingrese los km de la ruta" name="km" placeholder="Km" id="km">
-              </p>
-              <div class="input-group">
-                  <input class="col-sm-10 col-form-label" type="text" name="duracion" placeholder="Duración" id="duracion">
+              <div class= "input-group-prepend">
+                <label class="input-group-text" type="text" name="km_label" for="inputGroupSelect01">Km</label>
+                <input class="col-sm col-form-label" type="text" pattern="[0-9]+" title= "Ingrese los km de la ruta" name="km" placeholder="Km" id="km">
+              </div>
+              <br>
+              <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="duracion_label" for="inputGroupSelect01">Duración</label>
+                  <input class="col-sm-8 col-form-label" type="text" name="duracion" placeholder="Duración" id="duracion">
                   <select class="col-sm col-form-label custom-select-md" name= "duracion_en" id="duracion_en">
                     <option disabled=True>--Seleccione--</option>
                     <option class="dropdown-item" value="horas">Hora/s</option>
