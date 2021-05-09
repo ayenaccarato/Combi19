@@ -120,12 +120,12 @@ class FormularioRegistroChofer (HttpRequest):
     @login_required
     def editar_chofer(request, dni):
         chofer = Usuario.objects.get(dni=dni)
-        registro = Registro(instance=chofer)
+        registro = Registro_chofer(instance=chofer)
         return render(request, "modificar_chofer.html", {"dato": registro, "choferes": chofer})
     @login_required
     def actualizar_chofer(request, dni):
         chofer = Usuario.objects.get(dni=dni)
-        registro = Registro(request.POST, instance=chofer)
+        registro = Registro_chofer(request.POST, instance=chofer)
         if registro.is_valid():
             registro.save()
         response = redirect('/listar_choferes/')
