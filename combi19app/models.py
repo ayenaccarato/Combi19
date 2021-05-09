@@ -116,8 +116,8 @@ class Ruta (models.Model):
         return self.nombre
 
 class Viaje (models.Model):
-    fecha_salida = models.DateTimeField()
-    fecha_llegada = models.DateTimeField('%m/%d/%Y %H:%M') # fijarse si es ida y vuelta
+    fecha_salida = models.DateField()
+    fecha_llegada = models.DateField('%m/%d/%Y') # fijarse si es ida y vuelta
     hora_salida = models.CharField(max_length=20)
     hora_llegada = models.CharField(max_length=20)
     ruta = models.ForeignKey(Ruta, related_name='+', on_delete=models.PROTECT)
