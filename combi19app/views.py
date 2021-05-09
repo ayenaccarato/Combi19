@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template.loader import get_template
 from django.http import HttpResponse, HttpRequest
 from combi19app.forms import Registro, Registro_vehiculo, Registro_ruta, Registro_ciudad, Registro_viaje
@@ -128,8 +128,10 @@ class FormularioRegistroChofer (HttpRequest):
         registro = Registro(request.POST, instance=chofer)
         if registro.is_valid():
             registro.save()
-        choferes = Usuario.objects.filter(tipo_usuario=2)
-        return render (request, "listar_choferes.html", {"choferes": choferes, "mensaje": "editado", "cantidad": len(choferes)})
+        response = redirect('/listar_choferes/')
+        return response
+        #choferes = Usuario.objects.filter(tipo_usuario=2)
+        #return render (request, "listar_choferes.html", {"choferes": choferes, "mensaje": "editado", "cantidad": len(choferes)})
 
 class FormularioVehiculo (HttpRequest):
     @login_required
@@ -158,8 +160,10 @@ class FormularioVehiculo (HttpRequest):
         if form.is_valid():
         #    db.connections.close_all()
             form.save()
-            vehiculos= Vehiculo.objects.all()
-            return render (request, "listar_vehiculos.html", {"form":form,"vehiculos":vehiculos, "vehiculo":vehiculo, "mensaje": "editado"})
+            response = redirect('/listar_vehiculos/')
+            return response
+        #    vehiculos= Vehiculo.objects.all()
+        #    return render (request, "listar_vehiculos.html", {"form":form,"vehiculos":vehiculos, "vehiculo":vehiculo, "mensaje": "editado"})
 
 class ListarVehiculos(HttpRequest):
     @login_required
@@ -216,8 +220,10 @@ class FormularioRuta (HttpRequest):
         registro = Registro_ruta(request.POST, instance=ruta)
         if registro.is_valid():
             registro.save()
-        rutas = Ruta.objects.all()
-        return render (request, "listar_rutas.html", {"rutas": rutas, "mensaje": "editado"})
+            response = redirect('/listar_rutas/')
+            return response
+        #rutas = Ruta.objects.all()
+        #return render (request, "listar_rutas.html", {"rutas": rutas, "mensaje": "editado"})
 
 class FormularioCiudad (HttpRequest):
     @login_required
@@ -247,8 +253,10 @@ class FormularioCiudad (HttpRequest):
         form = Registro_ciudad(request.POST, instance = ciudad)
         if form.is_valid():
             form.save()
-            ciudades= Ciudad.objects.all()
-            return render (request, "listar_ciudades.html", {"form":form, "ciudad":ciudad, "mensaje": "ok", "ciudades":ciudades, "mensaje": "editado"})
+            response = redirect('/listar_ciudades/')
+            return response
+            #ciudades= Ciudad.objects.all()
+            #return render (request, "listar_ciudades.html", {"form":form, "ciudad":ciudad, "mensaje": "ok", "ciudades":ciudades, "mensaje": "editado"})
 
 class ListarCiudad (HttpRequest):
     @login_required
@@ -398,9 +406,10 @@ class FormularioViaje (HttpRequest):
         print('asientos_total', registro.cleaned_data.get('asientos_total'))
         print('asientos_disponibles', registro.cleaned_data.get('asientos_disponibles'))
         print('vendidos', registro.cleaned_data.get('vendidos'))
-        viajes = Viaje.objects.all()
-        return render (request, "listar_viajes.html", {"viajes": viajes, "mensaje": "editado", "cantidad": len(viajes)})
-
+        #viajes = Viaje.objects.all()
+        #return render (request, "listar_viajes.html", {"viajes": viajes, "mensaje": "editado", "cantidad": len(viajes)})
+        response = redirect('/listar_viajes/')
+        return response
 class ListarViajes(HttpRequest):
     @login_required
     def crear_listado(request):
