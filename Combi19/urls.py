@@ -66,11 +66,10 @@ urlpatterns = [
     path('guardar_viaje/', views.FormularioViaje.procesar_formulario),
     path('listar_viajes/', views.ListarViajes.crear_listado),
     path('listar_viajes/ver_detalle_viaje/<int:id_viaje>/',views.ListarViajes.mostrar_detalle),
-    #path('listar_viajes/eliminar_viaje/<int:id_viaje>/',views.EliminarViaje.eliminar_viaje),
+    path('listar_viajes/eliminar_viaje/<int:id_viaje>/',views.FormularioViaje.eliminar_viaje),
     path('actualizar_viaje/<int:id_viaje>/', views.FormularioViaje.actualizar_viaje),
     path('listar_viajes/modificar_viaje/<int:id_viaje>/',views.FormularioViaje.editar_viaje),
     path('listar_viajes/actualizar_viaje/<int:id_viaje>/',views.FormularioViaje.actualizar_viaje, name="actualizar_viaje"),
-
     path('home/', views.home),
     path('accounts/', include ('django.contrib.auth.urls')),
     path('', views.home),

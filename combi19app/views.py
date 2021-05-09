@@ -20,8 +20,10 @@ def home (request):
         choferes = Usuario.objects.filter(tipo_usuario=2)
         usuarios = Usuario.objects.filter(tipo_usuario=3)
         return render (request, "home.html", {"ciudades":len(ciudades), "rutas":len(rutas), "choferes":len(choferes), "vehiculos":len(vehiculos), "viajes":len(viajes), "usuarios":len(usuarios), "nombre": request.user.nombre})
+    elif request.user.tipo_usuario == 2:
+        return render(request, "homeChofer.html", {"nombre": request.user.nombre})
     else:
-        return render (request,"homePasajeros.html")
+        return render (request,"homePasajeros.html", {"nombre": request.user.nombre})
 
 def login(request):
 
@@ -74,6 +76,15 @@ def errores_viaje(viaje):
     if viaje.cleaned_data.get('fecha_salida') > viaje.cleaned_data.get('fecha_llegada'):
         lista+=[2]
 
+    return set(lista)
+
+def errores_vehiculo(vehiculo):
+    lista = []
+    vehiculos = Vehiculo.objects.all()
+    for v in vehiculos:
+        if vehiculo.cleaned_data.get('patente').upper() == v.patente:
+            lista+=[1]
+            break
     return set(lista)
 
 def calcular_minutos():
@@ -142,17 +153,24 @@ class FormularioVehiculo (HttpRequest):
     def procesar_formulario(request):
         vehiculo = Registro_vehiculo(request.POST)
         if vehiculo.is_valid():
-            vehiculo.save()
-            vehiculo = Registro_vehiculo()
-            return render (request, "agregar_vehiculo.html", {"dato": vehiculo, "mensaje": "ok"})
+            confirmacion = errores_vehiculo(vehiculo)
+            if len(confirmacion) == 0:
+                vehiculo.save_vehiculo()
+                vehiculo = Registro_vehiculo()
+                return render (request, "agregar_vehiculo.html", {"dato": vehiculo, "mensaje": "ok"})
+            else:
+                vehiculo = Registro_vehiculo()
+                return render (request, "agregar_vehiculo.html", {"mensaje": "not_ok"})
         else:
             vehiculo = Registro_vehiculo()
-            return render (request, "agregar_vehiculo.html", {"mensaje": "not_ok"})
+            return render (request, "agregar_vehiculo.html", {"mensaje": "vacio"})
+
     @login_required
     def editar(request, patente_vehiculo):
         vehiculo = Vehiculo.objects.get(patente=patente_vehiculo)
         form = Registro_vehiculo(instance=vehiculo)
         return render (request, "modificar_vehiculo.html", {"form":form, "vehiculo":vehiculo})
+
     @login_required
     def actualizar(request, patente_vehiculo):
         vehiculo = Vehiculo.objects.get(patente=patente_vehiculo)
@@ -184,9 +202,13 @@ class EliminarVehiculo(HttpRequest):
     @login_required
     def eliminar_vehiculo(request, patente_vehiculo):
         vehiculo_eliminado = Vehiculo.objects.get(pk=patente_vehiculo)
-        vehiculo_eliminado.delete()
-        vehiculo = Vehiculo.objects.all()
-        return render (request, "listar_vehiculos.html", {"vehiculos": vehiculo, "mensaje":"eliminado", "cantidad": len(vehiculo)})
+        try:
+            vehiculo_eliminado.delete()
+            vehiculo = Vehiculo.objects.all()
+            return render (request, "listar_vehiculos.html", {"vehiculos": vehiculo, "mensaje":"eliminado", "cantidad": len(vehiculo)})
+        except:
+            vehiculo = Vehiculo.objects.all()
+            return render (request, "listar_vehiculos.html", {"vehiculos": vehiculo, "mensaje":"no_puede", "cantidad": len(vehiculo)})
 
 class FormularioRuta (HttpRequest):
     @login_required
@@ -236,7 +258,7 @@ class FormularioCiudad (HttpRequest):
         if ciudad.is_valid():
             confirmacion=errores_ciudad(ciudad)
             if len(confirmacion) == 0:
-                ciudad.save()
+                ciudad.save_ciudad()
                 ciudad = Registro_ciudad()
                 return render (request, "agregar_ciudad.html", {"dato": ciudad, "mensaje": "ok"})
         confirmacion=errores_ciudad(ciudad)
@@ -278,9 +300,13 @@ class EliminarCiudad (HttpRequest):
     @login_required
     def eliminar_ciudad(request, codigo_postal):
         ciudad_eliminada = Ciudad.objects.get(pk=codigo_postal)
-        ciudad_eliminada.delete()
-        ciudad = Ciudad.objects.all()
-        return render (request, "listar_ciudades.html", {"ciudades": ciudad, "mensaje":"eliminado", "cantidad": len(ciudad)})
+        try:
+            ciudad_eliminada.delete()
+            ciudad = Ciudad.objects.all()
+            return render (request, "listar_ciudades.html", {"ciudades": ciudad, "mensaje":"eliminado", "cantidad": len(ciudad)})
+        except:
+            ciudad = Ciudad.objects.all()
+            return render (request, "listar_ciudades.html", {"ciudades": ciudad, "mensaje":"no_puede", "cantidad": len(ciudad)})
 
 class ListarRuta (HttpRequest):
     @login_required
@@ -299,9 +325,13 @@ class ListarRuta (HttpRequest):
     @login_required
     def eliminar_ruta(request, nombre):
         ruta_eliminada = Ruta.objects.get(pk=nombre)
-        ruta_eliminada.delete()
-        ruta = Ruta.objects.all()
-        return render (request, "listar_rutas.html", {"rutas": ruta, "mensaje":"eliminado", "cantidad": len(ruta)})
+        try:
+            ruta_eliminada.delete()
+            ruta = Ruta.objects.all()
+            return render (request, "listar_rutas.html", {"rutas": ruta, "mensaje":"eliminado", "cantidad": len(ruta)})
+        except:
+            ruta = Ruta.objects.all()
+            return render (request, "listar_rutas.html", {"rutas": ruta, "mensaje":"no_puede", "cantidad": len(ruta)})
 
 
 def errores_viajes(viaje, dato):
@@ -358,58 +388,23 @@ class FormularioViaje (HttpRequest):
         viaje = Viaje.objects.get(id=id_viaje)
         registro = Registro_viaje(request.POST, instance=viaje)
         if registro.is_valid():
-            print("entroooo")
             v = Vehiculo.objects.get(patente=registro.cleaned_data.get('vehiculo'))
             registro.save_viaje(v)
         else:
             dato = errores_viajes(registro, viaje)
-
-            print('elseee')
-            print('fecha_salida', dato.cleaned_data.get('fecha_salida'))
-            print('fecha_llegada', dato.cleaned_data.get('fecha_llegada'))
-            print('hora_salida', dato.cleaned_data.get('hora_salida'))
-            print('hora_llegada', dato.cleaned_data.get('hora_llegada'))
-            print('ruta', dato.cleaned_data.get('ruta'))
-            print('ciudad_origen', dato.cleaned_data.get('ciudad_origen'))
-            print('ciudad_destino', dato.cleaned_data.get('ciudad_destino'))
-            print('chofer', dato.cleaned_data.get('chofer'))
-            print('vehiculo', dato.cleaned_data.get('vehiculo'))
-            print('asientos_total', dato.cleaned_data.get('asientos_total'))
-            print('asientos_disponibles', dato.cleaned_data.get('asientos_disponibles'))
-            print('vendidos', dato.cleaned_data.get('vendidos'))
             if dato.is_valid():
                 dato.save_viaje2(dato)
-                print('adentrooooo')
-                print('fecha_salida', dato.cleaned_data.get('fecha_salida'))
-                print('fecha_llegada', dato.cleaned_data.get('fecha_llegada'))
-                print('hora_salida', dato.cleaned_data.get('hora_salida'))
-                print('hora_llegada', dato.cleaned_data.get('hora_llegada'))
-                print('ruta', dato.cleaned_data.get('ruta'))
-                print('ciudad_origen', dato.cleaned_data.get('ciudad_origen'))
-                print('ciudad_destino', dato.cleaned_data.get('ciudad_destino'))
-                print('chofer', dato.cleaned_data.get('chofer'))
-                print('vehiculo', dato.cleaned_data.get('vehiculo'))
-                print('asientos_total', dato.cleaned_data.get('asientos_total'))
-                print('asientos_disponibles', dato.cleaned_data.get('asientos_disponibles'))
-                print('vendidos', dato.cleaned_data.get('vendidos'))
-
-        print('afueraaaa')
-        print('fecha_salida', registro.cleaned_data.get('fecha_salida'))
-        print('fecha_llegada', registro.cleaned_data.get('fecha_llegada'))
-        print('hora_salida', registro.cleaned_data.get('hora_salida'))
-        print('hora_llegada', registro.cleaned_data.get('hora_llegada'))
-        print('ruta', registro.cleaned_data.get('ruta'))
-        print('ciudad_origen', registro.cleaned_data.get('ciudad_origen'))
-        print('ciudad_destino', registro.cleaned_data.get('ciudad_destino'))
-        print('chofer', registro.cleaned_data.get('chofer'))
-        print('vehiculo', registro.cleaned_data.get('vehiculo'))
-        print('asientos_total', registro.cleaned_data.get('asientos_total'))
-        print('asientos_disponibles', registro.cleaned_data.get('asientos_disponibles'))
-        print('vendidos', registro.cleaned_data.get('vendidos'))
         #viajes = Viaje.objects.all()
         #return render (request, "listar_viajes.html", {"viajes": viajes, "mensaje": "editado", "cantidad": len(viajes)})
         response = redirect('/listar_viajes/')
         return response
+
+    def eliminar_viaje(request, id_viaje):
+        viaje = Viaje.objects.get(id=id_viaje)
+        viaje.delete()
+        viaje = Viaje.objects.all()
+        return render (request, "listar_viajes.html", {"viajes": viaje, "mensaje":"eliminado", "cantidad": len(viaje)})
+
 class ListarViajes(HttpRequest):
     @login_required
     def crear_listado(request):
@@ -441,6 +436,10 @@ class ListarChofer(HttpRequest):
     @login_required
     def eliminar_chofer(request, dni):
         chofer_eliminado = Usuario.objects.get(pk=dni)
-        chofer_eliminado.delete()
-        chofer = Usuario.objects.filter(tipo_usuario=2)
-        return render (request, "listar_choferes.html", {"choferes": chofer, "mensaje":"eliminado", "cantidad": len(chofer)})
+        try:
+            chofer_eliminado.delete()
+            chofer = Usuario.objects.filter(tipo_usuario=2)
+            return render (request, "listar_choferes.html", {"choferes": chofer, "mensaje":"eliminado", "cantidad": len(chofer)})
+        except:
+            chofer = Usuario.objects.filter(tipo_usuario=2)
+            return render (request, "listar_choferes.html", {"choferes": chofer, "mensaje":"no_puede", "cantidad": len(chofer)})

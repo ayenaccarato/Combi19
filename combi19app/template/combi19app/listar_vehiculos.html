@@ -5,13 +5,14 @@
 {% block content %}
     {% csrf_token %}
     <p style= "float: right;">
-        <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_vehiculo" type="submit" class="btn btn-success" name=nombre>Agregar vehículo</a>
+        <a id="agregar" style="display: block; padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_vehiculo" type="submit" class="btn btn-success" name=nombre>Agregar vehículo</a>
     </p>
     <br>
     <br>
-    <br>
-    <br>
     {% if mensaje == "detalle" %}
+    <script>
+      document.getElementById("agregar").style.display = 'none'
+    </script>
     <p style="float: right;">
       <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_vehiculos" type="submit" class="btn btn-success" name=nombre >Volver a los listados</a>
     </p>
@@ -45,6 +46,9 @@
     </tr>
 
     {% elif mensaje == "detalleViajeVehiculo" %}
+    <script>
+      document.getElementById("agregar").style.display = 'none'
+    </script>
     <p style="float: right;">
       <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_viajes" type="submit" class="btn btn-success" name=nombre >Volver a los listados</a>
     </p>
@@ -81,17 +85,27 @@
 
       {% if mensaje == "eliminado"%}
         <div class='alert alert-success' role='alert'>
-          El vehiculo se elimino exitosamente!
+          El vehículo se eliminó exitosamente!
         </div>
         {% else %}
           {% if mensaje == "editado" %}
           <div class='alert alert-success' role='alert'>
-            El vehiculo se modificó exitosamente!
+            El vehículo se modificó exitosamente!
           </div>
+          {% else %}
+            {% if mensaje == "no_puede" %}
+              <div class='alert alert-danger' role='alert'>
+                El vehículo no puede eliminarse porque pertenece a un viaje
+              </div>
+            {% endif %}
           {% endif %}
       {% endif %}
 
     {% if vehiculos %}
+      <br>
+      <br>
+      <br>
+      <br>
         <table class="table table-bordered">
           <thead>
             <tr>
@@ -118,6 +132,10 @@
                 Actualmente hay {{cantidad}} vehiculos cargados.
               </div>
       {% else %}
+        <br>
+        <br>
+        <br>
+        <br>
         <div class="jumbotron jumbotron-fluid">
           <div class="container">
             <h1 class="display-4">Ups!</h1>

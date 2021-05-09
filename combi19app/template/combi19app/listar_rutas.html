@@ -6,13 +6,14 @@
 {% block content %}
     {% csrf_token %}
     <p style= "float: right;">
-        <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_ruta" type="submit" class="btn btn-success" name=nombre >Agregar ruta</a>
-      </p>
-      <br>
-      <br>
-      <br>
-      <br>
+        <a id="agregar" style="display:block; padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_ruta" type="submit" class="btn btn-success" name=nombre >Agregar ruta</a>
+    </p>
+    <br>
+    <br>
     {% if mensaje == "detalle" %}
+      <script>
+        document.getElementById("agregar").style.display = 'none'
+      </script>
       <p style="float: right;">
         <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_rutas" type="submit" class="btn btn-success" name=nombre >Volver a los listados</a>
       </p>
@@ -44,6 +45,9 @@
       </tr>
 
     {% elif mensaje == "detalleViajeRuta" %}
+    <script>
+      document.getElementById("agregar").style.display = 'none'
+    </script>
     <p style="float: right;">
       <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_viajes" type="submit" class="btn btn-success" name=nombre >Volver a los listados</a>
     </p>
@@ -87,9 +91,19 @@
         <div class='alert alert-success' role='alert'>
           La ruta se modificó exitosamente!
         </div>
+        {% else %}
+          {% if mensaje == "no_puede" %}
+            <div class='alert alert-danger' role='alert'>
+              La ruta no puede eliminarse porque pertenece a un viaje
+            </div>
+          {% endif %}
         {% endif %}
       {% endif %}
       {% if rutas %}
+        <br>
+        <br>
+        <br>
+        <br>
         <table class="table table-bordered">
           <thead>
             <tr>
@@ -116,6 +130,10 @@
               Actualmente hay {{cantidad}} rutas cargadas.
             </div>
         {% else %}
+          <br>
+          <br>
+          <br>
+          <br>
           <div class="jumbotron jumbotron-fluid">
             <div class="container">
               <h1 class="display-4">Ups!</h1>

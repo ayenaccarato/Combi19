@@ -5,11 +5,17 @@
 
 {% block content %}
     {% csrf_token %}
-
+    <p style= "float: right;">
+      <a id="agregar" style="display: block; padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_viaje" type="submit" class="btn btn-success" name=nombre>Agregar viaje</a>
+    </p>
+    <br>
+    <br>
     {% if mensaje == "detalle" %}
+    <script>
+      document.getElementById("agregar").style.display = 'none'
+    </script>
     <p style="float: right;">
       <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_viajes" type="submit" class="btn btn-success" name=nombre >Volver a los listados</a>
-      <a id="boton1" style= "display:none; margin:0px 20px; padding-top:10px;padding-bottom:10px;padding-left:10px;padding-right:10px;" href="/listar_viajes/ver_detalle_viaje/{{dato.id}}" type="submit" class="btn btn-success" name="volver">Atras</a>
     </p>
     <br>
     <br>
@@ -66,9 +72,10 @@
       {% endif %}
 
     {% if viajes %}
-        <p style= "float: right;">
-          <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_viaje" type="submit" class="btn btn-success" name=nombre>Agregar viaje</a>
-        </p>
+        <br>
+        <br>
+        <br>
+        <br>
         <table class="table table-bordered">
           <thead>
             <tr>
@@ -101,9 +108,7 @@
                 Actualmente hay {{cantidad}} viajes cargados.
               </div>
       {% else %}
-        <p style= "float: right;">
-            <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_viaje" type="submit" class="btn btn-success" name=nombre>Agregar viaje</a>
-        </p>
+        <br>
         <br>
         <br>
         <br>

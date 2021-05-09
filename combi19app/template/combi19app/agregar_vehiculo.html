@@ -22,7 +22,11 @@
         Fallo en el registro del vehiculo. La patente ingresada ya está registrada
       </div>
     {% endif %}
-
+    {% if mensaje == "vacio" %}
+      <div class= 'alert alert-danger' role='alert'>
+        Debe completar todos los campos
+      </div>
+    {% endif %}
 
     <div class="container">
       <center>
@@ -31,7 +35,7 @@
             <h4> <p style="margin: 40px">Complete el formulario </p></h4>
             <h5>
               <br>
-              <p> <input class="col-sm-12 col-form-label" type="text" pattern="[A-Za-z]{3,3}[0-9]{3,3}" title= "Ingrese una patente con formato valido. Por ejemplo 'ABC123' o 'abc123'" name="patente" placeholder="Ingrese la patente sin espacios"></p>
+              <p> <input class="col-sm-12 col-form-label" type="text" pattern="^([A-Za-z]{3}[0-9]{3}|[A-Za-z]{2}[0-9]{3}[A-Za-z]{2})" title= "Ingrese una patente con formato valido. Por ejemplo 'ABC123' o 'abc123', 'AA123AA' o 'aa123aa'" name="patente" placeholder="Ingrese la patente sin espacios"></p>
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
                   <label class="input-group-text" type="text" name="marca" for="inputGroupSelect01">Marca</label>

@@ -52,6 +52,13 @@ class Registro_vehiculo (forms.ModelForm):
                    'premium',
                    )
 
+    def save_vehiculo(self, commit=True):
+        vehiculo = super().save(commit= False)
+        vehiculo.patente = vehiculo.patente.upper()
+        if commit:
+            vehiculo.save()
+        return vehiculo
+
 class Registro_ruta (forms.ModelForm):
     class Meta:
         model = Ruta
@@ -71,6 +78,14 @@ class Registro_ciudad (forms.ModelForm):
                    'codigo_postal',
                    'pais',
                    )
+
+    def save_ciudad(self, commit=True):
+        ciudad = super().save(commit= False)
+        ciudad.nombre = ciudad.nombre.upper()
+        if commit:
+            ciudad.save()
+        return ciudad
+
 
 class Registro_viaje (forms.ModelForm):
     class Meta:

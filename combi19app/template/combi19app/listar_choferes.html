@@ -6,13 +6,14 @@
 {% block content %}
     {% csrf_token %}
     <p style="float: right;">
-      <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/registrar_chofer" type="submit" class="btn btn-success" name=nombre >Agregar chofer</a>
+      <a id="agregar" style="display: block; padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/registrar_chofer" type="submit" class="btn btn-success" name=nombre >Agregar chofer</a>
     </p>
     <br>
     <br>
-    <br>
-    <br>
     {% if mensaje == "detalle" %}
+      <script>
+        document.getElementById("agregar").style.display = 'none'
+      </script>
       <p style="float: right;">
         <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_choferes" type="submit" class="btn btn-success" name=nombre >Volver a los listados</a>
       </p>
@@ -43,6 +44,9 @@
         <td>{{dato.telefono}}</td>
       </tr>
     {% elif mensaje == "detalleViajeChofer" %}
+    <script>
+      document.getElementById("agregar").style.display = 'none'
+    </script>
     <p style="float: right;">
       <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_viajes" type="submit" class="btn btn-success" name=nombre >Volver a los listados</a>
     </p>
@@ -86,9 +90,19 @@
         <div class='alert alert-success' role='alert'>
           El chofer se modificó exitosamente!
         </div>
+        {% else %}
+          {% if mensaje == "no_puede" %}
+            <div class='alert alert-danger' role='alert'>
+              El chofer no puede eliminarse porque pertenece a un viaje
+            </div>
+          {% endif %}
         {% endif %}
       {% endif %}
       {% if choferes %}
+        <br>
+        <br>
+        <br>
+        <br>
         <table class="table table-bordered">
           <thead>
             <tr>
@@ -115,6 +129,10 @@
               Actualmente hay {{cantidad}} choferes cargados.
             </div>
         {% else %}
+          <br>
+          <br>
+          <br>
+          <br>
           <div class="jumbotron jumbotron-fluid">
             <div class="container">
               <h1 class="display-4">Ups!</h1>

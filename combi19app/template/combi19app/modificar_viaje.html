@@ -249,22 +249,20 @@ crossorigin="anonymous"></script>
 
 </form>
 <script>
-
-
   var date = new Date("{{viajes.fecha_salida}}");
   var date2 = new Date("{{viajes.fecha_llegada}}");
   function formatDate(date) {
-                var day = date.getDate();
-                if (day < 10) {
-                    day = "0" + day;
-                }
-                var month = date.getMonth() + 1;
-                if (month < 10) {
-                    month = "0" + month;
-                }
-                var year = date.getFullYear();
-                return day + "/" + month + "/" + year;
-            }
+    var day = date.getDate();
+    if (day < 10) {
+        day = "0" + day;
+    }
+    var month = date.getMonth() + 1;
+    if (month < 10) {
+        month = "0" + month;
+    }
+    var year = date.getFullYear();
+    return day + "/" + month + "/" + year;
+  }
   document.getElementById('fecha').value = formatDate(date)
   document.getElementById('fecha2').value = formatDate(date2)
   document.getElementById('hora_de_salida').value = "{{viajes.hora_salida}}".replace(':', '').replace(' ','').match(/.{0,2}/g)[0]
@@ -277,13 +275,13 @@ crossorigin="anonymous"></script>
   document.getElementById('ciudad_origen').value = "{{viajes.ciudad_origen}}"
   document.getElementById('ciudad_destino').value = "{{viajes.ciudad_destino}}"
   document.getElementById('chofer').value = "{{viajes.chofer}}"
-  document.getElementById('vehiculo').value = {{viajes.vehiculo}}
+  document.getElementById('vehiculo').value = "{{viajes.vehiculo}}"
   document.getElementById('hora_salida').value = (document.getElementById('hora_de_salida').value + ":" + document.getElementById('minuto_de_salida').value + " " + document.getElementById('horario_de_salida').value)
   document.getElementById('hora_llegada').value = (document.getElementById('hora_de_llegada').value + ":" + document.getElementById('minuto_de_llegada').value + " " + document.getElementById('horario_de_llegada').value)
   //document.getElementById('asientos_total').value = "{{viajes.asientos_total}}"
 //  document.getElementById('asientos_disponibles').value = "{{viajes.asientos_disponibles}}"
 //  document.getElementById('vendidos').value = "{{viajes.vendidos}}"
-
+  document.write('Fecha ' + date)
   function horario(){
     document.getElementById('vendidos').value = 0
     document.getElementById('asientos_total').value=0
@@ -296,6 +294,7 @@ crossorigin="anonymous"></script>
     document.getElementById('vehiculo').value = document.getElementById('vehiculo').value
 
   }
+
 </script>
 
 

@@ -12,12 +12,11 @@
       <br>
     </h4>
     <h5>
-      <p>  - {{usuarios}}  usuarios registrados</p>
-      <p>  - {{viajes}}  viajes cargados </p>
-      <p>  - {{choferes}}  choferes registrados </p>
-      <p>  - {{vehiculos}}  vehiculos cargados</p>
-      <p>  - {{ciudades}}  ciudades cargadas </p>
-      <p>  - {{rutas}}  rutas cargadas </p>
+      <p>  - {{viajes}}  viaje/s cargados </p>
+      <p>  - {{choferes}}  chofer/es registrados </p>
+      <p>  - {{vehiculos}}  vehiculo/s cargados</p>
+      <p>  - {{ciudades}}  ciudad/es cargadas </p>
+      <p>  - {{rutas}}  ruta/s cargadas </p>
       <br>
       <br>
       <br>
@@ -26,6 +25,26 @@
   <script type="text/javascript">
     var f = new Date();
     var mes = f.getMonth() + 1;
-    document.write('ÚLTIMA ACTUALIZACIÓN: '+ f.getDate() + '/' + mes + '/' + f.getFullYear()+ '    '+ f.getHours()+ ':'+ f.getMinutes())
+    var hora = f.getHours();
+    var minutos = f.getMinutes();
+    var dia = f.getDate();
+    if (hora < 10){
+      hora = '0' + f.getHours()
+    }
+    if (minutos < 10){
+      minutos = '0' + f.getMinutes()
+    }
+    if (dia < 10){
+      dia = '0' + f.getDate()
+    }
+    if (mes < 10){
+      mes = '0' + (f.getMonth() + 1)
+    }
+    if (hora < 12){
+      document.write('ÚLTIMA ACTUALIZACIÓN: '+ dia + '/' + mes + '/' + f.getFullYear()+ '    '+ hora + ':'+ minutos + ' a.m')
+    }
+    else{
+      document.write('ÚLTIMA ACTUALIZACIÓN: '+ dia + '/' + mes + '/' + f.getFullYear()+ '    '+ hora + ':'+ minutos + ' p.m')
+    }
   </script>
 {% endblock %}
