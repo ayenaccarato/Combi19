@@ -29,6 +29,10 @@ def login(request):
 
     return render (request, "registration/login.html")
 
+def ver_perfil_admin(request):
+
+    return render (request, "ver_perfil_admin.html")
+
 def cambiar_contra(request):
 
     return render(request, "cambiar_contra.html")
@@ -93,6 +97,23 @@ def calcular_minutos():
         minutos+=[i]
     return minutos
 
+def verificar_eliminacion_ciudad(ciudad):
+    lista = []
+    lista2= []
+    lista2+=[str(ciudad)]
+    string = lista2[0]
+    string = string.replace('<bound method QuerySet.first of <QuerySet [<Ciudad: ', '').replace('>]>>','').strip()
+    verificacion1 = str(Ruta.objects.filter(codigo_origen=int(string)).first)
+    verificacion2 = str(Ruta.objects.filter(codigo_destino=int(string)).first)
+    print('verificacion antes',verificacion1)
+    print('verificacion 2 antes', verificacion2)
+    verificacion1 = verificacion1.replace('<bound method QuerySet.first of <QuerySet ','').replace('[','').replace(']>>','')
+    verificacion2 = verificacion2.replace('<bound method QuerySet.first of <QuerySet ','').replace('[','').replace(']>>','')
+    print('verificacion',verificacion1)
+    print('verificacion2',verificacion2)
+    if len(verificacion1) != 0 or len(verificacion2) != 0:
+        lista+=[1]
+    return set(lista)
 
 class FormularioRegistro (HttpRequest):
 
@@ -146,6 +167,25 @@ class FormularioRegistroChofer (HttpRequest):
         return response
         #choferes = Usuario.objects.filter(tipo_usuario=2)
         #return render (request, "listar_choferes.html", {"choferes": choferes, "mensaje": "editado", "cantidad": len(choferes)})
+
+
+class FormularioRegistroAdmin (HttpRequest):
+    @login_required
+    def crear_formulario(request):
+        registro = Registro()
+        return render (request, "registrar_admin.html", {"dato":registro})
+    @csrf_exempt
+    def procesar_formulario (request):
+        registro = Registro(request.POST)
+        if registro.is_valid():
+            confirmacion = errores(registro)
+            if len(confirmacion) == 0:
+                registro.save_admin()
+                registro = Registro()
+                return render(request, "registrar_admin.html", {"dato": registro, "mensaje": "ok"})
+        confirmacion=errores(registro)
+        registro = Registro()
+        return render(request, "registrar_admin.html", {"mensaje": "not_ok", "errores": confirmacion})
 
 class FormularioVehiculo (HttpRequest):
     @login_required
@@ -227,13 +267,14 @@ class FormularioRuta (HttpRequest):
         if ruta.is_valid():
             confirmacion=errores_ruta(ruta)
             if len(confirmacion) == 0:
-                ruta.save()
+                ruta.save_ruta(ciudad)
                 ruta = Registro_ruta()
                 return render (request, "agregar_ruta.html", {"dato": ruta, "mensaje": "ok", "ciudades": ciudad})
 
         confirmacion=errores_ruta(ruta)
         ruta = Registro_ruta()
         return render (request, "agregar_ruta.html", {"mensaje": "not_ok", "errores":confirmacion, "ciudades": ciudad})
+
     @login_required
     def editar_ruta(request, nombre):
         ruta = Ruta.objects.get(nombre=nombre)
@@ -308,14 +349,18 @@ class ListarCiudad (HttpRequest):
 class EliminarCiudad (HttpRequest):
     @login_required
     def eliminar_ciudad(request, codigo_postal):
+        ciudad = Ciudad.objects.filter(pk=codigo_postal).first
         ciudad_eliminada = Ciudad.objects.get(pk=codigo_postal)
-        try:
-            ciudad_eliminada.delete()
-            ciudad = Ciudad.objects.all()
-            return render (request, "listar_ciudades.html", {"ciudades": ciudad, "mensaje":"eliminado", "cantidad": len(ciudad)})
-        except:
-            ciudad = Ciudad.objects.all()
-            return render (request, "listar_ciudades.html", {"ciudades": ciudad, "mensaje":"no_puede", "cantidad": len(ciudad)})
+        confirmacion = verificar_eliminacion_ciudad(ciudad)
+        ciudades = Ciudad.objects.all()
+        if len(confirmacion) == 0:
+            try:
+                ciudad_eliminada.delete()
+                return render (request, "listar_ciudades.html", {"ciudades": ciudades, "mensaje":"eliminado", "cantidad": len(ciudades)})
+            except:
+                return render (request, "listar_ciudades.html", {"ciudades": ciudades, "mensaje":"no_puede", "cantidad": len(ciudades)})
+        else:
+            return render (request, "listar_ciudades.html", {"ciudades": ciudades, "mensaje":"no_puede2", "cantidad": len(ciudades)})
 
 class ListarRuta (HttpRequest):
     @login_required

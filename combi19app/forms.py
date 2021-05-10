@@ -30,6 +30,14 @@ class Registro (forms.ModelForm):
             usuario.save()
         return usuario
 
+    def save_admin(self, commit=True):
+        usuario = super().save(commit= False)
+        usuario.set_password(self.cleaned_data['password'])
+        usuario.tipo_usuario=1
+        if commit:
+            usuario.save()
+        return usuario
+
 class Registro_chofer (forms.ModelForm):
 
     class Meta:
@@ -69,6 +77,17 @@ class Registro_ruta (forms.ModelForm):
                   'duracion',
                   'duracion_en'
                   )
+
+    def save_ruta(self, ciudades, commit=True):
+        ruta = super().save(commit= False)
+        for i in ciudades:
+            if ruta.origen == i.nombre:
+                ruta.codigo_origen = i.codigo_postal
+            if ruta.destino == i.nombre:
+                ruta.codigo_destino = i.codigo_postal
+        if commit:
+            ruta.save()
+        return ruta
 
 class Registro_ciudad (forms.ModelForm):
     class Meta:

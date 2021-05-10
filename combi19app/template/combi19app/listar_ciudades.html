@@ -91,6 +91,12 @@
             <div class='alert alert-danger' role='alert'>
               La ciudad no puede eliminarse porque pertenece a un viaje
             </div>
+            {% else %}
+              {% if mensaje == "no_puede2" %}
+                <div class='alert alert-danger' role='alert'>
+                  La ciudad no puede eliminarse porque pertenece a una ruta
+                </div>
+              {% endif %}
           {% endif %}
         {% endif %}
       {% endif %}

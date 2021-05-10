@@ -108,6 +108,8 @@ class Ruta (models.Model):
     km = models.IntegerField()
     duracion = models.IntegerField()
     duracion_en = models.CharField(max_length=10)
+    codigo_origen = models.IntegerField()
+    codigo_destino = models.IntegerField()
 
     def publish(self):
         self.save()
