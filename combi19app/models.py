@@ -41,7 +41,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     dni = models.BigIntegerField(primary_key = True)
     nombre = models.CharField(max_length=20)
     apellido = models.CharField(max_length=20)
-    email = models.EmailField( max_length=254, unique=True)
+    email = models.EmailField( max_length=254)
     direccion = models.CharField(max_length=20)
     telefono = models.IntegerField()
     #is_active = models.BooleanField(default= True)

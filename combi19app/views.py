@@ -104,10 +104,12 @@ class FormularioRegistro (HttpRequest):
     def procesar_formulario (request):
         registro = Registro(request.POST)
         if registro.is_valid():
+            print(registro.cleaned_data.get('dni'))
             registro.save()
             registro = Registro()
             return render(request, "registrarse.html", {"dato": registro, "mensaje": "ok"})
         else:
+            print(registro.cleaned_data.get('dni'))
             confirmacion=errores(registro)
             registro = Registro()
             return render(request, "registrarse.html", {"mensaje": "not_ok", "errores": confirmacion})
@@ -121,13 +123,14 @@ class FormularioRegistroChofer (HttpRequest):
     def procesar_formulario (request):
         registro = Registro(request.POST)
         if registro.is_valid():
-            registro.save_chofer()
-            registro = Registro()
-            return render(request, "registrar_chofer.html", {"dato": registro, "mensaje": "ok"})
-        else:
-            confirmacion=errores(registro)
-            registro = Registro()
-            return render(request, "registrar_chofer.html", {"mensaje": "not_ok", "errores": confirmacion})
+            confirmacion = errores(registro)
+            if len(confirmacion) == 0:
+                registro.save_chofer()
+                registro = Registro()
+                return render(request, "registrar_chofer.html", {"dato": registro, "mensaje": "ok"})
+        confirmacion=errores(registro)
+        registro = Registro()
+        return render(request, "registrar_chofer.html", {"mensaje": "not_ok", "errores": confirmacion})
     @login_required
     def editar_chofer(request, dni):
         chofer = Usuario.objects.get(dni=dni)
@@ -242,9 +245,14 @@ class FormularioRuta (HttpRequest):
         ruta = Ruta.objects.get(nombre=nombre)
         registro = Registro_ruta(request.POST, instance=ruta)
         if registro.is_valid():
-            registro.save()
-            response = redirect('/listar_rutas/')
-            return response
+            confirmacion = errores_ruta(registro)
+            if len(confirmacion) == 0 :
+                registro.save()
+                response = redirect('/listar_rutas/')
+                return response
+            else:
+                ciudad = Ciudad.objects.all()
+                return render (request, "modificar_ruta.html", {"rutas":ruta,"ciudades":ciudad, "mensaje": "not_ok", "errores":confirmacion})
         #rutas = Ruta.objects.all()
         #return render (request, "listar_rutas.html", {"rutas": rutas, "mensaje": "editado"})
 
@@ -389,8 +397,10 @@ class FormularioViaje (HttpRequest):
         viaje = Viaje.objects.get(id=id_viaje)
         registro = Registro_viaje(request.POST, instance=viaje)
         if registro.is_valid():
-            v = Vehiculo.objects.get(patente=registro.cleaned_data.get('vehiculo'))
-            registro.save_viaje(v)
+            confirmacion = errores_viaje(registro)
+            if len(confirmacion) == 0:
+                v = Vehiculo.objects.get(patente=registro.cleaned_data.get('vehiculo'))
+                registro.save_viaje(v)
         else:
             dato = errores_viajes(registro, viaje)
             if dato.is_valid():

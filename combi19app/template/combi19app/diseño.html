@@ -46,7 +46,7 @@ crossorigin="anonymous"></script>
                   $('#modal-date').modal();
 
               })
-
+              $('#fecha').prop('required',true);
               $('#fecha').datepicker({
                   language: "es",
                   todayBtn: "linked",
@@ -56,6 +56,7 @@ crossorigin="anonymous"></script>
                   todayHighlight: true,
                   autoclose: true,
                   startDate: new Date(),
+                  editable: true,
                   endDate: "31/12/2021"
 
               });
@@ -69,6 +70,7 @@ crossorigin="anonymous"></script>
                   todayHighlight: true,
                   autoclose: true,
                   startDate: new Date(),
+                  editable: true,
                   endDate: "31/12/2021"
 
               });

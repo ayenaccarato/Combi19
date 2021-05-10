@@ -35,13 +35,13 @@
             <h4> <p style="margin: 40px">Complete el formulario </p></h4>
             <h5>
               <br>
-              <p> <input class="col-sm-12 col-form-label" type="text" pattern="^([A-Za-z]{3}[0-9]{3}|[A-Za-z]{2}[0-9]{3}[A-Za-z]{2})" title= "Ingrese una patente con formato valido. Por ejemplo 'ABC123' o 'abc123', 'AA123AA' o 'aa123aa'" name="patente" placeholder="Ingrese la patente sin espacios"></p>
+              <p> <input class="col-sm-12 col-form-label" type="text" pattern="^([A-Za-z]{3}[0-9]{3}|[A-Za-z]{2}[0-9]{3}[A-Za-z]{2})" title= "Ingrese una patente con formato valido. Por ejemplo 'ABC123' o 'abc123', 'AA123AA' o 'aa123aa'" name="patente" placeholder="Ingrese la patente sin espacios" required></p>
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
                   <label class="input-group-text" type="text" name="marca" for="inputGroupSelect01">Marca</label>
                 </div>
-                <select class="custom-select" type="text" name="marca" id="marca">
-                  <option disabled=True selected>--Seleccione una marca--</option>
+                <select class="custom-select" type="text" name="marca" id="marca" required>
+                  <option value="" disabled=True selected>--Seleccione una marca--</option>
                   <option value="Mercedes-Benz">Mercedes-Benz</option>
                   <option value="Agrale">Agrale</option>
                   <option value="Renault">Renault</option>
@@ -55,8 +55,8 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" name="modelo" for="inputGroupSelect01">Modelo</label>
                 </div>
-                <select class="custom-select" type="text" name="modelo" id="modelo">
-                  <option disabled=True selected>--Seleccione un modelo--</option>
+                <select class="custom-select" type="text" name="modelo" id="modelo" required>
+                  <option value="" disabled=True selected>--Seleccione un modelo--</option>
                   <option value="2000">2000</option>
                   <option value="2001">2001</option>
                   <option value="2002">2002</option>
@@ -86,8 +86,8 @@
                 <div class="input-group-prepend">
                   <label class="input-group-text" name="capacidad" for="inputGroupSelect01">Cantidad de asientos</label>
                 </div>
-                <select class="custom-select" type=IntegerField name="capacidad" id="capacidad">
-                  <option disabled=True selected>--Seleccione la capacidad--</option>
+                <select class="custom-select" type=IntegerField name="capacidad" id="capacidad" required>
+                  <option value="" disabled=True selected>--Seleccione la capacidad--</option>
                   <option value="10">10</option>
                   <option value="11">11</option>
                   <option value="12">12</option>

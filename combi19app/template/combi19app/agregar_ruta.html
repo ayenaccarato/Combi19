@@ -41,8 +41,8 @@
                 <p>
                   <div class="input-group-prepend">
                     <label class="input-group-text" type="text" name="origen" for="inputGroupSelect01">Ciudad origen</label>
-                    <select class="col-sm col-form-label custom-select-md" type="text" name="origen" id="origen">
-                      <option disabled=True selected> --Seleccione-- </option>
+                    <select class="col-sm col-form-label custom-select-md" type="text" name="origen" id="origen" required>
+                      <option value="" disabled=True selected> --Seleccione-- </option>
                         {% for i in ciudades %}
                           <option value= "{{i.nombre}}">{{i.nombre}} ({{i.nombre}}-{{i.provincia}}-{{i.pais}})</option>
                           {% endfor %}
@@ -52,20 +52,20 @@
               <p>
                 <div class="input-group-prepend">
                   <label class="input-group-text" type="text" name="destino" for="inputGroupSelect01">Ciudad destino</label>
-                  <select class="col-sm col-form-label custom-select-md" type="text" name="destino" id="destino">
-                    <option disabled=True selected> --Seleccione-- </option>
+                  <select class="col-sm col-form-label custom-select-md" type="text" name="destino" id="destino" required>
+                    <option disabled=True value="" selected> --Seleccione-- </option>
                       {% for i in ciudades %}
                         <option value= "{{i.nombre}}">{{i.nombre}} ({{i.nombre}}-{{i.provincia}}-{{i.pais}})</option>
                       {% endfor %}
                   </select>
                 </div>
               </p>
-              <p> <input hidden type="text" name="nombre" placeholder="Nombre" id="nombre"></p>
-              <p> <input class="col-sm-12 col-form-label" type="text" pattern="[0-9]+" title= "Ingrese los km de la ruta" name="km" placeholder="Km"></p>
+              <p> <input hidden type="text" name="nombre" placeholder="Nombre" id="nombre" required></p>
+              <p> <input class="col-sm-12 col-form-label" type="text" pattern="[0-9]+" title= "Ingrese los km de la ruta" name="km" placeholder="Km" required></p>
               <div class="input-group">
-                  <input class="col-sm-10 col-form-label" type="text" name="duracion" placeholder="Duración">
-                  <select class="col-sm col-form-label custom-select-md" name= "duracion_en" id="duracion_en">
-                    <option disabled=True selected>--Seleccione--</option>
+                  <input class="col-sm-10 col-form-label" type="text" pattern="^([0-9]+)" name="duracion" placeholder="Duración" required>
+                  <select class="col-sm col-form-label custom-select-md" name= "duracion_en" id="duracion_en" required>
+                    <option value="" disabled=True selected>--Seleccione--</option>
                     <option class="dropdown-item" value="horas">Hora/s</option>
                     <option class="dropdown-item" value="minutos">Minutos</option>
                   </select>
