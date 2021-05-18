@@ -9,7 +9,7 @@
     </div>
     {% endif %}
 
-  <form action="/actualizar_chofer/{{choferes.dni}}/" method="POST">
+  <form action="/actualizar_chofer/{{choferes.id}}/" method="POST">
     {% csrf_token %}
     {% if mensaje == "ok" %}
       <div class='alert alert-success' role='alert'>
@@ -45,7 +45,7 @@
             <h5>
               <div class= "input-group-prepend">
                 <label class="input-group-text" type="text" name="dni_label" for="inputGroupSelect01">DNI</label>
-                <input readonly style= "background-color: #adb5b8;" class="col-sm col-form-label" type="text" name="dni" placeholder="DNI" id="dni">
+                <input class="col-sm col-form-label" type="text" name="dni" placeholder="DNI" id="dni">
               </div>
               <br>
               <div class="input-group-prepend">

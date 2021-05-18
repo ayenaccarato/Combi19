@@ -10,7 +10,7 @@
     </div>
     {% endif %}
 
-  <form action="{% url 'actualizarVehiculo' vehiculo.patente %}" method="POST">
+  <form action="{% url 'actualizarVehiculo' vehiculo.id %}" method="POST">
     {% csrf_token %}
     {% if mensaje == "ok" %}
       <div class='alert alert-success' role='alert'>
@@ -33,7 +33,7 @@
               <br>
                 <div class="input-group-prepend">
                   <label class="input-group-text" type="text" name="patente" for="inputGroupSelect01">Patente</label>
-                  <input readonly style="background-color: #adb5b8;" id="patente"  class="col-sm col-form-label" type="text" pattern="[A-Z]{3,3}[0-9]{3,3}" title= "La patente no se puede modificar" name="patente" placeholder="Ingrese la patente sin espacios">
+                  <input id="patente" class="col-sm col-form-label" type="text" pattern="[A-Z]{3,3}[0-9]{3,3}" title= "Ingrese una patente con formato valido. Por ejemplo 'ABC123' o 'abc123', 'AA123AA' o 'aa123aa'" name="patente" placeholder="Ingrese la patente sin espacios">
                 </div>
                 <br>
               <div class="input-group mb-3">

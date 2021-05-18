@@ -93,22 +93,7 @@
                       <option class="dropdown-item" value="PM">PM</option>
                     </select>
                   </div>
-                  <p>
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <label class="input-group-text col-sm col-form-label" type="text" name="ciudad_origen" for="inputGroupSelect01">Ciudad de origen</label>
-                      </div>
-                        <select class="form-select col-sm " type="text" name="ciudad_origen" id="ciudad_origen" required>
-                          <option value="" disabled=True selected> --Seleccione-- </option>
-                            {% for i in ciudades %}
-                                <option value= "{{i}}">{{i.nombre}} ({{i.nombre}}-{{i.provincia}}-{{i.pais}})</option>
-                            {% endfor %}
-                      </select>
-                    </div>
-                  </p>
-
               <br>
-
               <div class="dates">
                 <div class="input-group">
                   <div class="input-group-prepend">
@@ -122,7 +107,7 @@
               <br>
 
 
-              <div class="input-group">
+              <!--div class="input-group">
                 <div class="input-group-prepend">
                     <label class="input-group-text" type="text" name="hora_llegada1" for="inputGroupSelect01">Hora llegada  </label>
                 </div>
@@ -162,21 +147,7 @@
                     <option class="dropdown-item" value="AM">AM</option>
                     <option class="dropdown-item" value="PM">PM</option>
                   </select>
-              </div>
-              <p>
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <label class="input-group-text" type="text" name="ciudad_destino" for="inputGroupSelect01">Ciudad de destino</label>
-                  </div>
-                  <select class="form-select col-sm" type="text" name="ciudad_destino" id="ciudad_destino" required>
-                    <option value="" disabled=True selected> --Seleccione-- </option>
-                      {% for i in ciudades %}
-                          <option value= "{{i}}">{{i.nombre}} ({{i.nombre}}-{{i.provincia}}-{{i.pais}})</option>
-                      {% endfor %}
-                  </select>
-                </div>
-              </p>
-
+              </div-->
               <br>
 
               <p>
@@ -254,6 +225,7 @@
     document.getElementById('asientos_total').value=0
     document.getElementById('asientos_disponibles').value=0
     document.getElementById('fecha').value = document.getElementById('fecha').value.replace('00:00:00+00:00','')
+
   }
 
 

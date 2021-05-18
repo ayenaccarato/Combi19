@@ -38,7 +38,7 @@ class Usuario_Manager(BaseUserManager):
 class Usuario(AbstractBaseUser, PermissionsMixin):
     #usuario = models.CharField(max_length=15, unique=True)
     #contraseña = models.CharField(max_length=3000)
-    dni = models.BigIntegerField(primary_key = True)
+    dni = models.BigIntegerField(unique=True)
     nombre = models.CharField(max_length=20)
     apellido = models.CharField(max_length=20)
     email = models.EmailField( max_length=254)
@@ -75,7 +75,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
 
 class Vehiculo (models.Model):
-    patente = models.CharField(max_length=10, primary_key=True)
+    patente = models.CharField(max_length=10)
     marca = models.CharField(max_length=50)
     modelo = models.CharField(max_length=4)
     capacidad = models.IntegerField( verbose_name="Cantidad de asientos")
@@ -91,7 +91,7 @@ class Vehiculo (models.Model):
 class Ciudad (models.Model):
     nombre = models.CharField(max_length=30)
     provincia = models.CharField(max_length=25)
-    codigo_postal = models.IntegerField(primary_key=True)
+    codigo_postal = models.IntegerField()
     pais = models.CharField(max_length=20, default="Argentina")
 
     def publish(self):
@@ -104,7 +104,7 @@ class Ciudad (models.Model):
 class Ruta (models.Model):
     origen = models.CharField(max_length=30)
     destino = models.CharField(max_length=30)
-    nombre = models.CharField(max_length=30, primary_key=True)
+    nombre = models.CharField(max_length=30)
     km = models.IntegerField()
     duracion = models.IntegerField()
     duracion_en = models.CharField(max_length=10)

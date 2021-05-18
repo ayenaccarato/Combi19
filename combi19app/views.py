@@ -57,18 +57,34 @@ def errores(registro):
 def errores_ruta(ruta):
     lista = []
 
-    if ruta.cleaned_data.get('nombre') == None:
-        lista+=[1]
+    rutas = Ruta.objects.all()
+    for r in rutas:
+        if ruta.cleaned_data.get('nombre').upper() == r.nombre:
+            lista+=[1]
+            break
+
     if ruta.cleaned_data.get('origen') == ruta.cleaned_data.get('destino'):
         lista+=[2]
+
+    for r in rutas:
+        if (ruta.cleaned_data.get('origen') == r.destino) and (ruta.cleaned_data.get('destino') == r.origen):
+            lista+=[3]
+            break
 
     return set(lista)
 
 def errores_ciudad(ciudad):
     lista = []
+    ciudades = Ciudad.objects.all()
+    for c in ciudades:
+        if ciudad.cleaned_data.get('codigo_postal') == c.codigo_postal:
+            lista+=[1]
+            break
 
-    if ciudad.cleaned_data.get('codigo_postal') == None:
-        lista+=[1]
+    for c in ciudades:
+        if (ciudad.cleaned_data.get('nombre').upper() == c.nombre) and ciudad.cleaned_data.get('provincia') == c.provincia:
+            lista+=[2]
+            break
 
     return set(lista)
 
@@ -153,16 +169,18 @@ class FormularioRegistroChofer (HttpRequest):
         registro = Registro()
         return render(request, "registrar_chofer.html", {"mensaje": "not_ok", "errores": confirmacion})
     @login_required
-    def editar_chofer(request, dni):
-        chofer = Usuario.objects.get(dni=dni)
+    def editar_chofer(request, id_chofer):
+        chofer = Usuario.objects.get(id=id_chofer)
         registro = Registro_chofer(instance=chofer)
         return render(request, "modificar_chofer.html", {"dato": registro, "choferes": chofer})
     @login_required
-    def actualizar_chofer(request, dni):
-        chofer = Usuario.objects.get(dni=dni)
+    def actualizar_chofer(request, id_chofer):
+        chofer = Usuario.objects.get(id=id_chofer)
         registro = Registro_chofer(request.POST, instance=chofer)
         if registro.is_valid():
-            registro.save()
+            confirmacion = errores(registro)
+            if len(confirmacion) == 0:
+                registro.save()
         response = redirect('/listar_choferes/')
         return response
         #choferes = Usuario.objects.filter(tipo_usuario=2)
@@ -209,14 +227,14 @@ class FormularioVehiculo (HttpRequest):
             return render (request, "agregar_vehiculo.html", {"mensaje": "vacio"})
 
     @login_required
-    def editar(request, patente_vehiculo):
-        vehiculo = Vehiculo.objects.get(patente=patente_vehiculo)
+    def editar(request, id_vehiculo):
+        vehiculo = Vehiculo.objects.get(id=id_vehiculo)
         form = Registro_vehiculo(instance=vehiculo)
         return render (request, "modificar_vehiculo.html", {"form":form, "vehiculo":vehiculo})
 
     @login_required
-    def actualizar(request, patente_vehiculo):
-        vehiculo = Vehiculo.objects.get(patente=patente_vehiculo)
+    def actualizar(request, id_vehiculo):
+        vehiculo = Vehiculo.objects.get(id=id_vehiculo)
         form = Registro_vehiculo(request.POST, instance = vehiculo)
         if form.is_valid():
         #    db.connections.close_all()
@@ -233,18 +251,18 @@ class ListarVehiculos(HttpRequest):
         contexto = {'vehiculos': vehiculos, 'cantidad':len(vehiculos)}
         return render (request, "listar_vehiculos.html", contexto)
     @login_required
-    def mostrar_detalle(request, patente_vehiculo):
-        detalle= Vehiculo.objects.get(pk=patente_vehiculo)
+    def mostrar_detalle(request, id_vehiculo):
+        detalle= Vehiculo.objects.get(pk=id_vehiculo)
         return render (request, "listar_vehiculos.html", {"dato":detalle, "mensaje":"detalle"})
     @login_required
-    def mostrar_detalle_viaje_vehiculo(request, patente_vehiculo):
-        detalle= Vehiculo.objects.get(pk=patente_vehiculo)
+    def mostrar_detalle_viaje_vehiculo(request, id_vehiculo):
+        detalle= Vehiculo.objects.get(pk=id_vehiculo)
         return render (request, "listar_vehiculos.html", {"dato":detalle, "mensaje":"detalleViajeVehiculo"})
 
 class EliminarVehiculo(HttpRequest):
     @login_required
-    def eliminar_vehiculo(request, patente_vehiculo):
-        vehiculo_eliminado = Vehiculo.objects.get(pk=patente_vehiculo)
+    def eliminar_vehiculo(request, id_vehiculo):
+        vehiculo_eliminado = Vehiculo.objects.get(pk=id_vehiculo)
         try:
             vehiculo_eliminado.delete()
             vehiculo = Vehiculo.objects.all()
@@ -276,14 +294,14 @@ class FormularioRuta (HttpRequest):
         return render (request, "agregar_ruta.html", {"mensaje": "not_ok", "errores":confirmacion, "ciudades": ciudad})
 
     @login_required
-    def editar_ruta(request, nombre):
-        ruta = Ruta.objects.get(nombre=nombre)
+    def editar_ruta(request, id_ruta):
+        ruta = Ruta.objects.get(id=id_ruta)
         registro = Registro_ruta(instance=ruta)
         ciudad = Ciudad.objects.all()
         return render(request, "modificar_ruta.html", {"dato": registro, "rutas": ruta, "ciudades": ciudad})
     @login_required
-    def actualizar_ruta(request, nombre):
-        ruta = Ruta.objects.get(nombre=nombre)
+    def actualizar_ruta(request, id_ruta):
+        ruta = Ruta.objects.get(id=id_ruta)
         registro = Registro_ruta(request.POST, instance=ruta)
         if registro.is_valid():
             confirmacion = errores_ruta(registro)
@@ -315,18 +333,20 @@ class FormularioCiudad (HttpRequest):
         ciudad = Registro_ciudad()
         return render (request, "agregar_ciudad.html", {"mensaje": "not_ok", "errores":confirmacion})
     @login_required
-    def editar(request, codigo_postal):
-        ciudad = Ciudad.objects.get(codigo_postal=codigo_postal)
+    def editar(request, id_ciudad):
+        ciudad = Ciudad.objects.get(id=id_ciudad)
         form = Registro_ciudad(instance=ciudad)
         return render (request, "modificar_ciudad.html", {"form":form, "ciudad":ciudad})
     @login_required
-    def actualizar(request, codigo_postal):
-        ciudad = Ciudad.objects.get(codigo_postal=codigo_postal)
+    def actualizar(request, id_ciudad):
+        ciudad = Ciudad.objects.get(id=id_ciudad)
         form = Registro_ciudad(request.POST, instance = ciudad)
         if form.is_valid():
-            form.save_ciudad()
-            response = redirect('/listar_ciudades/')
-            return response
+            ok = errores_ciudad(form)
+            if len(ok) == 0:
+                form.save_ciudad()
+        response = redirect('/listar_ciudades/')
+        return response
             #ciudades= Ciudad.objects.all()
             #return render (request, "listar_ciudades.html", {"form":form, "ciudad":ciudad, "mensaje": "ok", "ciudades":ciudades, "mensaje": "editado"})
 
@@ -338,19 +358,19 @@ class ListarCiudad (HttpRequest):
         contexto = {'ciudades': ciudad, 'cantidad':len(ciudad)}
         return render (request, "listar_ciudades.html", contexto)
     @login_required
-    def mostrar_detalle(request, codigo_postal):
-        detalle= Ciudad.objects.get(pk=codigo_postal)
+    def mostrar_detalle(request, id_ciudad):
+        detalle= Ciudad.objects.get(pk=id_ciudad)
         return render (request, "listar_ciudades.html", {"dato":detalle, "mensaje":"detalle"})
     @login_required
-    def mostrar_detalle_viaje_ciudad(request, codigo_postal):
-        detalle= Ciudad.objects.get(pk=codigo_postal)
+    def mostrar_detalle_viaje_ciudad(request, id_ciudad):
+        detalle= Ciudad.objects.get(pk=id_ciudad)
         return render (request, "listar_ciudades.html", {"dato":detalle, "mensaje":"detalleViajeCiudad"})
 
 class EliminarCiudad (HttpRequest):
     @login_required
-    def eliminar_ciudad(request, codigo_postal):
-        ciudad = Ciudad.objects.filter(pk=codigo_postal).first
-        ciudad_eliminada = Ciudad.objects.get(pk=codigo_postal)
+    def eliminar_ciudad(request, id_ciudad):
+        ciudad = Ciudad.objects.filter(pk=id_ciudad).first
+        ciudad_eliminada = Ciudad.objects.get(pk=id_ciudad)
         confirmacion = verificar_eliminacion_ciudad(ciudad)
         ciudades = Ciudad.objects.all()
         if len(confirmacion) == 0:
@@ -369,16 +389,16 @@ class ListarRuta (HttpRequest):
         contexto = {'rutas': ruta, 'cantidad':len(ruta)}
         return render (request, "listar_rutas.html", contexto)
     @login_required
-    def mostrar_detalle(request, nombre):
-        detalle= Ruta.objects.get(pk=nombre)
+    def mostrar_detalle(request, id_ruta):
+        detalle= Ruta.objects.get(pk=id_ruta)
         return render (request, "listar_rutas.html", {"dato":detalle, "mensaje":"detalle"})
     @login_required
-    def mostrar_detalle_viaje_ruta(request, nombre):
-        detalle= Ruta.objects.get(pk=nombre)
+    def mostrar_detalle_viaje_ruta(request, id_ruta):
+        detalle= Ruta.objects.get(pk=id_ruta)
         return render (request, "listar_rutas.html", {"dato":detalle, "mensaje":"detalleViajeRuta"})
     @login_required
-    def eliminar_ruta(request, nombre):
-        ruta_eliminada = Ruta.objects.get(pk=nombre)
+    def eliminar_ruta(request, id_ruta):
+        ruta_eliminada = Ruta.objects.get(pk=id_ruta)
         try:
             ruta_eliminada.delete()
             ruta = Ruta.objects.all()
@@ -482,16 +502,16 @@ class ListarChofer(HttpRequest):
         contexto = {'choferes': chofer, 'cantidad': len(chofer)}
         return render (request, "listar_choferes.html", contexto)
     @login_required
-    def mostrar_detalle(request, dni):
-        detalle = Usuario.objects.get(pk=dni)
+    def mostrar_detalle(request, id_chofer):
+        detalle = Usuario.objects.get(pk=id_chofer)
         return render (request, "listar_choferes.html", {"dato": detalle, "mensaje":"detalle"})
     @login_required
-    def mostrar_detalle_viaje_chofer(request, dni):
-        detalle = Usuario.objects.get(pk=dni)
+    def mostrar_detalle_viaje_chofer(request, id_chofer):
+        detalle = Usuario.objects.get(pk=id_chofer)
         return render (request, "listar_choferes.html", {"dato": detalle, "mensaje":"detalleViajeChofer"})
     @login_required
-    def eliminar_chofer(request, dni):
-        chofer_eliminado = Usuario.objects.get(pk=dni)
+    def eliminar_chofer(request, id_chofer):
+        chofer_eliminado = Usuario.objects.get(pk=id_chofer)
         try:
             chofer_eliminado.delete()
             chofer = Usuario.objects.filter(tipo_usuario=2)

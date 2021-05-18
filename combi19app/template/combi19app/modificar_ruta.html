@@ -9,7 +9,7 @@
     </div>
     {% endif %}
 
-  <form action="/actualizar_ruta/{{rutas.nombre}}/" method="POST">
+  <form action="/actualizar_ruta/{{rutas.id}}/" method="POST">
     {% csrf_token %}
     {% if mensaje == "ok" %}
       <div class='alert alert-success' role='alert'>
@@ -20,13 +20,20 @@
       {% for i in errores %}
         {% if i == 1 %}
           <div class= 'alert alert-danger' role='alert'>
-              Fallo en el registro de la ruta. El nombre ingresado ya esta registrado
+              Fallo en el registro de la ruta. El nombre ingresado ya está registrado
             </div>
         {% else %}
           {% if i == 2 %}
             <div class= 'alert alert-danger' role='alert'>
               Fallo en el registro de la ruta. No se pueden realizar viajes dentro de la misma ciudad
             </div>
+          {% else %}
+            {% if i == 3 %}
+              <div class= 'alert alert-danger' role='alert'>
+                Fallo en el registro de la ruta. La ruta ya existe.
+              </div>
+            {% endif %}
+          {% endif %}
         {% endif %}
       {% endif %}
     {% endfor %}
@@ -41,7 +48,7 @@
               <p>
                 <div class= "input-group-prepend">
                   <label class="input-group-text" type="text" name="nombre_label" for="inputGroupSelect01">Nombre</label>
-                  <input readonly style= "background-color: #adb5b8;" class="col-sm col-form-label" type="text" name="nombre" title="El nombre no puede ser modificado" placeholder="Nombre" id="nombre">
+                  <input class="col-sm col-form-label" type="text" name="nombre" placeholder="Nombre" id="nombre">
                 </div>
                 <br>
                 <div class="input-group-prepend">

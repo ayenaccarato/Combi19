@@ -8,7 +8,7 @@
       fallo en el registro
     </div>
     {% endif %}
-  <form action="actualizarCiudad/{{codigo_postal}}" method="POST">
+  <form action="actualizarCiudad/{{id}}" method="POST">
     {% csrf_token %}
     {% if mensaje == "ok" %}
       <div class='alert alert-success' role='alert'>
@@ -19,12 +19,12 @@
       {% for i in errores %}
         {% if i == 1 %}
           <div class= 'alert alert-danger' role='alert'>
-              Fallo en la actualizacion de la ciudad. El codigo postal ingresado ya esta registrado
+              Fallo en la actualizacion de la ciudad. El codigo postal ingresado ya está registrado
             </div>
         {% else %}
           {% if i == 2 %}
             <div class= 'alert alert-danger' role='alert'>
-              Fallo en la actualizacion de la ciudad. El nombre ingresado ya esta registrado para esa provincia
+              Fallo en la actualizacion de la ciudad. La ciudad ya existe.
             </div>
           {% endif %}
         {% endif %}
@@ -40,7 +40,7 @@
               <br>
               <div class= "input-group-prepend">
                 <label class="input-group-text" type="text" name="cp" for="inputGroupSelect01">Código postal</label>
-                <input readonly style="background-color: #adb5b8;" id="codigo_postal" class="col-sm col-form-label" type="text" pattern="[0-9]{4}" title= "El código postal no puede modificarse" name="codigo_postal" placeholder="Codigo postal"></p>
+                <input id="codigo_postal" class="col-sm col-form-label" type="text" pattern="^([0-9]+){4}" title= "El código postal debe contener 4 dígitos" name="codigo_postal" placeholder="Codigo postal"></p>
               </div>
               <br>
               <div class= "input-group-prepend">
