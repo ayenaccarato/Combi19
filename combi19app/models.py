@@ -144,3 +144,7 @@ class Pasajes(models.Model):
     nro_viaje = models.ForeignKey(Viaje, on_delete=models.PROTECT)
     estado = models.CharField(max_length=20)
     tarjeta = models.ForeignKey(Tarjeta, on_delete=models.PROTECT)
+
+class Insumo(models.Model):
+    nombre = models.CharField(max_length=20)
+    precio = models.DecimalField(max_digits=5, decimal_places=2) #Hay que poner como maximo 5 números, 2 tienen que ser decimal ej.150.00-20.00 etc

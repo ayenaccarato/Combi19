@@ -1,0 +1,61 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Agregar_insumo{% endblock %}
+{% block h1 %}<center>Agregar insumo</center>{% endblock %}
+{% block content %}
+  {% if form.errors %}
+    <div class= 'alert alert-danger' role='alert'>
+      fallo en el registro
+    </div>
+    {% endif %}
+
+  <form action="/guardar_insumo/" method="POST">
+    {% csrf_token %}
+    {% if mensaje == "ok" %}
+      <div class='alert alert-success' role='alert'>
+        El insumo se registró exitosamente!
+      </div>
+    {% endif %}
+    {% if mensaje == "not_ok" %}
+      {% for i in errores %}
+        {% if i == 1 %}
+          <div class= 'alert alert-danger' role='alert'>
+              Fallo en el registro del insumo. El nombre ingresado ya está registrado
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    <div class="container">
+      <center>
+        <div class="row">
+          <div class="col-sm">
+            <h4> <p style="margin: 40px">Complete el formulario </p></h4>
+            <h5>
+              <br>
+                <p>
+                  <input class="col-sm-12 col-form-label" type="text" name="nombre" placeholder="Nombre" required>
+                </p>
+              <p>
+                <input class="col-sm-12 col-form-label" type="text" name="precio" title="Ingresar un precio (Ej. 150,50)" placeholder="Precio" required>
+              </p>
+
+            </h5>
+          </div>
+        </div>
+      </center>
+    </div>
+  <center>
+    <br>
+    <br>
+    <br>
+      <p>
+        <button style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Agregar</button>
+      </p>
+      <p>
+        <a class="btn btn-dark" href="/listar_insumos">Cancelar</a>
+      </p>
+</center>
+  </form>
+
+{% endblock %}

@@ -66,11 +66,6 @@ def errores_ruta(ruta):
     if ruta.cleaned_data.get('origen') == ruta.cleaned_data.get('destino'):
         lista+=[2]
 
-    for r in rutas:
-        if (ruta.cleaned_data.get('origen') == r.destino) and (ruta.cleaned_data.get('destino') == r.origen):
-            lista+=[3]
-            break
-
     return set(lista)
 
 def errores_ciudad(ciudad):
@@ -515,3 +510,71 @@ class ListarChofer(HttpRequest):
         except:
             chofer = Usuario.objects.filter(tipo_usuario=2)
             return render (request, "listar_choferes.html", {"choferes": chofer, "mensaje":"no_puede", "cantidad": len(chofer)})
+
+class ListarAdministradores(HttpRequest):
+    @login_required
+    def crear_listado(request):
+        admin = Usuario.objects.filter(tipo_usuario=1)
+        contexto = {'admin': admin, 'cantidad':len(admin)}
+        return render (request, "listar_admin.html", contexto)
+    @login_required
+    def mostrar_detalle(request, id_admin):
+        detalle= Usuario.objects.get(pk=id_admin)
+        return render (request, "listar_admin.html", {"dato":detalle, "mensaje":"detalle"})
+
+    @login_required
+    def eliminar_admin(request, id_admin):
+        admin_eliminado = Usuario.objects.get(pk=id_admin)
+        try:
+            admin_eliminado.delete()
+            admin = Usuario.objects.filter(tipo_usuario=1)
+            return render (request, "listar_admin.html", {"admin": admin, "mensaje":"eliminado", "cantidad": len(admin)})
+        except:
+            admin = Usuario.objects.filter(tipo_usuario=1)
+            return render (request, "listar_admin.html", {"admin": admin, "mensaje":"no_puede", "cantidad": len(admin)})
+
+class ListarPasajeros(HttpRequest):
+    @login_required
+    def crear_listado(request):
+        usuarios = Usuario.objects.filter(tipo_usuario=3)
+        contexto = {'usuarios': usuarios, 'cantidad':len(usuarios)}
+        return render (request, "listar_pasajeros.html", contexto)
+
+def errores_insumo(insumo):
+    lista= []
+    insumos = Insumo.objects.all()
+
+    for i in insumos:
+        if insumo.cleaned_data.get('nombre') == i.nombre:
+            lista+=[1]
+            break
+    return set(lista)
+
+class FormularioInsumo(HttpRequest):
+    @login_required
+    def crear_formulario(request):
+        insumo = Registro_insumo()
+        return render (request, "agregar_insumo.html", {"dato": insumo})
+
+    @login_required
+    def procesar_formulario(request):
+        insumo = Registro_insumo(request.POST)
+        if insumo.is_valid():
+            confirmacion = errores_insumo(insumo)
+            if len(confirmacion) == 0:
+                print('entro')
+                insumo.save()
+                insumo = Registro_insumo()
+                return render (request, "agregar_insumo.html", {"dato": insumo, "mensaje":"ok"})
+
+        print('nope', insumo.cleaned_data.get('nombre'), insumo.cleaned_data.get('precio'))
+        confirmacion=errores_insumo(insumo)
+        insumo = Registro_insumo()
+        return render (request, "agregar_insumo.html", {"errores":confirmacion, "mensaje": "not_ok"})
+
+class ListarInsumos(HttpRequest):
+    @login_required
+    def crear_listado(request):
+        insumo = Insumo.objects.all()
+        contexto = {'insumos': insumo, 'cantidad':len(insumo)}
+        return render (request, "listar_insumos.html", contexto)

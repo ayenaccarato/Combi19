@@ -1,0 +1,102 @@
+{% extends "admin_base.html" %}
+{% block title %}Listar_insumos{% endblock %}
+{% block h1 %}<center>Listado de insumos</center>{% endblock %}
+
+{% block content %}
+    {% csrf_token %}
+    <p style= "float: right;">
+      <a id="agregar" style="display: block; padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_insumo" type="submit" class="btn btn-success" name=nombre>Agregar insumo</a>
+    </p>
+    <br>
+    <br>
+    {% if mensaje == "detalle" %}
+    <script>
+      document.getElementById("agregar").style.display = 'none'
+    </script>
+    <p style="float: right;">
+      <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_insumos" type="submit" class="btn btn-success" name=nombre >Volver a los listados</a>
+    </p>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <td>Nombre</td>
+        <td>precio</td>
+
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{dato.nombre}}</td>
+      <td>{{dato.precio}}</td>
+
+    </tr>
+  </table>
+
+    {% else %}
+
+      {% if mensaje == "eliminado"%}
+        <div class='alert alert-success' role='alert'>
+          El insumo se eliminó exitosamente!
+        </div>
+      {% endif %}
+
+    {% if insumos %}
+
+        <br>
+        <br>
+        <br>
+        <br>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <td>Nombre</td>
+              <td>Precio</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </thead>
+          <tbody>
+            {% for insumo in insumos %}
+            <tr>
+              <td>{{insumo.nombre}}</td>
+              <td>{{insumo.precio}}</td>
+
+              <!--td> <a class="btn btn-primary" href= "ver_detalle_pasajero/{{usuario.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver detalle</a></td-->
+                <td> <a class="btn btn-warning" href= "modificar_insumo/{{insumo.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Editar</a>  </td>
+                <td> <a class="btn btn-danger" href= "eliminar_insumo/{{insumo.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Eliminar</a>  </td>
+              </td>
+
+            </tr>
+            {% endfor %}
+              <br>
+              <br>
+              <!--form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+              </form-->
+              <div class="alert alert-success" role="alert">
+                Actualmente hay {{cantidad}} insumos cargados.
+              </div>
+      {% else %}
+        <br>
+        <br>
+        <br>
+        <br>
+        <div class="jumbotron jumbotron-fluid">
+          <div class="container">
+            <h1 class="display-4">Ups!</h1>
+            <p class="lead">No hay insumos cargados.</p>
+          </div>
+        </div>
+      </tbody>
+      </table>
+      {% endif %}
+
+  {% endif %}
+{% endblock %}

@@ -147,3 +147,11 @@ class Registro_viaje (forms.ModelForm):
         if commit:
             viaje.save()
         return viaje
+
+class Registro_insumo(forms.ModelForm):
+
+    class Meta:
+        model = Insumo
+        fields = ('nombre',
+                  'precio'
+                  )

@@ -1,0 +1,109 @@
+{% extends "admin_base.html" %}
+{% block title %}Listar administradores{% endblock %}
+{% block h1 %}
+  <center>Listado de administradores</center>
+{% endblock %}
+{% block content %}
+    {% csrf_token %}
+    <p style= "float: right;">
+        <a id="agregar" style="display:block; padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/registrar_admin" type="submit" class="btn btn-success" name=nombre >Agregar administrador</a>
+    </p>
+    <br>
+    <br>
+    {% if mensaje == "detalle" %}
+      <script>
+        document.getElementById("agregar").style.display = 'none'
+      </script>
+      <p style="float: right;">
+        <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_admin" type="submit" class="btn btn-success" name=nombre >Volver a los listados</a>
+      </p>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <td>Nombre</td>
+          <td>Apellido</td>
+          <td>Dni</td>
+          <td>Email</td>
+          <td>Teléfono</td>
+          <td>Dirección</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{dato.nombre}}</td>
+        <td>{{dato.apellido}}</td>
+        <td>{{dato.dni}}</td>
+        <td>{{dato.email}}</td>
+        <td>{{dato.telefono}}</td>
+        <td>{{dato.direccion}}</td>
+      </tr>
+
+    {% else %}
+
+      {% if mensaje == "eliminado"%}
+        <div class='alert alert-success' role='alert'>
+          El administrador se eliminó exitosamente!
+        </div>
+      {% else %}
+        {% if mensaje == "editado" %}
+        <div class='alert alert-success' role='alert'>
+          El administrador se modificó exitosamente!
+        </div>
+        {% endif %}
+      {% endif %}
+      {% if admin %}
+        <br>
+        <br>
+        <br>
+        <br>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <td>Nombre</td>
+              <td>Apellido</td>
+              <td>Dni</td>
+              <td>Email</td>
+              <td>Teléfono</td>
+              <td>Dirección</td>
+            </tr>
+          </thead>
+          <tbody>
+            {% for ad in admin %}
+            <tr>
+              <td scope="row">{{ad.nombre}}</td>
+              <td>{{ad.apellido}}</td>
+              <td>{{ad.dni}}</td>
+              <td>{{ad.email}}</td>
+              <td>{{ad.telefono}}</td>
+              <td>{{ad.direccion}}</td>
+              <!--td> <a class="btn btn-primary" href= "ver_detalle_admin/{{ad.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver detalle</a></td-->
+                <!--td> <a class="btn btn-warning" href= "modificar_admin/{{ad.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Editar</a>  </td-->
+                <td> <a class="btn btn-danger" href= "eliminar_admin/{{ad.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Eliminar</a>  </td>
+
+            </tr>
+            {% endfor %}
+            <div class="alert alert-success" role="alert">
+              Actualmente hay {{cantidad}} administradores cargados.
+            </div>
+        {% else %}
+          <br>
+          <br>
+          <br>
+          <br>
+          <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+              <h1 class="display-4">Ups!</h1>
+              <p class="lead">No hay administradores cargados.</p>
+            </div>
+          </div>
+        </tbody>
+      </table>
+    {% endif %}
+  {% endif %}
+{% endblock %}
