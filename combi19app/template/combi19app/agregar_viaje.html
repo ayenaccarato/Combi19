@@ -93,16 +93,6 @@
                       <option class="dropdown-item" value="PM">PM</option>
                     </select>
                   </div>
-              <br>
-              <div class="dates">
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                      <label class="input-group-text" type="text" name="fecha_llegada1" for="inputGroupSelect01">Fecha de llegada  </label>
-                  </div>
-                    <input value="" type="text" autocomplete="off" class="form-control" name= "fecha_llegada" id="fecha2" placeholder="dd-mm-aaaa" required/>
-                  </div>
-                </div>
-
 
               <br>
 
@@ -158,12 +148,12 @@
                   <select class="form-select col-sm" type="text" name="ruta" id="ruta" required>
                     <option value="" disabled=True selected> --Seleccione-- </option>
                       {% for i in rutas %}
-                          <option value= "{{i}}">{{i.nombre}}</option>
+                          <option value= "{{i.id}}">{{i.nombre}}</option>
                       {% endfor %}
                   </select>
                 </div>
               </p>
-
+              <input hidden type="text" name="fecha_llegada" id="fecha2">
               <p> <input hidden type="text" name="hora_salida" placeholder="hora salida" id="hora_salida"></p>
               <p> <input hidden type="text" name="hora_llegada" placeholder="hora llegada" id="hora_llegada"></p>
               <p> <input hidden type="text" name="asientos_total" placeholder="asientos_total" id="asientos_total"></p>
@@ -178,7 +168,7 @@
                       <option value="" disabled=True selected> --Seleccione-- </option>
                         {% for i in choferes %}
                           {% if i.tipo_usuario == 2 %}
-                            <option value= "{{i}}">{{i.nombre}} {{i.apellido}} / DNI {{i.dni}}</option>
+                            <option value= "{{i.id}}">{{i.nombre}} {{i.apellido}} / DNI {{i.dni}}</option>
                             {% endif %}
                           {% endfor %}
                     </select>
@@ -193,9 +183,9 @@
                     <option value="" disabled=True selected> --Seleccione-- </option>
                       {% for i in vehiculos %}
                         {% if i.premium %}
-                          <option value= "{{i}}">Patente: {{i.patente}} / Marca: {{i.marca}} / Cantidad de asientos: {{i.capacidad}} / Tipo de asiento: semi cama</option>
+                          <option value= "{{i.id}}">Patente: {{i.patente}} / Marca: {{i.marca}} / Cantidad de asientos: {{i.capacidad}} / Tipo de asiento: semi cama</option>
                         {% else %}
-                            <option value= "{{i}}">Patente: {{i.patente}} / Marca: {{i.marca}} / Cantidad de asientos: {{i.capacidad}} / Tipo de asiento: cama</option>
+                            <option value= "{{i.id}}">Patente: {{i.patente}} / Marca: {{i.marca}} / Cantidad de asientos: {{i.capacidad}} / Tipo de asiento: cama</option>
                         {% endif %}
                       {% endfor %}
                   </select>
@@ -219,12 +209,12 @@
 </form>
 <script>
   function horario(){
-    document.getElementById('hora_salida').value = (document.getElementById('hora_de_salida').value + ":" + document.getElementById('minuto_de_salida').value + " " + document.getElementById('horario_de_salida').value)
-    document.getElementById('hora_llegada').value = (document.getElementById('hora_de_llegada').value + ":" + document.getElementById('minuto_de_llegada').value + " " + document.getElementById('horario_de_llegada').value)
+    document.getElementById('hora_salida').value = (document.getElementById('hora_de_salida').value + ":" + document.getElementById('minuto_de_salida').value + ":" + document.getElementById('horario_de_salida').value)
     document.getElementById('vendidos').value = 0
     document.getElementById('asientos_total').value=0
     document.getElementById('asientos_disponibles').value=0
     document.getElementById('fecha').value = document.getElementById('fecha').value.replace('00:00:00+00:00','')
+    document.getElementById('fecha2').value = document.getElementById('fecha').value
 
   }
 

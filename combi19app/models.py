@@ -118,13 +118,13 @@ class Ruta (models.Model):
         return self.nombre
 
 class Viaje (models.Model):
-    fecha_salida = models.DateField()
-    fecha_llegada = models.DateField('%m/%d/%Y') # fijarse si es ida y vuelta
+    fecha_salida = models.DateTimeField()
+    fecha_llegada = models.DateTimeField('%m/%d/%Y') # fijarse si es ida y vuelta
     hora_salida = models.CharField(max_length=20)
-    hora_llegada = models.CharField(max_length=20)
+#    hora_llegada = models.CharField(max_length=20)
     ruta = models.ForeignKey(Ruta, related_name='+', on_delete=models.PROTECT)
-    ciudad_origen = models.ForeignKey(Ciudad, related_name='+', on_delete=models.PROTECT)
-    ciudad_destino = models.ForeignKey(Ciudad, related_name='+',on_delete=models.PROTECT)
+#    ciudad_origen = models.ForeignKey(Ciudad, related_name='+', on_delete=models.PROTECT)
+#    ciudad_destino = models.ForeignKey(Ciudad, related_name='+',on_delete=models.PROTECT)
     chofer = models.ForeignKey(Usuario, related_name='+', on_delete=models.PROTECT)
     vehiculo = models.ForeignKey(Vehiculo, related_name='+', on_delete=models.PROTECT)
     asientos_total = models.IntegerField(default=0)

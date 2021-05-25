@@ -91,11 +91,6 @@ def errores_ciudad(ciudad):
 def errores_viaje(viaje):
     lista=[]
 
-    if viaje.cleaned_data.get('ciudad_origen') == viaje.cleaned_data.get('ciudad_destino'):
-        lista+=[1]
-    if viaje.cleaned_data.get('fecha_salida') > viaje.cleaned_data.get('fecha_llegada'):
-        lista+=[2]
-
     return set(lista)
 
 def errores_vehiculo(vehiculo):
@@ -440,7 +435,8 @@ class FormularioViaje (HttpRequest):
             confirmacion = errores_viaje(viaje)
             if len(confirmacion) == 0:
                 v = Vehiculo.objects.get(patente=viaje.cleaned_data.get('vehiculo'))
-                viaje.save_viaje(v)
+                r = Ruta.objects.get(nombre=viaje.cleaned_data.get('ruta'))
+                viaje.save_viaje(v,r)
                 viaje = Registro_viaje()
                 return render (request, "agregar_viaje.html", {"dato": viaje, "mensaje":"ok", "minutos":minutos, "choferes":choferes, "vehiculos": vehiculos, "ciudades":ciudades, "rutas":rutas})
         confirmacion=errores_viaje(viaje)

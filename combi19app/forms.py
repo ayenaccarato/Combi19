@@ -1,6 +1,6 @@
 from django import forms
 from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje
-
+from datetime import datetime, timedelta
 
 class Registro (forms.ModelForm):
 
@@ -112,10 +112,7 @@ class Registro_viaje (forms.ModelForm):
         fields = ('fecha_salida',
                   'fecha_llegada',
                   'hora_salida',
-                  'hora_llegada',
                   'ruta',
-                  'ciudad_origen',
-                  'ciudad_destino',
                   'chofer',
                   'vehiculo',
                   'asientos_total',
@@ -123,10 +120,22 @@ class Registro_viaje (forms.ModelForm):
                   'vendidos'
                   )
 
-    def save_viaje(self, vehiculo, commit=True):
+    def save_viaje(self, vehiculo, ruta, commit=True):
         viaje = super().save(commit= False)
         viaje.asientos_total = vehiculo.capacidad
         viaje.asientos_disponibles = vehiculo.capacidad
+        hora = viaje.hora_salida.split(':')
+        if hora[2] == "AM":
+            viaje.fecha_salida = viaje.fecha_salida.replace(hour = int(hora[0]), minute=int(hora[1]))
+        else:
+            if int(hora[0]) == 12 :
+                viaje.fecha_salida = viaje.fecha_salida.replace(hour = 0, minute=int(hora[1]))
+            else:
+                viaje.fecha_salida = viaje.fecha_salida.replace(hour = int(hora[0]) + 12, minute=int(hora[1]))
+        if ruta.duracion_en == 'minutos':
+            viaje.fecha_llegada = viaje.fecha_salida + timedelta(minutes = int(ruta.duracion))
+        else:
+            viaje.fecha_llegada = viaje.fecha_salida + timedelta(hours = int(ruta.duracion))
         if commit:
             viaje.save()
         return viaje
