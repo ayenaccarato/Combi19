@@ -453,11 +453,14 @@ class FormularioViaje (HttpRequest):
         viaje = Viaje.objects.get(id=id_viaje)
         registro = Registro_viaje(request.POST, instance=viaje)
         if registro.is_valid():
+            print("ok")
             confirmacion = errores_viaje(registro)
             if len(confirmacion) == 0:
                 v = Vehiculo.objects.get(patente=registro.cleaned_data.get('vehiculo'))
-                registro.save_viaje(v)
+                r = Ruta.objects.get(nombre=registro.cleaned_data.get('ruta'))
+                registro.save_viaje(v,r)
         else:
+            print(registro.cleaned_data.get('vehiculo'))
             dato = errores_viajes(registro, viaje)
             if dato.is_valid():
                 dato.save_viaje2(dato)

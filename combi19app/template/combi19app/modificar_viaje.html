@@ -96,89 +96,11 @@ crossorigin="anonymous"></script>
                       <option class="dropdown-item" value="PM">PM</option>
                     </select>
                   </div>
-                  <p>
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <label class="input-group-text col-sm col-form-label" type="text" name="ciudad_origen" for="inputGroupSelect01">Ciudad de origen</label>
-                      </div>
-                        <select class="form-select col-sm " type="text" name="ciudad_origen" id="ciudad_origen">
-                          <option disabled=True> --Seleccione-- </option>
-                            {% for i in ciudades %}
-                                <option value= "{{i}}">{{i.nombre}} ({{i.nombre}}-{{i.provincia}}-{{i.pais}})</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                  </p>
-
-              <br>
-
-              <div class="dates">
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                      <label class="input-group-text" type="text" name="fecha_llegada_label" for="inputGroupSelect01">Fecha de llegada  </label>
-                  </div>
-                    <input type="text" autocomplete="off" class="form-control" name= "fecha_llegada" id="fecha2" placeholder="dd-mm-aaaa" required/>
-                  </div>
-                </div>
-
 
               <br>
 
 
-              <div class="input-group">
-                <div class="input-group-prepend">
-                    <label class="input-group-text" type="text" name="hora_llegada1" for="inputGroupSelect01">Hora llegada  </label>
-                </div>
-                  <select class="custom-select" name= "hora_de_llegada" id="hora_de_llegada">
-                    <option disabled=True>--Seleccione hora--</option>
-                    <option class="dropdown-item" value="01">01</option>
-                    <option class="dropdown-item" value="02">02</option>
-                    <option class="dropdown-item" value="03">03</option>
-                    <option class="dropdown-item" value="04">04</option>
-                    <option class="dropdown-item" value="05">05</option>
-                    <option class="dropdown-item" value="06">06</option>
-                    <option class="dropdown-item" value="07">07</option>
-                    <option class="dropdown-item" value="08">08</option>
-                    <option class="dropdown-item" value="09">09</option>
-                    <option class="dropdown-item" value="10">10</option>
-                    <option class="dropdown-item" value="11">11</option>
-                    <option class="dropdown-item" value="12">12</option>
-                  </select>
-                  <div class="input-group-prepend">
-                    <label class="input-group-text" type="text" name="p" for="inputGroupSelect01">:</label>
-                  </div>
-                  <select class="custom-select" name= "minuto_de_llegada" id="minuto_de_llegada">
-                    <option disabled=True>--Seleccione minutos--</option>
-                    {% for i in minutos %}
-                      {% if i < 10 %}
-                        <option class="dropdown-item" value="0{{i}}">0{{i}}</option>
-                      {% else %}
-                        <option class="dropdown-item" value="{{i}}">{{i}}</option>
-                      {% endif %}
-                    {% endfor %}
-                  </select>
-                  <div class="input-group-prepend">
-                    <label class="input-group-text" type="text" name="p" for="inputGroupSelect01">-</label>
-                  </div>
-                  <select class="custom-select" name= "horario_de_llegada" id="horario_de_llegada">
-                    <option disabled=True>--Seleccione horario--</option>
-                    <option class="dropdown-item" value="AM">AM</option>
-                    <option class="dropdown-item" value="PM">PM</option>
-                  </select>
-              </div>
-              <p>
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <label class="input-group-text" type="text" name="ciudad_destino" for="inputGroupSelect01">Ciudad de destino</label>
-                  </div>
-                  <select class="form-select col-sm" type="text" name="ciudad_destino" id="ciudad_destino">
-                    <option disabled=True> --Seleccione-- </option>
-                      {% for i in ciudades %}
-                          <option value= "{{i}}">{{i.nombre}} ({{i.nombre}}-{{i.provincia}}-{{i.pais}})</option>
-                      {% endfor %}
-                  </select>
-                </div>
-              </p>
+
 
               <br>
 
@@ -190,11 +112,12 @@ crossorigin="anonymous"></script>
                   <select class="form-select col-sm" type="text" name="ruta" id="ruta">
                     <option disabled=True> --Seleccione-- </option>
                       {% for i in rutas %}
-                          <option value= "{{i}}">{{i.nombre}}</option>
+                          <option value= "{{i.id}}">{{i.nombre}}</option>
                       {% endfor %}
                   </select>
                 </div>
               </p>
+              <input hidden type="text" name="fecha_llegada" id="fecha2">
               <p> <input hidden type="text" name="hora_salida" placeholder="hora salida" id="hora_salida"></p>
               <p> <input hidden type="text" name="hora_llegada" placeholder="hora llegada" id="hora_llegada"></p>
               <p> <input hidden type="text" name="asientos_total" placeholder="asientos_total" id="asientos_total"></p>
@@ -203,13 +126,13 @@ crossorigin="anonymous"></script>
               <p>
                 <div class="input-group">
                   <div class="input-group-prepend">
-                    <label class="input-group-text" type="text" name="chofer" for="inputGroupSelect01">Chofer</label>
+                    <label class="input-group-text" type="text" name="chofe1r" for="inputGroupSelect01">Chofer</label>
                   </div>
                     <select class="form-select col-sm" type="text" name="chofer" id="chofer">
                       <option disabled=True> --Seleccione-- </option>
                         {% for i in choferes %}
                           {% if i.tipo_usuario == 2 %}
-                            <option value= "{{i}}">{{i.nombre}} {{i.apellido}} / DNI {{i.dni}}</option>
+                            <option value= "{{i.id}}">{{i.nombre}} {{i.apellido}} / DNI {{i.dni}}</option>
                             {% endif %}
                           {% endfor %}
                     </select>
@@ -224,9 +147,9 @@ crossorigin="anonymous"></script>
                     <option disabled=True> --Seleccione-- </option>
                       {% for i in vehiculos %}
                         {% if i.premium %}
-                          <option value= "{{i.patente}}">Patente: {{i.patente}} / Marca: {{i.marca}} / Cantidad de asientos: {{i.capacidad}} / Tipo de asiento: semi cama</option>
+                          <option value= "{{i.id}}">Patente: {{i.patente}} / Marca: {{i.marca}} / Cantidad de asientos: {{i.capacidad}} / Tipo de asiento: semi cama</option>
                         {% else %}
-                            <option value= "{{i.patente}}">Patente: {{i.patente}} / Marca: {{i.marca}} / Cantidad de asientos: {{i.capacidad}} / Tipo de asiento: cama</option>
+                            <option value= "{{i.id}}">Patente: {{i.patente}} / Marca: {{i.marca}} / Cantidad de asientos: {{i.capacidad}} / Tipo de asiento: cama</option>
                         {% endif %}
                       {% endfor %}
                   </select>
@@ -263,21 +186,14 @@ crossorigin="anonymous"></script>
     var year = date.getFullYear();
     return day + "/" + month + "/" + year;
   }
+  //console.log("{{viajes.chofer.id}}")
   document.getElementById('fecha').value = formatDate(date)
-  document.getElementById('fecha2').value = formatDate(date2)
   document.getElementById('hora_de_salida').value = "{{viajes.hora_salida}}".replace(':', '').replace(' ','').match(/.{0,2}/g)[0]
   document.getElementById('minuto_de_salida').value = "{{viajes.hora_salida}}".replace(':', '').replace(' ','').match(/.{0,2}/g)[1]
-  document.getElementById('horario_de_salida').value = "{{viajes.hora_salida}}".replace(':', '').replace(' ','').match(/.{0,2}/g)[2]
-  document.getElementById('hora_de_llegada').value = "{{viajes.hora_llegada}}".replace(':', '').replace(' ','').match(/.{0,2}/g)[0]
-  document.getElementById('minuto_de_llegada').value = "{{viajes.hora_llegada}}".replace(':', '').replace(' ','').match(/.{0,2}/g)[1]
-  document.getElementById('horario_de_llegada').value = "{{viajes.hora_llegada}}".replace(':', '').replace(' ','').match(/.{0,2}/g)[2]
-  document.getElementById('ruta').value = "{{viajes.ruta}}"
-  document.getElementById('ciudad_origen').value = "{{viajes.ciudad_origen}}"
-  document.getElementById('ciudad_destino').value = "{{viajes.ciudad_destino}}"
-  document.getElementById('chofer').value = "{{viajes.chofer}}"
-  document.getElementById('vehiculo').value = "{{viajes.vehiculo}}"
+  document.getElementById('horario_de_salida').value = "{{viajes.hora_salida}}".split(":")[2]
+  document.getElementById('chofer').value = "{{viajes.chofer.id}}"
+  document.getElementById('vehiculo').value = "{{viajes.vehiculo.id}}"
   document.getElementById('hora_salida').value = (document.getElementById('hora_de_salida').value + ":" + document.getElementById('minuto_de_salida').value + " " + document.getElementById('horario_de_salida').value)
-  document.getElementById('hora_llegada').value = (document.getElementById('hora_de_llegada').value + ":" + document.getElementById('minuto_de_llegada').value + " " + document.getElementById('horario_de_llegada').value)
   //document.getElementById('asientos_total').value = "{{viajes.asientos_total}}"
 //  document.getElementById('asientos_disponibles').value = "{{viajes.asientos_disponibles}}"
 //  document.getElementById('vendidos').value = "{{viajes.vendidos}}"
@@ -286,12 +202,14 @@ crossorigin="anonymous"></script>
     document.getElementById('vendidos').value = 0
     document.getElementById('asientos_total').value=0
     document.getElementById('asientos_disponibles').value=0
-    document.getElementById('hora_salida').value = (document.getElementById('hora_de_salida').value + ":" + document.getElementById('minuto_de_salida').value + " " + document.getElementById('horario_de_salida').value)
-    document.getElementById('hora_llegada').value = (document.getElementById('hora_de_llegada').value + ":" + document.getElementById('minuto_de_llegada').value + " " + document.getElementById('horario_de_llegada').value)
+    document.getElementById('hora_salida').value = (document.getElementById('hora_de_salida').value + ":" + document.getElementById('minuto_de_salida').value + ":" + document.getElementById('horario_de_salida').value)
   //  document.getElementById('vendidos').value = document.getElementById('vendidos').value
   // document.getElementById('asientos_total').value=  document.getElementById('asientos_total').value
   //  document.getElementById('asientos_disponibles').value= document.getElementById('asientos_disponibles').value
     document.getElementById('vehiculo').value = document.getElementById('vehiculo').value
+    document.getElementById('fecha').value = document.getElementById('fecha').value.replace('00:00:00+00:00','')
+    document.getElementById('fecha2').value = document.getElementById('fecha').value
+
 
   }
 
