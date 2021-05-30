@@ -1,5 +1,5 @@
 from django import forms
-from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje
+from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje, Insumo, InformacionDeContacto
 from datetime import datetime, timedelta
 
 class Registro (forms.ModelForm):
@@ -155,3 +155,19 @@ class Registro_insumo(forms.ModelForm):
         fields = ('nombre',
                   'precio'
                   )
+class Registro_info_de_contacto(forms.ModelForm):
+    class Meta:
+        model = InformacionDeContacto
+        fields = ('email',
+                  'direccion',
+                  'telefono1',
+                  'telefono2',
+                  'celular',
+                  'descripcion'
+                  )
+    def saveTelefono2None(self, commit=True):
+        info = super().save(commit=False)
+        info.telefono2 = None
+        if commit:
+            info.save()
+        return info

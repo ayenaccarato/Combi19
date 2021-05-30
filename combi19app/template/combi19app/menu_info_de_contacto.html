@@ -1,0 +1,56 @@
+{% extends "admin_base.html" %}
+{% block title %}menu_info_de_contacto{% endblock %}
+{% block h1 %}<center>Informacion de contacto</center>{% endblock %}
+
+{% block content %}
+    {% csrf_token %}
+
+        <br>
+        <br>
+        <br>
+        <br>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <td>Correo</td>
+              <td>Telefono 1</td>
+              <td>Telefono 2</td>
+              <td>Celular</td>
+              <td>Descripcion</td>
+              <td>Direccion</td>
+
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{texto.email}}</td>
+              {% if texto.telefono1 == None %}
+              <td></td>
+              {% else %}
+              <td>{{texto.telefono1}}</td>
+              {% endif %}
+              {% if texto.telefono2 == None %}
+              <td></td>
+              {% else %}
+              <td>{{texto.telefono2}}</td>
+              {% endif %}
+              {% if texto.celular == None %}
+              <td></td>
+              {% else %}
+              <td>{{texto.celular}}</td>
+              {% endif %}
+              <td>{{texto.descripcion}}</td>
+              <td>{{texto.direccion}}</td>
+
+              <!--td> <a class="btn btn-primary" href= "ver_detalle_pasajero/{{usuario.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver detalle</a></td-->
+                <td> <a class="btn btn-warning" href= "modificar_texto/{{texto.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Editar</a>  </td>
+              </td>
+
+            </tr>
+              <br>
+              <br>
+              <!--form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+              </form-->
+{% endblock %}

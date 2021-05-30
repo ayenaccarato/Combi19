@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.template.loader import get_template
 from django.http import HttpResponse, HttpRequest
-from combi19app.forms import Registro, Registro_vehiculo, Registro_ruta, Registro_ciudad, Registro_viaje, Registro_chofer
-from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje
+from combi19app.forms import Registro, Registro_vehiculo, Registro_ruta, Registro_ciudad, Registro_viaje, Registro_chofer, Registro_insumo, Registro_info_de_contacto
+from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje, Insumo, InformacionDeContacto
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.decorators import login_required
@@ -578,3 +578,38 @@ class ListarInsumos(HttpRequest):
         insumo = Insumo.objects.all()
         contexto = {'insumos': insumo, 'cantidad':len(insumo)}
         return render (request, "listar_insumos.html", contexto)
+class FormularioInfoDeContacto(HttpRequest):
+    @login_required
+    def ver_info_contacto(request):
+        texto = InformacionDeContacto.objects.get(id=1)
+        contexto = {'texto':texto}
+        return render (request, "infoContacto.html", contexto)
+    @login_required
+    def menu_editar_info_contacto(request):
+        texto = InformacionDeContacto.objects.get(id=1)
+        contexto = {'texto':texto}
+        return render (request, "menu_info_de_contacto.html", contexto)
+    @login_required
+    def editar_info_contacto(request, id_texto):
+        texto = InformacionDeContacto.objects.get(id=id_texto)
+        form = Registro_info_de_contacto(instance=texto)
+        return render (request, "modificar_info_de_contacto.html", {"form":form, "texto":texto})
+    @login_required
+    def actualizarInfoDeContacto(request, id_texto):
+        texto = InformacionDeContacto.objects.get(id=id_texto)
+        form = Registro_info_de_contacto(request.POST, instance = texto)
+
+        if form.is_valid():
+        #    db.connections.close_all()
+            if form.cleaned_data.get('telefono2') == 0:
+                form.saveTelefono2None()
+            form.save()
+            response = redirect('/menu_info_de_contacto/')
+            return response
+        else:
+            print(form.cleaned_data.get('direccion'))
+            print(form.cleaned_data.get('email'))
+            print(form.cleaned_data.get('celular'))
+            print(form.cleaned_data.get('telefono1'))
+            print(form.cleaned_data.get('telefono2'))
+            print(form.cleaned_data.get('descripcion'))

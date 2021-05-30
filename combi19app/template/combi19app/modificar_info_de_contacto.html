@@ -1,0 +1,99 @@
+
+{% extends "admin_base.html" %}
+
+{% block title %}Modificar_info_de_contacto{% endblock %}
+{% block h1 %}<center>Modificar informacion de contacto</center>{% endblock %}
+{% block content %}
+  {% if form.errors %}
+    <div class= 'alert alert-danger' role='alert'>
+      fallo en el registro
+    </div>
+    {% endif %}
+
+  <form action="{% url 'actualizarInfoDeContacto' texto.id%}" method="POST">
+    {% csrf_token %}
+    {% if mensaje == "ok" %}
+      <div class='alert alert-success' role='alert'>
+        La informacion de contacto se actualizo exitosamente!
+      </div>
+    {% endif %}
+    {% if mensaje == "not_ok" %}
+      <div class= 'alert alert-danger' role='alert'>
+        Fallo en la actualizacion de la informacion de contacto
+      </div>
+    {% endif %}
+
+
+    <div class="container">
+      <center>
+        <div class="row">
+          <div class="col-sm">
+            <h4> <p style="margin: 40px">Actualice la informacion de contacto </p></h4>
+            <h5>
+              <br>
+                <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="emaiLabel" for="inputGroupSelect01">Email</label>
+                  <input id="email" class="col-sm col-form-label" type="text" title= "Ingrese un correo" name="email" placeholder="Correo">
+                </div>
+                  <br>
+                  <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="direccionLabel" for="inputGroupSelect01">Direccion</label>
+                  <input id="direccion" class="col-sm col-form-label" type="text" title= "Ingrese una direccion" name="direccion" placeholder="Direccion">
+                  </div>
+                  <br>
+                  <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="celular1Label" for="inputGroupSelect01">Celular</label>
+                  <input id="celular" class="col-sm col-form-label" type="text" title= "Ingrese un celular" name="celular" placeholder="Celular">
+                  </div>
+                  <br>
+                  <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="telefono1Label" for="inputGroupSelect01">Telefono 1</label>
+                  <input id="telefono1" class="col-sm col-form-label" type="text" title= "Ingrese un telefono" name="telefono1" placeholder="Telefono 1">
+                  </div>
+                  <br>
+                  <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="telefono2Label" for="inputGroupSelect01">Telefono 2</label>
+                  <input id="telefono2" class="col-sm col-form-label" type="text" title= "Ingrese un telefono" name="telefono2" placeholder="Telefono 2">
+                  </div>
+                  <br>
+                  <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="descripcionLabel" for="inputGroupSelect01">Descripcion</label>
+                  <input id="descripcion" class="col-sm col-form-label" type="text" title= "Ingrese una descripcion" name="descripcion" placeholder="Descripcion">
+                </div>
+                <br>
+            </h5>
+          </div>
+        </div>
+      </center>
+    </div>
+  <center>
+    <br>
+    <br>
+    <br>
+      <p>
+        <button onclick="enviar()" href="/home" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Guardar</button>
+      </p>
+      <p>
+        <a class="btn btn-dark" href="/menu_info_de_contacto">Cancelar</a>
+      </p>
+</center>
+  </form>
+  <script>
+  document.getElementById("email").value = "{{texto.email}}";
+  document.getElementById("celular").value = "{{texto.celular}}";
+  document.getElementById("telefono1").value = "{{texto.telefono1}}";
+  document.getElementById("descripcion").value = "{{texto.descripcion}}";
+  document.getElementById("direccion").value = "{{texto.direccion}}";
+  if ({{texto.telefono2}} != "None"){
+    document.getElementById("telefono2").value = "{{texto.telefono2}}";
+  }
+  function enviar(){
+    if (!document.getElementById("telefono2").value){
+      document.getElementById("telefono2").value = 0;
+    }
+
+  }
+
+  </script>
+
+{% endblock %}

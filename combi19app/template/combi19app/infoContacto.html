@@ -1,0 +1,30 @@
+{% extends "usuario_base.html" %}
+{% block title %}Inicio{% endblock %}
+{% block h1 %}<center>Contactanos</center>{% endblock %}
+{% block content %}
+  <div class="alert alert-success" role="alert">
+  <div class="container">
+  <div class="row">
+  <div class="col-md-4">
+  <address>
+    <strong>{{texto.descripcion}}</strong><br>
+    {{texto.direccion}}<br>
+    CABA, Buenos Aires. Argentina<br>
+    {% if texto.telefono2 == None %}
+    Telefonos:  {{texto.telefono1}}<br>
+    {% else %}
+    Telefonos:  {{texto.telefono1}},  {{texto.telefono2}}<br>
+    {% endif %}
+    Whatsapp: {{texto.celular}}
+
+  </address>
+
+  <address>
+    <strong>Envianos un mail</strong><br>
+    <a href="mailto:{{texto.email}} " >{{texto.email}}</a>
+  </address>
+  </div>
+  </div>
+  </div>
+  </div>
+{% endblock %}

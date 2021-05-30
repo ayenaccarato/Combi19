@@ -145,6 +145,14 @@ class Pasajes(models.Model):
     estado = models.CharField(max_length=20)
     tarjeta = models.ForeignKey(Tarjeta, on_delete=models.PROTECT)
 
+class InformacionDeContacto(models.Model):
+    email = models.EmailField( max_length=254)
+    direccion = models.CharField(max_length=50)
+    telefono1 = models.IntegerField(null=True, blank=True)
+    telefono2 = models.IntegerField(null=True, blank=True)
+    celular = models.IntegerField(null=True, blank=True)
+    descripcion = models.CharField(max_length=50)
+
 class Insumo(models.Model):
     nombre = models.CharField(max_length=20)
     precio = models.DecimalField(max_digits=5, decimal_places=2) #Hay que poner como maximo 5 números, 2 tienen que ser decimal ej.150.00-20.00 etc
