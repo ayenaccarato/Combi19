@@ -1,0 +1,146 @@
+{% extends base %}
+{% load static %}
+{% block title %}Cartelera{% endblock %}
+{% block h1 %}<center>Cartelera</center>{% endblock %}
+{% block content %}
+
+
+<div class = "container">
+  <div class= "row row-cols-2">
+
+    <div class= "col-6">
+      <br>
+
+      <h4>
+        Anuncios de la empresa
+      </h4>
+      <br><br>
+
+      {% if is_a == 0 %}
+        <div class='alert alert-warning' role='alert'>
+          Actualmente la empresa no registro ningun anuncio
+        </div>
+      {% endif %}
+
+      {% if tipo == 1 %}
+          <p>
+            <a id="agregar" style="display:block; padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_anuncio" type="submit" class="btn btn-success" name=nombre >Agregar anuncio</a>
+          </p>
+      {% endif %}
+        <br><br><br>
+
+      {% for i in anuncios %}
+          <div class="card text-black bg-light mb-3" style="max-width: 40rem;">
+            <div class="card-header">URGENTE
+              {% if tipo == 1%}
+                <a class="btn btn-danger" href= "a/{{i.id}}" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;float:right;">Eliminar</a>
+                <a class="btn btn-warning" href= "editar_anuncio/{{i.id}}" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;float:right;">Editar</a>
+              {% endif %}
+
+              </div>
+            <div class="card-body">
+              <h5 class="card-title">{{i.titulo}}</h5>
+              <p class="card-text">{{i.texto}}</p>
+              <p class="card-text"></p>
+            <h6>
+              <p class="card-text">{{i.fecha_y_hora}}</p>
+            </h6>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+  <div class= "col-6" style="float:right;">
+    <br>
+
+    <h4>
+      Comentarios de lo usuarios
+    </h4>
+    <br><br>
+
+      {% if tipo == 3 %}
+            <form action="/cartelera/c/" method="POST">
+              {% csrf_token %}
+              <p>
+              <h5>
+              <textarea name="texto" id="texto" rows="5" cols="50" maxlength=255 placeholder="Escriba su experiencia con Combi19" required></textarea>
+              </h5>
+              </p>
+              <p>
+                <button type="submit" class="btn btn-success" >Comentar</button>
+              </p>
+                <input hidden type="text" name="fecha_y_hora"  id="fecha_y_hora">
+                <input hidden type="text" name="usuario_nombre"  id="usuario_nombre">
+                <input hidden type="text" name="usuario_dni"  id="usuario_dni">
+              </p>
+              <br>
+              <br>
+              <br>
+      {% endif %}
+
+      {% if is_c == 0 %}
+        <div class='alert alert-warning' role='alert'>
+          Actualmente no hay comentarios
+        </div>
+       {% endif %}
+
+      {% for i in comentarios %}
+          <div class="media">
+            <img class="d-flex rounded-circle avatar z-depth-1-half mr-2" src={% static 'person_coment.png' %}  width="220" height="220" alt="Avatar">
+            <div class="media-body">
+                <div class="card" style="width: 40rem">
+                  <h4>
+                    <div class="card-header">{{i.usuario_nombre}} escribio...
+                    {% if i.usuario_dni == dni or tipo == 1 %}
+                        <a class="btn btn-danger" href= "c/{{i.id}}" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;float:right;">Eliminar</a>
+                    {% endif %}
+                    </div>
+                  </h4>
+                  <div class="card-body">
+                    <h5>
+                      <p class="card-text">{{i.texto}}</p>
+                      <p class="card-text"></p>
+                    </h6>
+                    <h6>
+                      <p class="card-text">{{i.fecha_y_hora}}</p>
+                    </h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+        {% endfor %}
+
+      </div>
+      </div>
+      </div>
+        </form>
+  <script>
+      if ("{{tipo}}" == 3){
+          document.getElementById('usuario_dni').value = "{{dni}}"
+          document.getElementById('usuario_nombre').value = "{{user}}"
+          var f = new Date();
+          var mes = f.getMonth() + 1;
+          var hora = f.getHours();
+          var minutos = f.getMinutes();
+          var dia = f.getDate();
+          if (hora < 10){
+            hora = '0' + f.getHours()
+          }
+          if (minutos < 10){
+            minutos = '0' + f.getMinutes()
+          }
+          if (dia < 10){
+            dia = '0' + f.getDate()
+          }
+          if (mes < 10){
+            mes = '0' + (f.getMonth() + 1)
+          }
+          if (hora < 12){
+              document.getElementById('fecha_y_hora').value = dia + '/' + mes + '/' + f.getFullYear()+ '    '+ hora + ':'+ minutos + ' a.m'
+          }
+          else{
+              document.getElementById('fecha_y_hora').value = dia + '/' + mes + '/' + f.getFullYear()+ '    '+ hora + ':'+ minutos + ' p.m'
+          }
+        }
+  </script>
+{% endblock %}

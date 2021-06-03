@@ -1,0 +1,78 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Editar_anuncio{% endblock %}
+{% block h1 %}<center>Editar anuncio</center>{% endblock %}
+{% block content %}
+
+  <form action="actualizarAnuncio/{{id}}" method="POST">
+    {% csrf_token %}
+    {% if mensaje == "ok" %}
+      <div class='alert alert-success' role='alert'>
+        El anuncio se actualizo exitosamente!
+      </div>
+    {% endif %}
+    <center>
+  <h4> <p style="margin: 40px">Actualice los datos</p></h4>
+</center>
+    <div class="container">
+      <ul class="list-group" style="padding-left:15%">
+        <div class="row">
+          <div class="col-sm">
+            <h5>
+            <br>
+            <div class="input-group-prepend">
+              <label class="input-group-text" type="text" name="titulo" for="inputGroupSelect01">Titulo</label>
+                 <input class="col-sm-9 col-form-label" id= "titulo" name="titulo" placeholder="Titulo" required>
+              </div>
+              <br>
+              <div class="input-group-prepend">
+                <p>
+                  <label class="input-group-text" type="text" name="texto" for="inputGroupSelect01">Texto del anuncio</label></p>
+                  <p>
+                  <textarea name="texto" id="texto" rows="5" cols="44" maxlength=255 placeholder="Texto del anuncio" required></textarea>
+              </p>
+              </div>
+                  <input hidden type="text" name="fecha_y_hora"  id="fecha_y_hora">
+                  <br>
+                  <br>
+                  <br>
+                    </h5>
+</ul>
+ <center>
+      <p>
+        <button style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Guardar</button>
+      </p>
+      <p>
+        <a class="btn btn-dark" href="/cartelera">Atras</a>
+      </p>
+</center>
+  </form>
+  <script>
+      document.getElementById("titulo").value = "{{anuncio.titulo}}";
+      document.getElementById("texto").value = "{{anuncio.texto}}";
+      document.getElementById("fecha_y_hora").value = "{{anuncio.fecha_y_hora}}"
+      var f = new Date();
+      var mes = f.getMonth() + 1;
+      var hora = f.getHours();
+      var minutos = f.getMinutes();
+      var dia = f.getDate();
+      if (hora < 10){
+        hora = '0' + f.getHours()
+      }
+      if (minutos < 10){
+        minutos = '0' + f.getMinutes()
+      }
+      if (dia < 10){
+        dia = '0' + f.getDate()
+      }
+      if (mes < 10){
+        mes = '0' + (f.getMonth() + 1)
+      }
+      if (hora < 12){
+          document.getElementById('fecha_y_hora').value = dia + '/' + mes + '/' + f.getFullYear()+ '    '+ hora + ':'+ minutos + ' a.m'
+      }
+      else{
+          document.getElementById('fecha_y_hora').value = dia + '/' + mes + '/' + f.getFullYear()+ '    '+ hora + ':'+ minutos + ' p.m'
+      }
+  </script>
+{% endblock %}

@@ -156,3 +156,14 @@ class InformacionDeContacto(models.Model):
 class Insumo(models.Model):
     nombre = models.CharField(max_length=20)
     precio = models.DecimalField(max_digits=5, decimal_places=2) #Hay que poner como maximo 5 números, 2 tienen que ser decimal ej.150.00-20.00 etc
+
+class Comentario(models.Model):
+    usuario_dni=models.BigIntegerField()
+    usuario_nombre = models.CharField(max_length=50)
+    texto=models.CharField(max_length=10000)
+    fecha_y_hora=models.CharField(max_length=50)
+
+class Anuncio(models.Model):
+    titulo = models.CharField(max_length=20)
+    texto = models.CharField(max_length=10000)
+    fecha_y_hora=models.CharField(max_length=50)

@@ -1,0 +1,63 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Agregar_anuncio{% endblock %}
+{% block h1 %}<center>Agregar anuncio</center>{% endblock %}
+{% block content %}
+<form action="/guardar_anuncio/" method="POST">
+  {% csrf_token %}
+  {% if mensaje == "ok" %}
+    <div class='alert alert-success' role='alert'>
+      El anuncio se publico exitosamente!
+    </div>
+  {% endif %}
+  <div class="container">
+    <center>
+      <div class="row">
+        <div class="col-sm">
+          <center>
+          <h4> <p style="margin: 40px">Complete el formulario </p></h4>
+          <h5>
+            <br>
+                <p> <input class="col-sm-8 col-form-label" name="titulo" placeholder="Titulo" required></p>
+                <p>
+                  <h5>
+                  <textarea name="texto" id="texto" rows="5" cols="53" maxlength=255 placeholder="Texto del anuncio" required></textarea>
+                  </h5>
+                </p>
+                  <input hidden type="text" name="fecha_y_hora"  id="fecha_y_hora">
+                  <br>
+                  <br>
+                  <br>
+                    <p>
+                      <button style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Agregar</button>
+                    </p>
+                    <p>
+                      <a class="btn btn-dark" href="/cartelera">Cancelar</a>
+                    </p>
+</form>
+<script>
+      var f = new Date();
+      var mes = f.getMonth() + 1;
+      var hora = f.getHours();
+      var minutos = f.getMinutes();
+      var dia = f.getDate();
+      if (hora < 10){
+        hora = '0' + f.getHours()
+      }
+      if (minutos < 10){
+        minutos = '0' + f.getMinutes()
+      }
+      if (dia < 10){
+        dia = '0' + f.getDate()
+      }
+      if (mes < 10){
+        mes = '0' + (f.getMonth() + 1)
+      }
+      if (hora < 12){
+          document.getElementById('fecha_y_hora').value = dia + '/' + mes + '/' + f.getFullYear()+ '    '+ hora + ':'+ minutos + ' a.m'
+      }
+      else{
+          document.getElementById('fecha_y_hora').value = dia + '/' + mes + '/' + f.getFullYear()+ '    '+ hora + ':'+ minutos + ' p.m'
+      }
+</script>
+{% endblock %}

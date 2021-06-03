@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.template.loader import get_template
 from django.http import HttpResponse, HttpRequest
-from combi19app.forms import Registro, Registro_vehiculo, Registro_ruta, Registro_ciudad, Registro_viaje, Registro_chofer, Registro_insumo, Registro_info_de_contacto
-from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje, Insumo, InformacionDeContacto
+from combi19app.forms import Registro, Registro_vehiculo, Registro_ruta, Registro_ciudad, Registro_viaje, Registro_chofer, Registro_insumo, Registro_info_de_contacto, Registro_comentario, Registro_anuncio
+from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje, Insumo, InformacionDeContacto, Comentario, Anuncio
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.decorators import login_required
@@ -616,3 +616,85 @@ class FormularioInfoDeContacto(HttpRequest):
             print(form.cleaned_data.get('telefono1'))
             print(form.cleaned_data.get('telefono2'))
             print(form.cleaned_data.get('descripcion'))
+
+class FormularioComentario(HttpRequest):
+    @login_required
+    def crear_formulario(request):
+        comentario = Registro_comentario()
+        anuncio = Registro_anuncio()
+        comentarios = Comentario.objects.all().order_by('-id')
+        anuncios = Anuncio.objects.all().order_by('-id')
+        if (request.user.tipo_usuario == 1):
+            return render (request, "carteleraPasajero.html",{"base": "admin_base.html", "tipo": request.user.tipo_usuario,"comentarios": comentarios, "anuncios":anuncios, "is_c":len(comentarios), "is_a":len(anuncios)})
+        else:
+            if (request.user.tipo_usuario == 2):
+                return render (request, "carteleraPasajero.html",{"base": "chofer_base.html","tipo": request.user.tipo_usuario,"comentarios": comentarios, "anuncios":anuncios ,"is_c":len(comentarios), "is_a":len(anuncios)})
+            else:
+                return render (request, "carteleraPasajero.html",{"base": "usuario_base.html","dni":request.user.dni, "user":request.user.nombre + ' '+ request.user.apellido,"tipo": request.user.tipo_usuario,"comentarios": comentarios, "anuncios":anuncios ,"is_c":len(comentarios), "is_a":len(anuncios)})
+
+    @login_required
+    def procesar_formulario(request):
+        comentario = Registro_comentario(request.POST)
+        if comentario.is_valid():
+                comentario.save()
+                comentario = Registro_comentario()
+                anuncios = Anuncio.objects.all().order_by('-id')
+                comentarios = Comentario.objects.all().order_by('-id')
+                if (request.user.tipo_usuario == 1):
+                    return render (request, "carteleraPasajero.html",{"base": "admin_base.html", "tipo": request.user.tipo_usuario,"comentarios": comentarios, "anuncios":anuncios, "is_c":len(comentarios), "is_a":len(anuncios)})
+                else:
+                    if (request.user.tipo_usuario == 2):
+                        return render (request, "carteleraPasajero.html",{"base": "chofer_base.html","tipo": request.user.tipo_usuario,"comentarios": comentarios, "anuncios":anuncios ,"is_c":len(comentarios), "is_a":len(anuncios)})
+                    else:
+                        return render (request, "carteleraPasajero.html",{"base": "usuario_base.html","dni":request.user.dni, "user":request.user.nombre + ' '+ request.user.apellido,"tipo": request.user.tipo_usuario,"comentarios": comentarios, "anuncios":anuncios ,"is_c":len(comentarios), "is_a":len(anuncios)})
+
+    @login_required
+    def eliminar_comentario(request, id_coment):
+        comentario_eliminado = Comentario.objects.get(pk=id_coment)
+        comentario_eliminado.delete()
+        comentarios = Comentario.objects.all().order_by('-id')
+        anuncios = Anuncio.objects.all().order_by('-id')
+        if (request.user.tipo_usuario == 1):
+            return render (request, "carteleraPasajero.html",{"base": "admin_base.html", "tipo": request.user.tipo_usuario,"comentarios": comentarios, "anuncios":anuncios, "is_c":len(comentarios), "is_a":len(anuncios)})
+        else:
+            return render (request, "carteleraPasajero.html",{"base": "usuario_base.html","dni":request.user.dni, "user":request.user.nombre + ' '+ request.user.apellido,"tipo": request.user.tipo_usuario,"comentarios": comentarios, "anuncios":anuncios ,"is_c":len(comentarios), "is_a":len(anuncios)})
+
+class FormularioAnuncio(HttpRequest):
+    @login_required
+    def crear_formulario(request):
+        anuncio = Registro_anuncio()
+        return render (request, "agregar_anuncio.html", {"dni": request.user.dni})
+
+    @login_required
+    def procesar_formulario(request):
+        anuncio = Registro_anuncio(request.POST)
+        if anuncio.is_valid():
+            anuncio.save()
+            anuncio = Registro_anuncio()
+            return render (request, "agregar_anuncio.html", {"dni": request.user.dni, "mensaje":"ok"})
+
+
+    @login_required
+    def eliminar_anuncio(request, id_anuncio):
+        anuncio_eliminado = Anuncio.objects.get(pk=id_anuncio)
+        anuncio_eliminado.delete()
+        comentarios = Comentario.objects.all().order_by('-id')
+        anuncios = Anuncio.objects.all().order_by('-id')
+        return render (request, "carteleraPasajero.html",{"base": "admin_base.html","tipo": request.user.tipo_usuario,"comentarios": comentarios, "anuncios":anuncios, "is_c":len(comentarios), "is_a":len(anuncios)})
+
+    @login_required
+    def editar(request, id_anuncio):
+        anuncio = Anuncio.objects.get(id=id_anuncio)
+        form = Registro_anuncio(instance=anuncio)
+        return render (request, "modificar_anuncio.html", {"form":form, "anuncio":anuncio})
+
+    @login_required
+    def actualizar(request, id_anuncio):
+        anuncio = Anuncio.objects.get(id=id_anuncio)
+        form = Registro_anuncio(request.POST, instance = anuncio)
+        if form.is_valid():
+            form.save()
+            return render (request,"modificar_anuncio.html", {"form":form, "anuncio":anuncio, "mensaje": "ok"})
+        print(form.cleaned_data.get('titulo'))
+        print(form.cleaned_data.get('texto'))
+        print(form.cleaned_data.get('fecha_y_hora'))
