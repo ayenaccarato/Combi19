@@ -38,6 +38,18 @@ class Registro (forms.ModelForm):
             usuario.save()
         return usuario
 
+class Registro_admin (forms.ModelForm):
+
+    class Meta:
+        model = Usuario
+        fields = ( 'dni',
+                   'nombre',
+                   'apellido',
+                   'email',
+                   'telefono',
+                   'direccion',
+                   )
+
 class Registro_chofer (forms.ModelForm):
 
     class Meta:
@@ -153,8 +165,18 @@ class Registro_insumo(forms.ModelForm):
     class Meta:
         model = Insumo
         fields = ('nombre',
-                  'precio'
+                  'precio',
+                  'stock',
+                  'sabor',
+                  'categoria'
                   )
+    def save_insumo(self, commit=True):
+        insumo = super().save(commit=False)
+        insumo.nombre = insumo.nombre.upper()
+        if commit:
+            insumo.save()
+        return insumo
+
 class Registro_info_de_contacto(forms.ModelForm):
     class Meta:
         model = InformacionDeContacto

@@ -34,13 +34,13 @@
             <h5>
               <br>
                 <p>
-                  <input class="col-sm-12 col-form-label" type="text" name="nombre" placeholder="Nombre" required>
+                  <input class="col-sm-12 col-form-label" type="text" name="nombre" placeholder="Nombre" id='nombre' required>
                 </p>
               <p>
-                <input class="col-sm-12 col-form-label" type="text" name="precio" title="Ingresar un precio (Ej. 150,50)" placeholder="Precio" required>
+                <input class="col-sm-12 col-form-label" type="text" name="precio" title="Ingresar un precio (Ej. 150,50)" placeholder="Precio" id='precio' required>
               </p>
               <p>
-                <input class="col-sm-12 col-form-label" type="text" name="stock" placeholder="Stock" required>
+                <input class="col-sm-12 col-form-label" type="text" name="stock" placeholder="Stock" id='stock' required>
               </p>
                 <div class="input-group mb-3">
                   <div class="input-group-prepend">
@@ -84,5 +84,16 @@
       </p>
 </center>
   </form>
+  <script>
+    document.getElementById("nombre").value = "{{insumos.nombre}}"
+    document.getElementById("precio").value = "{{insumos.precio}}".replace(',','.')
+    document.getElementById("stock").value = "{{insumos.stock}}"
+    document.getElementById("categoria").value = "{{insumos.categoria}}"
+    if("{{insumos.sabor}}" === "True" ){
+      document.getElementById("inlineRadio1").checked = true;
+    } else {
+      document.getElementById("inlineRadio2").checked = true;
+    }
+  </script>
 
 {% endblock %}

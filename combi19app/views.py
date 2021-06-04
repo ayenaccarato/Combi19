@@ -30,13 +30,14 @@ def login(request):
     return render (request, "registration/login.html")
 
 def ver_perfil_admin(request):
+    admin = Usuario.objects.get(id=request.user.id)
+    long_c = admin.long_contra
+    return render (request, "ver_perfil_admin.html", {'admin': admin, 'longitud': long_c})
 
-    return render (request, "ver_perfil_admin.html")
-
-def cambiar_contra(request):
-
-    return render(request, "cambiar_contra.html")
-
+def editar_admin(request):
+    admin = Usuario.objects.get(id=request.user.id)
+    registro = Registro_admin(instance=admin)
+    return render(request, "modificar_admin.html", {"dato": registro, "admin": admin})
 
 #busca los campos incorrectos (repetidos) que llevan el valor None
 def errores(registro):
@@ -53,6 +54,22 @@ def errores(registro):
     #
     # lista_de_usuarios.pop(len(lista_de_usuarios) -1)
     return set(lista)
+
+def actualizar_admin(request, id_admin):
+    admin = Usuario.objects.get(id=request.user.id)
+    registro = Registro_admin(request.POST, instance=admin)
+    if registro.is_valid():
+        print('entro')
+        confirmacion = errores(registro)
+        if len(confirmacion) == 0:
+            registro.save()
+    print('neee')
+    response = redirect('/ver_perfil_admin/')
+    return response
+
+def cambiar_contra(request):
+
+    return render(request, "cambiar_contra.html")
 
 def errores_ruta(ruta):
     lista = []
@@ -566,7 +583,7 @@ class FormularioInsumo(HttpRequest):
             confirmacion = errores_insumo(insumo)
             if len(confirmacion) == 0:
                 print('entro')
-                insumo.save()
+                insumo.save_insumo()
                 insumo = Registro_insumo()
                 return render (request, "agregar_insumo.html", {"dato": insumo, "mensaje":"ok"})
 
@@ -575,12 +592,45 @@ class FormularioInsumo(HttpRequest):
         insumo = Registro_insumo()
         return render (request, "agregar_insumo.html", {"errores":confirmacion, "mensaje": "not_ok"})
 
+    @login_required
+    def editar_insumo(request, id_insumo):
+        insumo = Insumo.objects.get(id=id_insumo)
+        registro = Registro_insumo(instance=insumo)
+        return render(request, "modificar_insumo.html", {"dato": registro, "insumos": insumo})
+
+    @csrf_exempt
+    def actualizar_insumo(request, id_insumo):
+        insumo = Insumo.objects.get(id=id_insumo)
+        registro = Registro_insumo(request.POST, instance=insumo)
+        nombre = insumo.nombre
+        if registro.is_valid():
+            if nombre != registro.cleaned_data.get('nombre'):
+                confirmacion = errores_insumo(registro)
+                if len(confirmacion) == 0:
+                    registro.save_insumo()
+            else:
+                registro.save_insumo()
+        response = redirect('/listar_insumos/')
+        return response
+
 class ListarInsumos(HttpRequest):
     @login_required
     def crear_listado(request):
         insumo = Insumo.objects.all()
         contexto = {'insumos': insumo, 'cantidad':len(insumo)}
         return render (request, "listar_insumos.html", contexto)
+
+    @login_required
+    def mostrar_detalle(request, id_insumo):
+        detalle= Insumo.objects.get(pk=id_insumo)
+        return render (request, "listar_insumos.html", {"dato":detalle, "mensaje":"detalle"})
+
+    def eliminar_insumo(request, id_insumo):
+        insumo = Insumo.objects.get(id=id_insumo)
+        insumo.delete()
+        insumo = Insumo.objects.all()
+        return render (request, "listar_insumos.html", {"insumos": insumo, "mensaje":"eliminado", "cantidad": len(insumo)})
+
 class FormularioInfoDeContacto(HttpRequest):
     @login_required
     def ver_info_contacto(request):

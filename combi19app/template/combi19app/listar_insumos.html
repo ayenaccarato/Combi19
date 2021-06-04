@@ -26,7 +26,10 @@
     <thead>
       <tr>
         <td>Nombre</td>
-        <td>precio</td>
+        <td>Precio</td>
+        <td>Stock</td>
+        <td>Categoría</td>
+        <td>Sabor</td>
 
     </tr>
   </thead>
@@ -34,6 +37,9 @@
     <tr>
       <td>{{dato.nombre}}</td>
       <td>{{dato.precio}}</td>
+      <td>{{dato.stock}}</td>
+      <td>{{dato.categoria}}</td>
+      <td>{{dato.sabor}}</td>
 
     </tr>
   </table>
@@ -67,7 +73,7 @@
               <td>{{insumo.nombre}}</td>
               <td>{{insumo.precio}}</td>
 
-              <!--td> <a class="btn btn-primary" href= "ver_detalle_pasajero/{{usuario.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver detalle</a></td-->
+              <td> <a class="btn btn-primary" href= "ver_detalle_insumo/{{insumo.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver detalle</a></td>
                 <td> <a class="btn btn-warning" href= "modificar_insumo/{{insumo.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Editar</a>  </td>
                 <td> <a class="btn btn-danger" href= "eliminar_insumo/{{insumo.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Eliminar</a>  </td>
               </td>

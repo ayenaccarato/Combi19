@@ -12,6 +12,7 @@ class Usuario_Manager(BaseUserManager):
             direccion=direccion,
             telefono=telefono
         )
+        us.long_contra = len(password)
         us.set_password(password)
         us.save(using=self._db)
         return us
@@ -26,6 +27,7 @@ class Usuario_Manager(BaseUserManager):
             direccion=direccion,
             telefono=telefono
         )
+        us.long_contra = len(password)
         # us.super_usuario = True
         us.is_admin = True
         us.is_superuser = True
@@ -44,6 +46,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField( max_length=254)
     direccion = models.CharField(max_length=20)
     telefono = models.IntegerField()
+    long_contra = models.IntegerField()
     #is_active = models.BooleanField(default= True)
     #staff = models.BooleanField(default= False)
     #admin = models.BooleanField(default=False)
@@ -156,6 +159,9 @@ class InformacionDeContacto(models.Model):
 class Insumo(models.Model):
     nombre = models.CharField(max_length=20)
     precio = models.DecimalField(max_digits=5, decimal_places=2) #Hay que poner como maximo 5 números, 2 tienen que ser decimal ej.150.00-20.00 etc
+    stock = models.IntegerField()
+    sabor = models.BooleanField()
+    categoria = models.CharField(max_length=20)
 
 class Comentario(models.Model):
     usuario_dni=models.BigIntegerField()
