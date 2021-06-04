@@ -17,6 +17,7 @@ class Registro (forms.ModelForm):
 
     def save(self, commit=True):
         usuario = super().save(commit= False)
+        usuario.long_contra = len(usuario.password)
         usuario.set_password(self.cleaned_data['password'])
         if commit:
             usuario.save()
@@ -24,6 +25,7 @@ class Registro (forms.ModelForm):
 
     def save_chofer(self, commit=True):
         usuario = super().save(commit= False)
+        usuario.long_contra = len(usuario.password)
         usuario.set_password(self.cleaned_data['password'])
         usuario.tipo_usuario=2
         if commit:
