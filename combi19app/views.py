@@ -434,10 +434,10 @@ class FormularioCiudad (HttpRequest):
     @login_required
     def actualizar(request, id_ciudad):
         ciudad = Ciudad.objects.get(id=id_ciudad)
-        cp = ciudad.codigo_postal
+        ciudad2 = Ciudad.objects.get(id=id_ciudad)
         form = Registro_ciudad(request.POST, instance = ciudad)
         if form.is_valid():
-            ok = errores_ciudad2(form, ciudad)
+            ok = errores_ciudad2(form, ciudad2)
             if len(ok) == 0:
                 form.save_ciudad()
         print('errores', ok, 'ciudad', ciudad, 'form', form)
