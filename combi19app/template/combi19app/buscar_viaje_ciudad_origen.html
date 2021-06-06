@@ -1,0 +1,59 @@
+{% extends "usuario_base.html" %}
+{% load static %}
+{% block title %}Buscar viaje por ciudad{% endblock %}
+{% block h1 %}<center>Buscar viaje por ciudad</center>{% endblock %}
+{% block content %}
+<div class="container">
+  <center>
+    <div class="row">
+      <div class="col-sm">
+        <h4> <p style="margin: 40px">Ingrese los datos del viaje a realizar</p></h4>
+        <form action="buscar_viaje" method="GET">
+          <h5>
+            <br>
+              <p>
+                <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="origen" for="inputGroupSelect01">Ciudad origen</label>
+                  <select class="col-sm col-form-label custom-select-md" type="text" name="origen" id="origen" required>
+                    <option value="" disabled=True selected> --Seleccione-- </option>
+                      {% for i in ciudades %}
+                        <option value= "{{i.nombre}}">{{i.nombre}} ({{i.nombre}}-{{i.provincia}}-{{i.pais}})</option>
+                        {% endfor %}
+                  </select>
+                </div>
+                <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="origen" for="inputGroupSelect01">Ciudad destino</label>
+                  <select class="col-sm col-form-label custom-select-md" type="text" name="destino" id="origen" required>
+                    <option value="" disabled=True selected> --Seleccione-- </option>
+                      {% for i in ciudades %}
+                        <option value= "{{i.nombre}}">{{i.nombre}} ({{i.nombre}}-{{i.provincia}}-{{i.pais}})</option>
+                        {% endfor %}
+                  </select>
+                </div>
+                <div class="dates">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" type="text" name="fecha_salida1" for="inputGroupSelect01">Fecha de salida  </label>
+                    </div>
+                      <input value="" type="text" autocomplete="off" class="form-control" name="fecha_salida" id="fecha" placeholder="dd-mm-aaaa" required />
+                    </div>
+                  </div>
+              </p>
+          </h5>
+      </div>
+    </div>
+      <button onclick="enviar()" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Buscar</button>
+  </center>
+</div>
+<input hidden name="nombre" id="nom">
+<input hidden name="provincia" id="prov" value="{{i.provincia}}">
+<input hidden name="codigo_postal" id="cod" value="{{i.codigo_postal}}">
+<input hidden name="pais" id="pais" value="{{i.pais}}">
+
+<script>
+
+  function enviar(){
+    console.log(document.getElementById("origen").value)
+  }
+</script>
+{% endblock %}

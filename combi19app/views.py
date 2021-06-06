@@ -8,6 +8,9 @@ from django.views.generic.edit import UpdateView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django import db
+from datetime import datetime, timedelta, date
+import dateutil.parser
+
 db.connections.close_all()
 # Create your views here.
 @login_required
@@ -474,6 +477,24 @@ class EliminarCiudad (HttpRequest):
                 return render (request, "listar_ciudades.html", {"ciudades": ciudades, "mensaje":"no_puede", "cantidad": len(ciudades)})
         else:
             return render (request, "listar_ciudades.html", {"ciudades": ciudades, "mensaje":"no_puede2", "cantidad": len(ciudades)})
+
+class BuscarCiudad(HttpRequest):
+    @login_required
+    def listar_ciudades(request):
+        ciudades = Ciudad.objects.all()
+        return render (request, "buscar_viaje_ciudad_origen.html",{"ciudades": ciudades})
+
+    @login_required
+    def listar_ciudades_result(request):
+        ruta = Ruta.objects.filter(origen=request.GET.get('origen'), destino=request.GET.get('destino'))
+        print(ruta[1].id)
+        viajes = []
+        for r in ruta:
+            date = dateutil.parser.parse(request.GET.get('fecha_salida'))
+            #viajes += Viaje.objects.filter(ruta_id=r.id).filter(fecha_salida=date.date())
+            viajes += Viaje.objects.filter(ruta_id=r.id ,fecha_salida__year=date.year,fecha_salida__day=date.day, fecha_salida__month=date.month)
+
+        return render (request, "buscar_viaje_result.html",{"viajes": viajes})
 
 class ListarRuta (HttpRequest):
     @login_required

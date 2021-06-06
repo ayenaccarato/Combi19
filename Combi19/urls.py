@@ -108,6 +108,8 @@ urlpatterns = [
     path('cartelera/a/<int:id_anuncio>/',views.FormularioAnuncio.eliminar_anuncio),
     path('cartelera/editar_anuncio/<int:id_anuncio>/', views.FormularioAnuncio.editar, name = "editarAnuncio"),
     path('cartelera/editar_anuncio/<int:id_anuncio>/actualizarAnuncio/',views.FormularioAnuncio.actualizar, name="actualizar_anuncio"),
+    path('buscar_viaje_origen', views.BuscarCiudad.listar_ciudades),
+    path('buscar_viaje', views.BuscarCiudad.listar_ciudades_result),
     path('home/', views.home),
     path('accounts/', include ('django.contrib.auth.urls')),
     path('', views.home),
