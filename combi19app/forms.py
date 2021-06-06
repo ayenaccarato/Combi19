@@ -64,6 +64,18 @@ class Registro_chofer (forms.ModelForm):
                    'telefono',
                    )
 
+class Registro_usuario (forms.ModelForm):
+
+    class Meta:
+        model = Usuario
+        fields = ( 'dni',
+                   'nombre',
+                   'apellido',
+                   'email',
+                   'telefono',
+                   'direccion',
+                   )
+
 class Registro_vehiculo (forms.ModelForm):
     class Meta:
         model = Vehiculo
@@ -109,7 +121,7 @@ class Registro_ciudad (forms.ModelForm):
         fields = ('nombre',
                    'provincia',
                    'codigo_postal',
-                   'pais',
+                   'pais'
                    )
 
     def save_ciudad(self, commit=True):

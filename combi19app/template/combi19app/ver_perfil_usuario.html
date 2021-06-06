@@ -1,0 +1,64 @@
+{% extends "usuario_base.html" %}
+
+{% block title %}ver_perfil_usuario{% endblock %}
+{% block h1 %}<center>Ver perfil</center>{% endblock %}
+{% block content %}
+<p>
+  <a class="btn btn-dark" style= "float:left" href="/home">Atrás</a>
+</p>
+<br>
+<br>
+<br>
+<p>
+  <h5>
+    <ul class="list-group" style="padding-left: 30%;">
+      <div class="input-group-prepend">
+        <label class="input-group-text" style="width:15%;" type="text" name="dni" for="inputGroupSelect01">Dni</label>
+        <li class="list-group-item" style="width: 50%;">{{usuario.dni}}</li>
+      </div>
+      <br>
+      <div class="input-group-prepend">
+        <label class="input-group-text" style="width:15%;" type="text" name="nombre" for="inputGroupSelect01">Nombre</label>
+        <li class="list-group-item" style="width: 50%;">{{usuario.nombre}}</li>
+      </div>
+      <br>
+      <div class="input-group-prepend">
+        <label class="input-group-text" style="width:15%;" type="text" name="apellido" for="inputGroupSelect01">Apellido</label>
+        <li class="list-group-item" style="width: 50%;">{{usuario.apellido}}</li>
+      </div>
+      <br>
+      <div class="input-group-prepend">
+        <label class="input-group-text" style="width:15%;" type="text" name="email" for="inputGroupSelect01">Email</label>
+        <li class="list-group-item" style="width: 50%;">{{usuario.email}}</li>
+      </div>
+      <br>
+      <div class="input-group-prepend">
+        <label class="input-group-text" style="width:15%;" type="text" name="telefono" for="inputGroupSelect01">Teléfono</label>
+        <li class="list-group-item" style="width: 50%;">{{usuario.telefono}}</li>
+      </div>
+      <br>
+      <div class="input-group-prepend">
+        <label class="input-group-text" style="width:15%;" type="text" name="direccion" for="inputGroupSelect01">Dirección</label>
+        <li class="list-group-item" style="width: 50%;">{{usuario.direccion}}</li>
+      </div>
+      <br>
+      <div class="input-group-prepend">
+        <label class="input-group-text" style="width:15%;" type="text" name="contraseña" for="inputGroupSelect01">Contraseña</label>
+        <!--li class="list-group-item" type="password" style="width: 50%;">{{admin.pass}}</li> <a href="#" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-dark">Cambiar contraseña</a-->
+        <input readonly id="password" class="list-group-item" style="width: 50%;" type="password" pattern=".{6,}" title= "La contraseña debe contener al menos 6 caracteres" name="password" placeholder="Contraseña"><a href="#" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-dark">Cambiar contraseña</a>
+      </div>
+    </ul>
+  </h5>
+  </p>
+    <br>
+    <br>
+
+    <center>
+      <p>
+        <a href="/ver_perfil_usuario/modificar_usuario" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-warning">Editar</a>
+      </p>
+    </center>
+<script>
+  document.getElementById('password').value = "{{usuario.password}}".slice(0, '{{longitud}}')
+</script>
+  {% endblock %}

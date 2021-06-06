@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.template.loader import get_template
 from django.http import HttpResponse, HttpRequest
-from combi19app.forms import Registro, Registro_vehiculo, Registro_ruta, Registro_ciudad, Registro_viaje, Registro_chofer, Registro_insumo, Registro_info_de_contacto, Registro_comentario, Registro_anuncio
+from combi19app.forms import Registro, Registro_admin, Registro_vehiculo, Registro_ruta, Registro_ciudad, Registro_viaje, Registro_chofer, Registro_insumo, Registro_info_de_contacto, Registro_comentario, Registro_anuncio, Registro_usuario
 from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje, Insumo, InformacionDeContacto, Comentario, Anuncio
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import UpdateView
@@ -39,6 +39,26 @@ def editar_admin(request):
     registro = Registro_admin(instance=admin)
     return render(request, "modificar_admin.html", {"dato": registro, "admin": admin})
 
+def ver_perfil_chofer(request):
+    chofer = Usuario.objects.get(id=request.user.id)
+    long_c = chofer.long_contra
+    return render (request, "ver_perfil_chofer.html", {'chofer': chofer, 'longitud': long_c})
+
+def editar_chofer(request):
+    chofer = Usuario.objects.get(id=request.user.id)
+    registro = Registro_chofer(instance=chofer)
+    return render(request, "modificar_chofer2.html", {"dato": registro, "chofer": chofer})
+
+def ver_perfil_usuario(request):
+    usuario = Usuario.objects.get(id=request.user.id)
+    long_c = usuario.long_contra
+    return render (request, "ver_perfil_usuario.html", {'usuario': usuario, 'longitud': long_c})
+
+def editar_usuario(request):
+    usuario = Usuario.objects.get(id=request.user.id)
+    registro = Registro_usuario(instance=usuario)
+    return render(request, "modificar_usuario.html", {"dato": registro, "usuario": usuario})
+
 #busca los campos incorrectos (repetidos) que llevan el valor None
 def errores(registro):
     lista = []
@@ -67,6 +87,30 @@ def actualizar_admin(request, id_admin):
     response = redirect('/ver_perfil_admin/')
     return response
 
+def actualizar_chofer(request, id_chofer):
+    chofer = Usuario.objects.get(id=request.user.id)
+    registro = Registro_chofer(request.POST, instance=chofer)
+    if registro.is_valid():
+        print('entro')
+        confirmacion = errores(registro)
+        if len(confirmacion) == 0:
+            registro.save()
+    print('neee')
+    response = redirect('/ver_perfil_chofer/')
+    return response
+
+def actualizar_usuario(request, id_usuario):
+    usuario = Usuario.objects.get(id=request.user.id)
+    registro = Registro_usuario(request.POST, instance=usuario)
+    if registro.is_valid():
+        print('hola')
+        confirmacion = errores(registro)
+        if len(confirmacion) == 0:
+            registro.save()
+    print('neeee')
+    response = redirect('/ver_perfil_usuario/')
+    return response
+
 def cambiar_contra(request):
 
     return render(request, "cambiar_contra.html")
@@ -85,6 +129,21 @@ def errores_ruta(ruta):
 
     return set(lista)
 
+def errores_ruta2(ruta, r_vieja):
+    lista = []
+
+    rutas = Ruta.objects.all()
+    if ruta.cleaned_data.get('nombre') != r_vieja.nombre:
+        for r in rutas:
+            if ruta.cleaned_data.get('nombre').upper() == r.nombre:
+                lista+=[1]
+                break
+
+    if ruta.cleaned_data.get('origen') == ruta.cleaned_data.get('destino'):
+        lista+=[2]
+
+    return set(lista)
+
 def errores_ciudad(ciudad):
     lista = []
     ciudades = Ciudad.objects.all()
@@ -97,6 +156,31 @@ def errores_ciudad(ciudad):
         if (ciudad.cleaned_data.get('nombre').upper() == c.nombre) and ciudad.cleaned_data.get('provincia') == c.provincia:
             lista+=[2]
             break
+
+    return set(lista)
+
+def errores_ciudad2(ciudad, c_vieja):
+    lista = []
+    ciudades = Ciudad.objects.all()
+    if ciudad.cleaned_data.get('codigo_postal') != c_vieja.codigo_postal:
+        for c in ciudades:
+            if ciudad.cleaned_data.get('codigo_postal') == c.codigo_postal:
+                lista+=[1]
+                break
+            else:
+                if c_vieja.nombre != ciudad.cleaned_data.get('nombre').upper() or c_vieja.provincia != ciudad.cleaned_data.get('provincia'):
+                    if ciudad.cleaned_data.get('nombre').upper() == c.nombre and ciudad.cleaned_data.get('provincia') == c.provincia:
+                        lista+=[2]
+                        break
+
+    else:
+        for c in ciudades:
+            print('entro al else')
+            if (ciudad.cleaned_data.get('nombre').upper() == c.nombre) and (ciudad.cleaned_data.get('provincia') == c.provincia):
+                print('if')
+                lista+=[2]
+                break
+
 
     return set(lista)
 
@@ -311,7 +395,7 @@ class FormularioRuta (HttpRequest):
         ruta = Ruta.objects.get(id=id_ruta)
         registro = Registro_ruta(request.POST, instance=ruta)
         if registro.is_valid():
-            confirmacion = errores_ruta(registro)
+            confirmacion = errores_ruta2(registro, ruta)
             if len(confirmacion) == 0 :
                 registro.save()
                 response = redirect('/listar_rutas/')
@@ -347,11 +431,13 @@ class FormularioCiudad (HttpRequest):
     @login_required
     def actualizar(request, id_ciudad):
         ciudad = Ciudad.objects.get(id=id_ciudad)
+        cp = ciudad.codigo_postal
         form = Registro_ciudad(request.POST, instance = ciudad)
         if form.is_valid():
-            ok = errores_ciudad(form)
+            ok = errores_ciudad2(form, ciudad)
             if len(ok) == 0:
                 form.save_ciudad()
+        print('errores', ok, 'ciudad', ciudad, 'form', form)
         response = redirect('/listar_ciudades/')
         return response
             #ciudades= Ciudad.objects.all()

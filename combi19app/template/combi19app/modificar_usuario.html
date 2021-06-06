@@ -1,0 +1,98 @@
+{% extends "usuario_base.html" %}
+
+{% block title %}Editar usuario{% endblock %}
+{% block h1 %}<center>Editar usuario</center>{% endblock %}
+{% block content %}
+  {% if form.errors %}
+    <div class= 'alert alert-danger' role='alert'>
+      fallo en el registro
+    </div>
+    {% endif %}
+
+  <form action="/actualizar_usuario/{{usuario.id}}/" method="POST">
+    {% csrf_token %}
+    {% if mensaje == "ok" %}
+      <div class='alert alert-success' role='alert'>
+        El usuario se actualizó exitosamente!
+      </div>
+    {% endif %}
+    {% if mensaje == "not_ok" %}
+      {% for i in errores %}
+        {% if i == 1 %}
+          <div class= 'alert alert-danger' role='alert'>
+              Fallo en el registro. El nombre de usuario ingresado ya está registrado
+            </div>
+        {% else %}
+          {% if i == 2 %}
+            <div class= 'alert alert-danger' role='alert'>
+              Fallo en el registro. El dni ingresado ya está registrado
+            </div>
+          {% else %}
+              <div class= 'alert alert-danger' role='alert'>
+                Fallo en el registro. El email ingresado ya está registrado
+              </div>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+
+    <div class="container">
+      <center>
+        <div class="row">
+          <div class="col-sm">
+            <h4> <p style="margin: 40px">A continuación actualice sus datos </p></h4>
+            <h5>
+              <div class= "input-group-prepend">
+                <label class="input-group-text" type="text" name="dni_label" for="inputGroupSelect01">DNI</label>
+                <input class="col-sm col-form-label" type="text" name="dni" placeholder="DNI" id="dni">
+              </div>
+              <br>
+              <div class="input-group-prepend">
+                <label class="input-group-text" type="text" name="email" for="inputGroupSelect01">Email</label>
+                <input class="col-sm col-form-label" type="email" pattern= "[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{1,5}" title= "Ingrese un mail valido" name="email" placeholder="Email" id="email" required>
+              </div>
+              <br>
+              <div class="input-group-prepend">
+                <label class="input-group-text" type="text" name="nombre" for="inputGroupSelect01">Nombre</label>
+                <input class="col-sm col-form-label" type="text" name="nombre" placeholder="Nombre" id="nombre" required>
+              </div>
+              <br>
+              <div class="input-group-prepend">
+                <label class="input-group-text" type="text" name="apellido" for="inputGroupSelect01">Apellido</label>
+                <input class="col-sm col-form-label" type="text" name="apellido" placeholder="Apellido" id="apellido" required>
+              </div>
+              <br>
+              <div class="input-group-prepend">
+                <label class="input-group-text" type="text" name="telefono" for="inputGroupSelect01">Teléfono</label>
+                <input class="col-sm col-form-label" type="text" pattern= "^([0-9]+)" name="telefono" placeholder="Telefono" id="telefono" required>
+              </div>
+              <br>
+              <div class="input-group-prepend">
+                <label class="input-group-text" type="text" name="direccion" for="inputGroupSelect01">Dirección</label>
+                <input class="col-sm col-form-label" type="text" name="direccion" placeholder="Direccion" id="direccion" required>
+              </div>
+
+            </h5>
+          </div>
+        </div>
+      </center>
+    </div>
+  <center>
+      <p>
+        <button style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Guardar</button>
+      </p>
+      <p>
+        <a class="btn btn-dark" href="/ver_perfil_usuario">Cancelar</a>
+      </p>
+</center>
+  </form>
+  <script>
+    document.getElementById("nombre").value = "{{usuario.nombre}}"
+    document.getElementById("apellido").value = "{{usuario.apellido}}"
+    document.getElementById("dni").value = "{{usuario.dni}}"
+    document.getElementById("direccion").value = "{{usuario.direccion}}"
+    document.getElementById("email").value = "{{usuario.email}}"
+    document.getElementById("telefono").value = "{{usuario.telefono}}"
+  </script>
+{% endblock %}

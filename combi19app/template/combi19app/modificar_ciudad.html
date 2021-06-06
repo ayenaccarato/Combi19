@@ -8,7 +8,7 @@
       fallo en el registro
     </div>
     {% endif %}
-  <form action="actualizarCiudad/{{id}}" method="POST">
+  <form action="/actualizar_ciudad/{{ciudad.id}}" method="POST">
     {% csrf_token %}
     {% if mensaje == "ok" %}
       <div class='alert alert-success' role='alert'>
