@@ -33,6 +33,7 @@ def login(request):
     return render (request, "registration/login.html")
 
 def ver_perfil_admin(request):
+    print('ver perfil', request.user.id)
     admin = Usuario.objects.get(id=request.user.id)
     long_c = admin.long_contra
     return render (request, "ver_perfil_admin.html", {'admin': admin, 'longitud': long_c})
@@ -117,6 +118,24 @@ def actualizar_usuario(request, id_usuario):
 def cambiar_contra(request):
 
     return render(request, "cambiar_contra.html")
+
+def cambiar_contra_admin(request):
+    admin = Usuario.objects.get(id=request.user.id)
+    print(admin)
+    registro = Registro(instance=admin)
+    return render(request, "cambiar_contra_admin.html", {"dato": registro, "admin": admin})
+
+def actualizar_contra_admin(request, id_admin):
+    admin = Usuario.objects.get(id=request.user.id)
+    print(admin.id)
+    registro = Registro(request.POST, instance=admin)
+
+    if registro.is_valid():
+        registro.save_admin()
+        print('guardado')
+
+    response = redirect('/accounts/login/')
+    return response
 
 def errores_ruta(ruta):
     lista = []
@@ -675,6 +694,8 @@ def errores_insumo(insumo):
         if insumo.cleaned_data.get('nombre') == i.nombre:
             lista+=[1]
             break
+    if str(insumo.cleaned_data.get('precio')).find(','):
+        lista+=[2]
     return set(lista)
 
 class FormularioInsumo(HttpRequest):

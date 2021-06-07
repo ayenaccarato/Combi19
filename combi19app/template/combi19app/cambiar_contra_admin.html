@@ -1,0 +1,101 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Cambiar_contraseña{% endblock %}
+{% block h1 %}<center>Cambiar contraseña</center>{% endblock %}
+
+{% block content %}
+  {% if form.errors %}
+    <div class= 'alert alert-danger' role='alert'>
+      fallo en el registro
+    </div>
+    {% endif %}
+
+  <form action="/actualizar_contra/{{admin.id}}/" method="POST">
+    {% csrf_token %}
+    {% if mensaje == "ok" %}
+      <div class='alert alert-success' role='alert'>
+        La contraseña se actualizó exitosamente!
+      </div>
+    {% endif %}
+    {% if mensaje == "not_ok" %}
+      {% for i in errores %}
+        {% if i == 1 %}
+          <div class= 'alert alert-danger' role='alert'>
+              Fallo en el registro. El nombre de usuario ingresado ya está registrado
+            </div>
+        {% else %}
+          {% if i == 2 %}
+            <div class= 'alert alert-danger' role='alert'>
+              Fallo en el registro. El dni ingresado ya está registrado
+            </div>
+          {% else %}
+              <div class= 'alert alert-danger' role='alert'>
+                Fallo en el registro. El email ingresado ya está registrado
+              </div>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+
+    <div class="container">
+      <center>
+        <div class="row">
+          <div class="col-sm">
+            <h4> <p style="margin: 40px">A continuación actualice la contraseña </p></h4>
+            <h5>
+              <div hidden class= "input-group-prepend">
+                <label class="input-group-text" type="text" name="dni_label" for="inputGroupSelect01">DNI</label>
+                <input class="col-sm col-form-label" type="text" name="dni" placeholder="DNI" id="dni">
+              </div>
+              <br>
+              <div hidden class="input-group-prepend">
+                <label class="input-group-text" type="text" name="nombre" for="inputGroupSelect01">Nombre</label>
+                <input class="col-sm col-form-label" type="text" name="nombre" placeholder="Nombre" id="nombre" required>
+              </div>
+              <br>
+              <div hidden class="input-group-prepend">
+                <label class="input-group-text" type="text" name="apellido" for="inputGroupSelect01">Apellido</label>
+                <input class="col-sm col-form-label" type="text" name="apellido" placeholder="Apellido" id="apellido" required>
+              </div>
+              <br>
+              <div hidden class="input-group-prepend">
+                <label class="input-group-text" type="text" name="email" for="inputGroupSelect01">Email</label>
+                <input class="col-sm col-form-label" type="email" pattern= "[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{1,5}" title= "Ingrese un mail valido" name="email" placeholder="Email" id="email" required>
+              </div>
+              <br>
+              <div hidden class="input-group-prepend">
+                <label class="input-group-text" type="text" name="telefono" for="inputGroupSelect01">Teléfono</label>
+                <input class="col-sm col-form-label" type="text" pattern= "^([0-9]+)" name="telefono" placeholder="Telefono" id="telefono" required>
+              </div>
+              <br>
+              <div hidden class="input-group-prepend">
+                <label class="input-group-text" type="text" name="direccion" for="inputGroupSelect01">Dirección</label>
+                <input class="col-sm col-form-label" type="text" name="direccion" placeholder="Direccion" id="direccion" required>
+              </div>
+              <div class="input-group-prepend">
+                <label class="input-group-text" style="width:15%;" type="text" name="contraseña" for="inputGroupSelect01">Contraseña</label>
+                <!--li class="list-group-item" type="password" style="width: 50%;">{{admin.pass}}</li> <a href="#" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-dark">Cambiar contraseña</a-->
+                <input id="password" class="list-group-item" style="width: 50%;" type="password" pattern=".{6,}" title= "La contraseña debe contener al menos 6 caracteres" name="password" placeholder="Contraseña">
+              </div>
+            </h5>
+          </div>
+        </div>
+      </center>
+    </div>
+  <center>
+    <p>
+      <button style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Guardar</button>
+    </p>
+</center>
+  </form>
+  <script>
+    document.getElementById('password').value = "{{admin.password}}".slice(0, '{{longitud}}')
+    document.getElementById("nombre").value = "{{admin.nombre}}"
+    document.getElementById("apellido").value = "{{admin.apellido}}"
+    document.getElementById("dni").value = "{{admin.dni}}"
+    document.getElementById("direccion").value = "{{admin.direccion}}"
+    document.getElementById("email").value = "{{admin.email}}"
+    document.getElementById("telefono").value = "{{admin.telefono}}"
+  </script>
+  {% endblock %}

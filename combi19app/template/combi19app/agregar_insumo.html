@@ -22,6 +22,10 @@
           <div class= 'alert alert-danger' role='alert'>
               Fallo en el registro del insumo. El nombre ingresado ya está registrado
           </div>
+        {% else %}
+        <div class= 'alert alert-danger' role='alert'>
+            Fallo en el registro del insumo. El precio ingresado debe contener un punto (Ej: 100.00)
+        </div>
         {% endif %}
       {% endfor %}
     {% endif %}

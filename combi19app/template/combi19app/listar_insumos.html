@@ -39,11 +39,13 @@
       <td>{{dato.precio}}</td>
       <td>{{dato.stock}}</td>
       <td>{{dato.categoria}}</td>
-      <td>{{dato.sabor}}</td>
-
+      {% if "{{dato.sabor}}" %}
+        <td>Dulce</td>
+      {% else %}
+        <td>Salado</td>
+      {% endif %}
     </tr>
   </table>
-
     {% else %}
 
       {% if mensaje == "eliminado"%}
@@ -63,6 +65,7 @@
             <tr>
               <td>Nombre</td>
               <td>Precio</td>
+              <td></td>
               <td></td>
               <td></td>
             </tr>
