@@ -1,7 +1,7 @@
 {% extends "admin_base.html" %}
 
-{% block title %}Agregar_insumo{% endblock %}
-{% block h1 %}<center>Agregar insumo</center>{% endblock %}
+{% block title %}Editar_insumo{% endblock %}
+{% block h1 %}<center>Editar insumo</center>{% endblock %}
 {% block content %}
   {% if form.errors %}
     <div class= 'alert alert-danger' role='alert'>
@@ -9,7 +9,7 @@
     </div>
     {% endif %}
 
-  <form action="/guardar_insumo/" method="POST">
+  <form action="/actualizar_insumo/{{insumos.id}}/" method="POST">
     {% csrf_token %}
     {% if mensaje == "ok" %}
       <div class='alert alert-success' role='alert'>
