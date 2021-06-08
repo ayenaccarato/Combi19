@@ -1,4 +1,4 @@
-{% extends "admin_base.html" %}
+{% extends "chofer_base.html" %}
 
 {% block title %}Cambiar_contraseña{% endblock %}
 {% block h1 %}<center>Cambiar contraseña</center>{% endblock %}
@@ -10,7 +10,7 @@
     </div>
     {% endif %}
 
-  <form action="/actualizar_contra_admin/{{admin.id}}/" method="POST">
+  <form action="/actualizar_contra_chofer/{{chofer.id}}/" method="POST">
     {% csrf_token %}
     {% if mensaje == "ok" %}
       <div class='alert alert-success' role='alert'>
@@ -44,7 +44,7 @@
           <div class="col-sm">
             <h4> <p style="margin: 40px">A continuación actualice la contraseña </p></h4>
             <h5>
-              <div class="input-group-prepend" style="padding-left: 20%;">
+              <div class="input-group-prepend" style = "padding-left: 20%;">
                 <label class="input-group-text" style="width:15%;" type="text" name="contraseña" for="inputGroupSelect01">Contraseña</label>
                 <!--li class="list-group-item" type="password" style="width: 50%;">{{admin.pass}}</li> <a href="#" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-dark">Cambiar contraseña</a-->
                 <input id="password" class="list-group-item" style="width: 50%;" type="password" pattern=".{6,}" title= "La contraseña debe contener al menos 6 caracteres" name="password" placeholder="Contraseña" required>
@@ -91,17 +91,17 @@
       <button style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Guardar</button>
     </p>
     <p>
-      <a class="btn btn-dark" href="/ver_perfil_admin">Cancelar</a>
+      <a class="btn btn-dark" href="/ver_perfil_chofer">Cancelar</a>
     </p>
 </center>
   </form>
   <script>
-    document.getElementById('password').value = "{{admin.password}}".slice(0, '{{longitud}}')
-    document.getElementById("nombre").value = "{{admin.nombre}}"
-    document.getElementById("apellido").value = "{{admin.apellido}}"
-    document.getElementById("dni").value = "{{admin.dni}}"
-    document.getElementById("direccion").value = "{{admin.direccion}}"
-    document.getElementById("email").value = "{{admin.email}}"
-    document.getElementById("telefono").value = "{{admin.telefono}}"
+    document.getElementById('password').value = "{{chofer.password}}".slice(0, '{{longitud}}')
+    document.getElementById("nombre").value = "{{chofer.nombre}}"
+    document.getElementById("apellido").value = "{{chofer.apellido}}"
+    document.getElementById("dni").value = "{{chofer.dni}}"
+    document.getElementById("direccion").value = "{{chofer.direccion}}"
+    document.getElementById("email").value = "{{chofer.email}}"
+    document.getElementById("telefono").value = "{{chofer.telefono}}"
   </script>
   {% endblock %}

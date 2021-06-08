@@ -137,6 +137,34 @@ def actualizar_contra_admin(request, id_admin):
     response = redirect('/accounts/login/')
     return response
 
+def cambiar_contra_usuario(request):
+    usuario = Usuario.objects.get(id=request.user.id)
+    registro = Registro(instance=usuario)
+    return render(request, "cambiar_contra_usuario.html", {"dato": registro, "usuario": usuario})
+
+def actualizar_contra_usuario(request, id_usuario):
+    usuario = Usuario.objects.get(id=request.user.id)
+    registro = Registro(request.POST, instance=usuario)
+
+    if registro.is_valid():
+        registro.save()
+
+    response = redirect('/accounts/login/')
+    return response
+
+def cambiar_contra_chofer(request):
+    chofer = Usuario.objects.get(id=request.user.id)
+    registro = Registro(instance=chofer)
+    return render(request, "cambiar_contra_chofer.html", {"dato": registro, "chofer": chofer})
+
+def actualizar_contra_chofer(request, id_chofer):
+    chofer = Usuario.objects.get(id=request.user.id)
+    registro = Registro(request.POST, instance=chofer)
+    if registro.is_valid():
+        registro.save_chofer()
+    response = redirect('/accounts/login/')
+    return response
+
 def errores_ruta(ruta):
     lista = []
 

@@ -1,4 +1,4 @@
-{% extends "admin_base.html" %}
+{% extends "usuario_base.html" %}
 
 {% block title %}Cambiar_contraseña{% endblock %}
 {% block h1 %}<center>Cambiar contraseña</center>{% endblock %}
@@ -10,7 +10,7 @@
     </div>
     {% endif %}
 
-  <form action="/actualizar_contra_admin/{{admin.id}}/" method="POST">
+  <form action="/actualizar_contra_usuario/{{usuario.id}}/" method="POST">
     {% csrf_token %}
     {% if mensaje == "ok" %}
       <div class='alert alert-success' role='alert'>
@@ -91,17 +91,17 @@
       <button style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Guardar</button>
     </p>
     <p>
-      <a class="btn btn-dark" href="/ver_perfil_admin">Cancelar</a>
+      <a class="btn btn-dark" href="/ver_perfil_usuario">Cancelar</a>
     </p>
 </center>
   </form>
   <script>
-    document.getElementById('password').value = "{{admin.password}}".slice(0, '{{longitud}}')
-    document.getElementById("nombre").value = "{{admin.nombre}}"
-    document.getElementById("apellido").value = "{{admin.apellido}}"
-    document.getElementById("dni").value = "{{admin.dni}}"
-    document.getElementById("direccion").value = "{{admin.direccion}}"
-    document.getElementById("email").value = "{{admin.email}}"
-    document.getElementById("telefono").value = "{{admin.telefono}}"
+    document.getElementById('password').value = "{{usuario.password}}".slice(0, '{{longitud}}')
+    document.getElementById("nombre").value = "{{usuario.nombre}}"
+    document.getElementById("apellido").value = "{{usuario.apellido}}"
+    document.getElementById("dni").value = "{{usuario.dni}}"
+    document.getElementById("direccion").value = "{{usuario.direccion}}"
+    document.getElementById("email").value = "{{usuario.email}}"
+    document.getElementById("telefono").value = "{{usuario.telefono}}"
   </script>
   {% endblock %}
