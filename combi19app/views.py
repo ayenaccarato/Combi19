@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.template.loader import get_template
 from django.http import HttpResponse, HttpRequest
-from combi19app.forms import Registro, Registro_admin, Registro_vehiculo, Registro_ruta, Registro_ciudad, Registro_viaje, Registro_chofer, Registro_insumo, Registro_info_de_contacto, Registro_comentario, Registro_anuncio, Registro_usuario
+from combi19app.forms import Registro, Registro_admin, Registro_vehiculo, Registro_ruta, Registro_ciudad, Registro_viaje, Registro_chofer, Registro_insumo, Registro_info_de_contacto, Registro_comentario, Registro_anuncio, Registro_usuario, Registro_contra
 from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje, Insumo, InformacionDeContacto, Comentario, Anuncio
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import UpdateView
@@ -115,24 +115,72 @@ def actualizar_usuario(request, id_usuario):
     response = redirect('/ver_perfil_usuario/')
     return response
 
-def cambiar_contra(request):
+def confirmar_usuario(registro):
+    lista = []
+    usuarios = Usuario.objects.all()
+    for us in usuarios:
+        dni = us.dni
+        if registro == str(dni):
+            lista+=[1]
+            break
 
-    return render(request, "cambiar_contra.html")
+    return set(lista)
+
+def cambiar_contra(request):
+    registro = Registro()
+    return render(request, "verificar_dni.html", {'usuario': registro})
+
+def procesar_contra(request):
+    if request.POST.get('dni') != None:
+        print('ifff p')
+        confirmacion = confirmar_usuario(request.POST.get('dni'))
+        if len(confirmacion) != 0:
+            usuario = Usuario.objects.get(dni=request.POST.get('dni'))
+            registro = Registro(request.POST, instance=usuario)
+            return render(request, "cambiar_contra.html", {'usuario': usuario})
+        else:
+            return render(request, "verificar_dni.html", {'mensaje': "no existe"})
+    else:
+        print('elseee p')
+        cambiar_contra(request)
+        return render(request, "verificar_dni.html", {'dni': request.POST.get('dni')})
+
+def actualizar_contra(request):
+    print('post', request.POST.get('dni'))
+    confirmacion = confirmar_usuario(request.POST.get('dni'))
+    print('con', confirmacion)
+    if len(confirmacion) != 0:
+        print('ifffff')
+        usuario = Usuario.objects.get(dni=request.POST.get('dni'))
+        registro = Registro(request.POST, instance=usuario)
+        if registro.is_valid():
+            print('es valido')
+            if registro.cleaned_data.get('tipo_usuario') == 1:
+                registro.save_admin()
+            elif registro.cleaned_data.get('tipo_usuario') == 2:
+                registro.save_chofer()
+            else:
+                registro.save()
+
+        response = redirect('/accounts/login/')
+        return response
+        #return render(request, "cambiar_contra.html", {'usuario': usuario, 'mensaje': "existe"})
+    else:
+        print('neee')
+
+
+
 
 def cambiar_contra_admin(request):
     admin = Usuario.objects.get(id=request.user.id)
-    print(admin)
     registro = Registro(instance=admin)
     return render(request, "cambiar_contra_admin.html", {"dato": registro, "admin": admin})
 
 def actualizar_contra_admin(request, id_admin):
     admin = Usuario.objects.get(id=request.user.id)
-    print(admin.id)
     registro = Registro(request.POST, instance=admin)
-
     if registro.is_valid():
         registro.save_admin()
-        print('guardado')
 
     response = redirect('/accounts/login/')
     return response

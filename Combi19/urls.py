@@ -42,7 +42,11 @@ urlpatterns = [
     path('ver_perfil_usuario/modificar_usuario/', views.editar_usuario),
     path('actualizar_usuario/<int:id_usuario>/', views.actualizar_usuario),
     path('ver_perfil_usuario/actualizar_usuario/<int:id_usuario>/', views.actualizar_usuario, name="actualizar_usuario"),
-    path('cambiar_contra/', views.cambiar_contra),
+
+    path('verificar_dni/', views.cambiar_contra),
+    path('cambiar_contra/', views.procesar_contra),
+    path('actualizar_contra/', views.actualizar_contra),
+
     path('cambiar_contra_admin/', views.cambiar_contra_admin),
     path('actualizar_contra_admin/', views.actualizar_contra_admin),
     path('actualizar_contra_admin/<int:id_admin>/', views.actualizar_contra_admin),

@@ -226,3 +226,10 @@ class Registro_anuncio(forms.ModelForm):
                   'texto',
                   'fecha_y_hora'
                   )
+
+class Registro_contra(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        fields = ('dni',
+                  'password'
+                  )
