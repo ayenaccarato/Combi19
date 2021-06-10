@@ -1,0 +1,66 @@
+{% extends "usuario_base.html" %}
+{% load static %}
+{% block title %}DatosCompra{% endblock %}
+{% block h1 %}<center>Datos de la compra</center>{% endblock %}
+{% block content %}
+
+<form action="/agregar/" method="POST">
+{% csrf_token %}
+
+<div class = "container">
+  <br>
+  <h3>
+    TIENDA
+  </h3>
+  {% if tienda == 0 %}
+  <br>
+  <br>
+  <br>
+  <br>
+  <div class='alert alert-warning' role='alert'>
+    Actualmente no tenemos insumos para ofrecerle
+  </div>
+  {% else %}
+    <br>
+    <br>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <td>Nombre</td>
+            <td>Precio X1</td>
+            <td>Seleccione una cantidad</td>
+            <td></td>
+          </tr>
+        </thead>
+        <tbody>
+          {% for insumo in insumos %}
+          <tr>
+            <td>{{insumo.nombre}}</td>
+            <td>${{insumo.precio}}</td>
+            <td>
+              {% if insumo.stock != 0 %}
+                  <input class="col-sm-11 col-form-label" type="text" name="cantidad" title="Stock actual {{insumo.stock}}" required>
+                  <td><button type="submit" class="btn btn-primary" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Agregar</a></button>
+              {% else %}
+                SIN STOCK
+              {% endif %}
+            </td>
+            <input hidden type="text" name="id_user"  id="id_user">
+            <input hidden type="text" name="precio"  id="precio">
+            <input hidden type="text" name="insumo"  id="insumo">
+            <input hidden type="text" name="viaje"  id="viaje">
+            </td>
+
+          </tr>
+        {% endfor %}
+    {% endif %}
+   <a class="btn btn-success" href= "comprar_pasaje/{{viaje}}/carrito" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:50px;float:right">Ver carrito</a>
+   <a class="btn btn-dark" href="/comprar_pasaje_menu/{{viaje}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:right">Atras</a>
+ </div>
+ <script>
+     document.getElementById('id_user').value = "{{usuario}}"
+     document.getElementById('viaje').value = "{{viaje.id}}"
+     document.getElementById('insumo').value =
+     document.getElementById('precio').value =  (document.getElementById('cantidad').value * insumo.precio)
+ </script>
+{% endblock %}

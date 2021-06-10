@@ -1,0 +1,104 @@
+{% extends "usuario_base.html" %}
+{% block title %}DatosCompra{% endblock %}
+{% block h1 %}<center>Datos de la compra</center>{% endblock %}
+{% block content %}
+
+  <form action="/verificar/{{viaje.id}}/" method="POST">
+  {% csrf_token %}
+  <div class = "container">
+  <div class= "row row-cols-2">
+
+    <div class= "col-6" style= "float:left">
+      <br>
+      <br>
+      <div class="card text-black bg-susses mb-3" style="max-width: 40rem;">
+        <h4>
+        <div class="card-header">TICKET</div>
+      </h4>
+        <div class="card-body">
+        <h5>
+          <p class="card-text">     PASAJE X1 A: {{nombre}}</p>
+              <br>
+          <p class="card-text">  PRECIO: $ {{viaje.precio}}</p>
+              <br>
+          {% if tienda != 0 %}
+            <p class="card-text">  INSUMOS:</p>
+            {% for i in insumos %}
+              <p class="card-text">     {{nombre_insumo}} X{{ticket_insumo.cantidad}}</p>
+            {% endfor %}
+          {% endif %}
+        </h5>
+        <br>
+        <br>
+        <h3 class="card-title">PRECIO TOTAL: $500</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class= "col-6" style="float:right;">
+          <br>
+          <h4>
+            Tarjeta
+          </h4>
+          <br>
+          <br>
+
+      {% if tiene_tarjeta == 0 or mensaje == "otra" %}
+                <h5>
+                <div class="col-sm">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="numero" for="inputGroupSelect01">Numero</label>
+                    <p><input class="col-sm-15 col-form-label" type="text" name="numero" pattern="^([0-9-]+){19}" placeholder="XXXX-XXXX-XXXX-XXXX" required> </p>
+                  </div>
+                  <div class="input-group-prepend">
+                    <label class="input-group-text" type="text" name="vencimiento" for="inputGroupSelect01">Fecha de caducidad</label>
+                    <p><input class="col-sm-15 col-form-label" type="text" name="vencimiento" placeholder="MM/AA" required> </p>
+                  </div>
+                  <div class="input-group-prepend">
+                    <label class="input-group-text" type="text" name="titular" for="inputGroupSelect01">Titular</label>
+                    <p><input class="col-sm-15 col-form-label" type="text" name="titular" placeholder="Nombre y apellido" required> </p>
+                  </div>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <label class="input-group-text" name="categoria_label" for="inputGroupSelect01">Emisor de la tarjeta</label>
+                      </div>
+                      <select class="custom-select" type=IntegerField name="emisor" id="emisor" required>
+                        <option value="" disabled=True selected>--Seleccione--</option>
+                        <option value="visa">Visa</option>
+                        <option value="master card">Master card</option>
+                        <option value="american express">American express</option>
+                        <option value="naranja">Naranja</option>
+                        <option value="nativa">Nativa</option>
+                      </select>
+                  </div>
+                  <div class="input-group-prepend">
+                    <label class="input-group-text" type="text" name="codigo" for="inputGroupSelect01">Codigo</label>
+                    <p><input class="col-sm-15 col-form-label" type="text" name="codigo" pattern="^([0-9]+){3}"  required> </p>
+                  </div>
+
+                    <br>
+                    <br>
+                  <button class="btn btn-success" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:right">Verificar tarjeta</button>
+              </h5>
+              </div>
+            </div>
+                  {% else %}
+                  <h5>
+                    Tarjetas ya registradas:</h5>
+                    <br>
+                    {% for i in tarjetas %}
+                      <a class="btn btn-primary"href="/comprar_pasaje_con/{{viaje.id}}/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Pagar con {{i.emisor}} {{i.numero}}</button>
+                    {% endfor %}
+
+                    <a class="btn btn-success" href="/otra_tarjeta/{{viaje.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:right">Pagar con otra tarjeta</a>
+                    <a class="btn btn-dark" href="/comprar_pasaje_menu/{{viaje.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:left">Atras</a>
+    {% endif %}
+          <input hidden type="text" name="id_user"  id="id_user">
+      </div>
+    </div>
+</div>
+
+<script>
+  document.getElementById('id_user').value="{{usuario}}"
+</script>
+{% endblock %}

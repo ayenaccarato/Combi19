@@ -1,0 +1,47 @@
+{% extends "usuario_base.html" %}
+{% block title %}DatosCompra{% endblock %}
+{% block h1 %}<center>Datos de la compra</center>{% endblock %}
+{% block content %}
+  {% csrf_token %}
+    {% if aceptado == "si" %}
+      <div class='alert alert-success' role='alert'>
+          <h4>
+        El pago se realizo exitosamente!
+        <br>
+        <br>
+        Para ver el pasaje click aqui:
+
+        <a class="btn btn-primary" href="#" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:center">PASAJE</a>
+        <br><br>
+        Tambien los puede ver en la seccion "VER PASAJES"
+        <br><br>
+        *** EL DIA DEL VIAJE: recuerde llevar barbijo, alcohol en gel y el certificado de ciruclacion para poder viajar,
+        de lo contrario no podra subir ***
+        <br><br><br>
+                                Gracias por elegirnos  ☺
+        <br><br><br><br>
+
+
+                               ¡ Que tenga buen viaje !
+        </h4>
+        </div>
+
+    {% else %}
+    <br>
+    <h5>
+      <div class= 'alert alert-danger' role='alert'>
+        Fallo en la compra porque usted ya tiene un pasaje en este viaje.
+        <br>
+        <br>
+        Para ver el pasaje click aqui:
+
+        <a class="btn btn-primary" href="#" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:center">PASAJE</a>
+        <br><br>
+        Tambien los puede ver en la seccion "VER PASAJES"
+        <br><br>
+      </div>
+    </h5>
+    {% endif %}
+    <br>
+      <a class="btn btn-dark" href="/home" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:center">Volver</a>
+{% endblock %}

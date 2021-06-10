@@ -1,5 +1,5 @@
 from django import forms
-from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje, Insumo, InformacionDeContacto, Comentario, Anuncio
+from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje, Insumo, InformacionDeContacto, Comentario, Anuncio, Pasaje, Tarjeta, Ticket
 from datetime import datetime, timedelta
 
 class Registro (forms.ModelForm):
@@ -174,6 +174,26 @@ class Registro_viaje (forms.ModelForm):
             viaje.save()
         return viaje
 
+    def save_viaje3(self, ruta, commit=True):
+        viaje= super().save(commit = True)
+        viaje.vendidos = viaje.vendidos +1
+        hora = viaje.hora_salida.split(':')
+        if hora[2] == "AM":
+            viaje.fecha_salida = viaje.fecha_salida.replace(hour = int(hora[0]), minute=int(hora[1]))
+        else:
+            if int(hora[0]) == 12 :
+                viaje.fecha_salida = viaje.fecha_salida.replace(hour = 0, minute=int(hora[1]))
+            else:
+                viaje.fecha_salida = viaje.fecha_salida.replace(hour = int(hora[0]) + 12, minute=int(hora[1]))
+        if ruta.duracion_en == 'minutos':
+            viaje.fecha_llegada = viaje.fecha_salida + timedelta(minutes = int(ruta.duracion))
+        else:
+            viaje.fecha_llegada = viaje.fecha_salida + timedelta(hours = int(ruta.duracion))
+        if commit:
+            viaje.save()
+        return viaje
+
+
 class Registro_insumo(forms.ModelForm):
 
     class Meta:
@@ -232,4 +252,42 @@ class Registro_contra(forms.ModelForm):
         model = Usuario
         fields = ('dni',
                   'password'
+                  )
+
+class Registro_pasaje(forms.ModelForm):
+
+    class Meta:
+        model = Pasaje
+        fields = ('id_user',
+                  'nro_viaje',
+                  'estado',
+                  'tarjeta',
+                  'nro_asiento'
+                  )
+
+    def save_pasaje(self, commit=True):
+        pasaje= super().save(commit = True)
+        pasaje.nro_asiento = pasaje.nro_asiento+1
+
+class Registro_tarjeta(forms.ModelForm):
+
+    class Meta:
+        model = Tarjeta
+        fields = ('numero',
+                  'vencimiento',
+                  'titular',
+                  'emisor',
+                  'codigo',
+                  'id_user'
+                  )
+
+class Registro_ticket(forms.ModelForm):
+
+    class Meta:
+        model = Ticket
+        fields = ('viaje',
+                  'insumo',
+                  'cantidad',
+                  'precio',
+                  'id_user'
                   )

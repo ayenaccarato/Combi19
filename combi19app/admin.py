@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from combi19app.models import Usuario, Vehiculo, Ciudad, Ruta, Tarjeta, Pasajes
+from combi19app.models import Usuario, Vehiculo, Ciudad, Ruta, Tarjeta, Pasaje
 
 # Register your models here.
 
@@ -27,4 +27,4 @@ admin.site.register(Vehiculo, VehiculoAdmin)
 admin.site.register(Ciudad)
 admin.site.register(Ruta)
 admin.site.register(Tarjeta)
-admin.site.register(Pasajes)
+admin.site.register(Pasaje)

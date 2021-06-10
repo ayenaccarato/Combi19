@@ -137,17 +137,6 @@ class Viaje (models.Model):
     def publish(self):
         self.save()
 
-class Tarjeta(models.Model):
-    nro = models.BigIntegerField()
-    banco = models.CharField(max_length=20)
-    entidad = models.CharField(max_length=20)
-
-class Pasajes(models.Model):
-    dni = models.ForeignKey(Usuario, on_delete=models.PROTECT)
-    nro_viaje = models.ForeignKey(Viaje, on_delete=models.PROTECT)
-    estado = models.CharField(max_length=20)
-    tarjeta = models.ForeignKey(Tarjeta, on_delete=models.PROTECT)
-
 class InformacionDeContacto(models.Model):
     email = models.EmailField( max_length=254)
     direccion = models.CharField(max_length=50)
@@ -173,3 +162,25 @@ class Anuncio(models.Model):
     titulo = models.CharField(max_length=20)
     texto = models.CharField(max_length=10000)
     fecha_y_hora=models.CharField(max_length=50)
+
+class Tarjeta(models.Model):
+    numero = models.CharField(max_length=50)
+    vencimiento = models.CharField(max_length=6)
+    titular = models.CharField(max_length=30)
+    emisor = models.CharField(max_length=20)
+    codigo = models.IntegerField()
+    id_user = models.ForeignKey(Usuario, related_name='+', on_delete=models.PROTECT)
+
+class Pasaje(models.Model):
+    id_user = models.BigIntegerField()
+    nro_viaje = models.ForeignKey(Viaje, related_name='+', on_delete=models.PROTECT)
+    estado = models.CharField(max_length=20)
+    tarjeta = models.ForeignKey(Tarjeta, related_name='+', on_delete=models.PROTECT)
+    nro_asiento = models.IntegerField()
+
+class Ticket(models.Model):
+    viaje = models.ForeignKey(Viaje, related_name='+', on_delete=models.PROTECT)
+    insumo = models.ForeignKey(Insumo, related_name='+', on_delete=models.PROTECT)
+    cantidad= models.IntegerField()
+    precio = models.DecimalField(max_digits=5, decimal_places=2)
+    id_user = models.IntegerField()

@@ -1,0 +1,47 @@
+{% extends "usuario_base.html" %}
+{% load static %}
+{% block title %}DatosCompra{% endblock %}
+{% block h1 %}<center>Datos de la compra</center>{% endblock %}
+{% block content %}
+
+  <form action="agregar/{{viaje}}/" method="POST">
+{% csrf_token %}
+
+<div class = "container">
+      <br>
+      <div class="media">
+        <img class="d-flex rounded avatar z-depth-1-half mr-2" src={% static 'carrito.png' %}  width="100" height="100" alt="Avatar">
+        <div class="media-body">
+          <h3>
+                     MI CARRITO
+          </h3>
+          <br>
+          {% if cosas == 0 %}
+          <br>
+          <br>
+          <br>
+          <div class='alert alert-warning' role='alert' style="float:left">
+            No hay insumos en el carrito
+          </div>
+          {% endif %}
+
+          </div>
+        </div>
+    </div>
+
+
+  </div>
+</div>
+<script>
+  function guardar(insumo){
+      console.log("aaa",insumo);
+      document.getElementsByName('cantidad').value = document.getElementById('cantidad+'+insumo)
+      //document.getElementById('id_user').value = "{{usuario}}"
+      //document.getElementById('viaje').value = "{{viaje.id}}"
+      //document.getElementById('insumo').value = insumo.id
+      //document.getElementById('precio').value =  (document.getElementById('cantidad').value * insumo.precio)
+      console.log("llego");
+    }
+</script>
+
+{% endblock %}

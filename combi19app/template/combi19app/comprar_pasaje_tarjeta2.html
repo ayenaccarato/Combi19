@@ -1,0 +1,140 @@
+{% extends "usuario_base.html" %}
+{% load static %}
+{% block title %}DatosCompra{% endblock %}
+{% block h1 %}<center>Datos de la compra</center>{% endblock %}
+{% block content %}
+
+  <form action="/pagar/{{viaje.id}}/" method="POST">
+  {% csrf_token %}
+<div class = "container">
+  <div class= "row row-cols-2">
+
+      <div class= "col-6" style= "float:left">
+        <br>
+        <br>
+        <div class="card text-black bg-susses mb-3" style="max-width: 40rem;">
+          <h4>
+          <div class="card-header">TICKET</div>
+        </h4>
+          <div class="card-body">
+          <h5>
+            <p class="card-text">     PASAJE X1 A: {{nombre}}</p>
+                <br>
+            <p class="card-text">  PRECIO: $ {{viaje.precio}}</p>
+                <br>
+            {% if tienda != 0 %}
+              <p class="card-text">  INSUMOS:</p>
+              {% for i in insumos %}
+                <p class="card-text">     {{nombre_insumo}} X{{ticket_insumo.cantidad}}</p>
+              {% endfor %}
+            {% endif %}
+          </h5>
+
+          <br>
+          <br>
+          <h3 class="card-title">PRECIO TOTAL: $500</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class= "col-6" style="float:right;">
+        <br>
+      <h4>
+        Tarjeta ya registrada:
+      </h4>
+      <br>
+      <br>
+      <h5>
+        <input hidden type="text" name="id_user"  id="id_user">
+        <input hidden type="text" name="nro_viaje"  id="nro_viaje">
+        <input hidden type="text" name="tarjeta"  id="tarjeta">
+        <input hidden type="text" name="estado"  id="estado">
+        <input hidden type="text" name="nro_asiento"  id="nro_asiento">
+
+        <input hidden type="text" name="fecha_llegada" id="fecha2">
+        <input hidden type="text" name="fecha_salida" id="fecha">
+        <input hidden type="text" name="hora_salida"  id="hora_salida">
+        <input hidden type="text" name="precio"  id="precio">
+        <input hidden type="text" name="vendidos"  id="vendidos">
+        <input hidden type="text" name="asientos_total"  id="asientos_total">
+        <input hidden type="text" name="asientos_disponibles"  id="asientos_disponibles">
+        <input hidden type="text" name="chofer"  id="chofer">
+        <input hidden type="text" name="vehiculo"  id="vehiculo">
+        <input hidden type="text" name="ruta"  id="ruta">
+
+      <div class="col-sm">
+      <div class="input-group-prepend">
+        <label class="input-group-text" type="text" name="numero" for="inputGroupSelect01">Numero</label>
+          <p><input readonly class="col-sm-15 col-form-label" type="text" name="numero" id="numero" pattern="^([0-9-]+){19}" placeholder="XXXX-XXXX-XXXX-XXXX" required> </p>
+        </div>
+        <div class="input-group-prepend">
+          <label class="input-group-text" type="text" name="vencimiento" for="inputGroupSelect01">Fecha de caducidad</label>
+          <p><input readonly class="col-sm-15 col-form-label" type="text" name="vencimiento" id="vencimiento" placeholder="MM/AA" required> </p>
+        </div>
+        <div class="input-group-prepend">
+          <label class="input-group-text" type="text" name="titular" for="inputGroupSelect01">Titular</label>
+          <p><input readonly class="col-sm-15 col-form-label" type="text" name="titular" id="titular" placeholder="Nombre y apellido" required> </p>
+        </div>
+
+        <div class="input-group-prepend">
+          <label class="input-group-text" type="text" name="emisor" for="inputGroupSelect01">Emisor de la tarjeta</label>
+          <p><input readonly class="col-sm-15 col-form-label" type="text" name="emisor" id="emisor" placeholder="emisor" required> </p>
+        </div>
+      
+        <div class="input-group-prepend">
+          <label class="input-group-text" type="text" name="codigo" for="inputGroupSelect01">Codigo</label>
+          <p><input class="col-sm-15 col-form-label" readonly type="text" name="codigo" id="codigo" pattern="^([0-9]+){3}"  required> </p>
+        </div>
+        </h5>
+          <br>
+          <br>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button type = "submit"  class="btn btn-success" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:right">Pagar</button>
+
+<script>
+      var date = new Date("{{viaje.fecha_salida.isoformat}}");
+      var date2 = new Date("{{viaje.fecha_llegada.isoformat}}");
+
+      function formatDate(date) {
+        var day = date.getDate();
+        if (day < 10) {
+            day = "0" + day;
+        }
+        var month = date.getMonth() + 1;
+        if (month < 10) {
+            month = "0" + month;
+        }
+        var year = date.getFullYear();
+        return day + "/" + month + "/" + year;
+      }
+
+      document.getElementById('fecha').value = formatDate(date);
+      document.getElementById('fecha2').value = formatDate(date2);
+
+      document.getElementById("numero").value = "{{tarjeta.numero}}";
+      document.getElementById("titular").value = "{{tarjeta.titular}}";
+      document.getElementById("emisor").value = "{{tarjeta.emisor}}";
+      document.getElementById("vencimiento").value = "{{tarjeta.vencimiento}}";
+      document.getElementById("codigo").value = "{{tarjeta.codigo}}";
+
+      document.getElementById("id_user").value = "{{usuario}}";
+      document.getElementById("nro_viaje").value = "{{viaje.id}}";
+      document.getElementById("estado").value = "activo";
+      document.getElementById("tarjeta").value = "{{tarjeta.id}}";
+      document.getElementById("nro_asiento").value = "{{viaje.vendidos}}";
+
+      document.getElementById("hora_salida").value = "{{viaje.hora_salida}}";
+      document.getElementById("asientos_total").value = "{{viaje.asientos_total}}";
+      document.getElementById("asientos_disponibles").value = "{{viaje.asientos_disponibles}}"-1;
+      document.getElementById("vendidos").value = "{{viaje.vendidos}}";
+      document.getElementById("precio").value = "{{viaje.precio}}".replace(',','.')
+      document.getElementById("chofer").value = "{{viaje.chofer.id}}";
+      document.getElementById("ruta").value = "{{viaje.ruta.id}}";
+      document.getElementById("vehiculo").value = "{{viaje.vehiculo.id}}";
+
+</script>
+
+{% endblock %}

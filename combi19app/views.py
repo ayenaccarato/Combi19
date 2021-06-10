@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.template.loader import get_template
 from django.http import HttpResponse, HttpRequest
-from combi19app.forms import Registro, Registro_admin, Registro_vehiculo, Registro_ruta, Registro_ciudad, Registro_viaje, Registro_chofer, Registro_insumo, Registro_info_de_contacto, Registro_comentario, Registro_anuncio, Registro_usuario, Registro_contra
-from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje, Insumo, InformacionDeContacto, Comentario, Anuncio
+from combi19app.forms import Registro, Registro_admin, Registro_vehiculo, Registro_ruta, Registro_ciudad, Registro_viaje, Registro_chofer, Registro_insumo, Registro_info_de_contacto, Registro_comentario, Registro_anuncio, Registro_usuario, Registro_contra, Registro_pasaje, Registro_tarjeta, Registro_ticket
+from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje, Insumo, InformacionDeContacto, Comentario, Anuncio, Pasaje, Tarjeta, Ticket
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.decorators import login_required
@@ -295,6 +295,37 @@ def errores_vehiculo(vehiculo):
             lista+=[1]
             break
     return set(lista)
+
+def errores_tarjeta(tarjeta):
+    lista = []
+    vencido = tarjeta.cleaned_data.get('vencimiento').split('/')
+    if int(vencido[1]) < 21:
+        lista+=[1]
+    else:
+        if int(vencido[1]) == 21:
+            if int(vencido[0]) <= 6:
+                lista+=[2]
+    return set(lista)
+
+def errores_ven(tarjeta):
+    lista = []
+    vencido = int(str(tarjeta).replace('Tarjeta object ','').replace('(','').replace(')',''))
+    vencido = Tarjeta.objects.get(id=vencido)
+    vencido = vencido.vencimiento.split('/')
+    if int(vencido[1]) < 21:
+        lista+=[1]
+    else:
+        if int(vencido[1]) == 21:
+            if int(vencido[0]) <= 6:
+                lista+=[2]
+    return set(lista)
+
+def errores_tareta2(tarjetas):
+    for i in tarjetas:
+        confirmacion=errores_ven(i)
+        if len(confirmacion) != 0:
+            i.delete()
+    return tarjetas
 
 def calcular_minutos():
     minutos=[]
@@ -952,3 +983,131 @@ class FormularioAnuncio(HttpRequest):
         print(form.cleaned_data.get('titulo'))
         print(form.cleaned_data.get('texto'))
         print(form.cleaned_data.get('fecha_y_hora'))
+
+
+class ComprarPasaje(HttpRequest):
+    @login_required
+    def comprar_pasaje_menu(request,id_viaje):
+        viaje = Viaje.objects.get(id =id_viaje)
+        hora_llegada = viaje.fecha_llegada.time()
+        nombre = Ruta.objects.get(id = viaje.ruta_id)
+        chofer = Usuario.objects.get (id = viaje.chofer_id)
+        patente = Vehiculo.objects.get ( id = viaje.vehiculo_id).patente
+        tipo_asiento = Vehiculo.objects.get ( id = viaje.vehiculo_id).premium
+        return render (request, "comprar_pasaje_menu.html", {"viaje": viaje, "tipo_asiento":tipo_asiento,"nombre":nombre, "hora_llegada":hora_llegada, "chofer":chofer,"patente":patente})
+
+    @login_required
+    def mi_carrito(request,id_viaje):
+        ticket= Registro_ticket()
+        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
+        insumos = Insumo.objects.all()
+        usuario=request.user.id
+        stocks={}
+        for i in insumos:
+            stocks[i.id]=range(1,i.stock+1)
+        return render (request, "comprar_pasaje_carrito.html", {"stocks":stocks,"usuario":usuario,"viaje":id_viaje,"insumos":insumos, "carrito":carrito, "cosas":len(carrito), "tienda":len(insumos)})
+
+
+
+    @login_required
+    def guardar_carrito(request, id_viaje,id_viaje2):
+        ticket = Registro_ticket(request.POST)
+
+        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje2)
+        insumos = Insumo.objects.all()
+        usuario=request.user.id
+        stocks={}
+        for i in insumos:
+            stocks[i.id]=range(1,i.stock+1)
+
+        if ticket.is_valid():
+            ticket.save()
+
+            return render (request, "comprar_pasaje_carrito.html", {"stocks":stocks,"usuario":usuario,"viaje":id_viaje2,"insumos":insumos, "carrito":carrito, "cosas":len(carrito), "tienda":len(insumos)})
+        else:
+            print(ticket.cleaned_data.get('viaje'))
+            print('cant',ticket.cleaned_data.get('cantidad'))
+            print(ticket.cleaned_data.get('insumo'))
+            print(ticket.cleaned_data.get('id_user'))
+            print(ticket.cleaned_data.get('precio'))
+            return render (request, "comprar_pasaje_carrito.html", {"stocks":stocks,"usuario":usuario,"viaje":id_viaje2,"insumos":insumos, "carrito":carrito, "cosas":len(carrito), "tienda":len(insumos)})
+
+    @login_required
+    def tarjeta(request, id_viaje):
+        tarjeta = Registro_tarjeta()
+        tarjetas_registradas = Tarjeta.objects.filter(id_user_id=request.user.id)
+        viaje = Viaje.objects.get(id =id_viaje)
+        nombre = Ruta.objects.get(id = viaje.ruta_id)
+        #carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
+        usuario = request.user.id
+        if len(tarjetas_registradas) != 0:
+            tarjetas_registradas = errores_tareta2(tarjetas_registradas)
+            if len(tarjetas_registradas) != 0:
+                return render (request, "comprar_pasaje_tarjeta.html", {"mensaje":"no","viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"tiene_tarjeta":1, "tarjetas":tarjetas_registradas,"tienda":0})
+        return render (request, "comprar_pasaje_tarjeta.html", {"mensaje":"no","viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"tiene_tarjeta":0,"tienda":0})
+
+    def otra_tarjeta(request, id_viaje):
+        tarjeta = Registro_tarjeta()
+        tarjetas_registradas= Tarjeta.objects.filter(id_user_id=request.user.id)
+        viaje = Viaje.objects.get(id =id_viaje)
+        nombre = Ruta.objects.get(id = viaje.ruta_id)
+        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
+        usuario = request.user.id
+        if len(tarjetas_registradas) != 0:
+            return render (request, "comprar_pasaje_tarjeta.html", {"mensaje":"otra", "viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"tiene_tarjeta":1, "tarjetas":tarjetas_registradas,"tienda":0})
+        else:
+            return render (request, "comprar_pasaje_tarjeta.html", {"mensaje":"no","viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"tiene_tarjeta":0,"tienda":0})
+
+
+    @login_required
+    def setear_tarjeta(request, id_viaje, id_tarjeta):
+        pasaje = Registro_pasaje()
+        viaje_form = Registro_viaje()
+        tarjeta = Tarjeta.objects.get(id=id_tarjeta)
+        viaje = Viaje.objects.get(id =id_viaje)
+        ruta_id = Ruta.objects.get(id=(viaje.ruta).id)
+        nombre = Ruta.objects.get(id = viaje.ruta_id)
+        usuario = request.user.id
+        #carrito = Ticket_insumo.objects.filter(id_user=request.user.id, viaje=id_viaje)
+        #usuario = request.user.id
+        return render (request, "comprar_pasaje_tarjeta2.html", {"viaje": viaje, "nombre":nombre,"tarjeta":tarjeta, "usuario":usuario})
+
+
+    @login_required
+    def procesar_tarjeta(request, id_viaje):
+        tarjeta = Registro_tarjeta(request.POST)
+        tarjetas_registradas= Tarjeta.objects.filter(id_user_id=request.user.id)
+        viaje = Viaje.objects.get(id =id_viaje)
+        nombre = Ruta.objects.get(id = viaje.ruta_id)
+        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
+        usuario = request.user.id
+        if tarjeta.is_valid():
+            confirmacion= errores_tarjeta(tarjeta)
+            if len(confirmacion) == 0:
+                pasaje = Registro_pasaje()
+                hay_tarjeta = Tarjeta.objects.filter(id_user_id = request.user.id, numero = tarjeta.cleaned_data.get('numero'))
+                if len(hay_tarjeta):
+                    id_t = Tarjeta.objects.get(numero = tarjeta.cleaned_data.get('numero'), id_user_id =request.user.id)
+                else:
+                    tarjeta.save()
+                    id_t = Tarjeta.objects.last()
+                return render (request, "comprar_pasaje_tarjeta3.html", {"usuario":usuario, "viaje": viaje, "nombre":nombre, "tarjeta":id_t, "ok":"ok"})
+            else:
+                return render (request, "comprar_pasaje_tarjeta3.html", {"usuario":usuario,"viaje": viaje, "nombre":nombre, "ok": "not_ok"})
+
+    @login_required
+    def procesar_pasaje(request, id_viaje):
+        pasaje = Registro_pasaje(request.POST)
+        viaje = Viaje.objects.get(id=id_viaje)
+        print(id_viaje)
+        if pasaje.is_valid():
+            verificar=Pasaje.objects.filter(id_user = request.user.id, nro_viaje = id_viaje)
+            if len(verificar) == 0:
+                pasaje.save_pasaje()
+                form = Registro_viaje(request.POST, instance = viaje)
+                if form.is_valid():
+                    ruta = Ruta.objects.get(id=(viaje.ruta).id)
+                    form.save_viaje3(ruta)
+                    return render (request, "comprar_pasaje_pagar.html", {"aceptado":"si"})
+            else:
+                return render (request, "comprar_pasaje_pagar.html", {"aceptado":"no"})
