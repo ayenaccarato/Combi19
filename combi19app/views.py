@@ -801,7 +801,7 @@ def errores_insumo(insumo):
         if insumo.cleaned_data.get('nombre') == i.nombre:
             lista+=[1]
             break
-    if str(insumo.cleaned_data.get('precio')).find(','):
+    if str(insumo.cleaned_data.get('precio')).find('.') != 3:
         lista+=[2]
     return set(lista)
 
