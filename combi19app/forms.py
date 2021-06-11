@@ -219,6 +219,13 @@ class Registro_insumo(forms.ModelForm):
             insumo.save()
         return insumo
 
+    def save_insumo3(self, cantidad, commit=True):
+        insumo = super().save(commit = True)
+        insumo.stock = insumo.stock + cantidad
+        if commit:
+            insumo.save()
+        return insumo
+
 class Registro_info_de_contacto(forms.ModelForm):
     class Meta:
         model = InformacionDeContacto

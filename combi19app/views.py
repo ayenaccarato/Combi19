@@ -970,9 +970,6 @@ class FormularioAnuncio(HttpRequest):
         if form.is_valid():
             form.save()
             return render (request,"modificar_anuncio.html", {"form":form, "anuncio":anuncio, "mensaje": "ok"})
-        print(form.cleaned_data.get('titulo'))
-        print(form.cleaned_data.get('texto'))
-        print(form.cleaned_data.get('fecha_y_hora'))
 
 
 class ComprarPasaje(HttpRequest):
@@ -997,15 +994,36 @@ class ComprarPasaje(HttpRequest):
         return render (request, "comprar_pasaje_carrito.html", {"viaje":viaje,"insumos":carrito, "cosas":len(carrito), "precio_total":precio_total})
 
     @login_required
+    def confirmar_eliminado(request,id_viaje, id_ticket):
+        ticket = Ticket.objects.get(id = id_ticket)
+        ins = Insumo.objects.get(id=ticket.insumo.id)
+        print(ins)
+        insumo = Registro_insumo(instance=ins)
+        viaje = Viaje.objects.get(id = id_viaje)
+        return render (request, "comprar_pasaje_carrito_eliminar.html", {"ticket":ticket, "insumo":ins, "viaje": viaje})
+
+    @login_required
     def eliminar_mi_carrito(request,id_viaje,id_ticket):
-        insumo_eliminado = Ticket.objects.get(id=id_ticket)
-        insumo_eliminado.delete()
+        ticket_eliminado = Ticket.objects.get(id=id_ticket)
+        insumo = Insumo.objects.get(id = ticket_eliminado.insumo.id)
+        cantidad = ticket_eliminado.cantidad
+        form = Registro_insumo(request.POST, instance = insumo)
+        ticket_eliminado.delete()
         carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
         viaje = Viaje.objects.get(id = id_viaje)
         precio_total =0
         for i in carrito:
             precio_total= precio_total + i.precio_ticket
-        return render (request, "comprar_pasaje_carrito.html", {"viaje":viaje,"insumos":carrito, "cosas":len(carrito),"precio_total":precio_total})
+        if form.is_valid():
+            form.save_insumo3(cantidad)
+            return render (request, "comprar_pasaje_carrito.html", {"viaje":viaje,"insumos":carrito, "cosas":len(carrito),"precio_total":precio_total})
+        else:
+            print(form.cleaned_data.get('nombre'))
+            print(form.cleaned_data.get('precio'))
+            print(form.cleaned_data.get('stock'))
+            print(form.cleaned_data.get('sabor'))
+            print(form.cleaned_data.get('categoria'))
+
 
     @login_required
     def tarjeta(request, id_viaje):
