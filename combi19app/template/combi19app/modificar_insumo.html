@@ -22,6 +22,10 @@
           <div class= 'alert alert-danger' role='alert'>
               Fallo en el registro del insumo. El nombre ingresado ya está registrado
           </div>
+          {% else %}
+          <div class= 'alert alert-danger' role='alert'>
+              Fallo en la actualizacion del insumo. El precio ingresado debe contener un punto (Ej: 100.00)
+          </div>
         {% endif %}
       {% endfor %}
     {% endif %}
@@ -33,15 +37,26 @@
             <h4> <p style="margin: 40px">Complete el formulario </p></h4>
             <h5>
               <br>
-                <p>
-                  <input class="col-sm-12 col-form-label" type="text" name="nombre" placeholder="Nombre" id='nombre' required>
-                </p>
               <p>
-                <input class="col-sm-12 col-form-label" type="text" name="precio" title="Ingresar un precio (Ej. 150,50)" placeholder="Precio" id='precio' required>
+                  <div class="input-group-prepend">
+                    <label class="input-group-text" type="text" name="nombre" for="inputGroupSelect01">Nombre  </label>
+                    <input class="col-sm-11 col-form-label" type="text" name="nombre" id="nombre" required>
+                  </div>
               </p>
-              <p>
-                <input class="col-sm-12 col-form-label" type="text" name="stock" placeholder="Stock" id='stock' required>
-              </p>
+            <p>
+                <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="precio" for="inputGroupSelect01">Precio $</label>
+                  <input class="col-sm-11 col-form-label" type="text" name="precio" id="precio" title="Ingresar un precio (Ej. 150.50)" required>
+                </div>
+            </p>
+
+
+            <p>
+                <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="stock" for="inputGroupSelect01" >Stock  </label>
+                  <input class="col-sm-11 col-form-label" type="text" name="stock" id="stock" required>
+                </div>
+            </p>
                 <div class="input-group mb-3">
                   <div class="input-group-prepend">
                     <label class="input-group-text" name="categoria_label" for="inputGroupSelect01">Categoría</label>

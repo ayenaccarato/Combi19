@@ -4,44 +4,53 @@
 {% block h1 %}<center>Datos de la compra</center>{% endblock %}
 {% block content %}
 
-  <form action="agregar/{{viaje}}/" method="POST">
 {% csrf_token %}
 
-<div class = "container">
-      <br>
-      <div class="media">
+      <br><br>
+      <div class="media" style="float:center;padding-left:750">
         <img class="d-flex rounded avatar z-depth-1-half mr-2" src={% static 'carrito.png' %}  width="100" height="100" alt="Avatar">
-        <div class="media-body">
-          <h3>
-                     MI CARRITO
-          </h3>
-          <br>
+        <h2>
+                   MI CARRITO
+        </h2>
+      </div>
+      <br><br>
+
+        <div class = "container" style="padding-left:250">
           {% if cosas == 0 %}
-          <br>
-          <br>
-          <br>
-          <div class='alert alert-warning' role='alert' style="float:left">
+          <h5>
+          <div class='alert alert-warning' role='alert' style="float:left;padding-left:100;padding-right:100">
             No hay insumos en el carrito
           </div>
+        </h5>
+          {% else %}
+            <div class='alert alert-success' role='alert' style="float:left;padding-left:100;padding-right:200">
+              Precio total de todos los insumos: ${{precio_total}}
+            </div>
+            {% for i in insumos %}
+
+
+            <div class="card" style="width: 40rem">
+              <h4>
+                <div class="card-header">Insumo
+
+                    <a class="btn btn-danger" href= "/comprar_pasaje/carrito/{{viaje.id}}/{{i.id}}/" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;float:right;">Eliminar del carrito</a>
+
+                </div>
+              </h4>
+              <div class="card-body">
+                <h5>
+                  <p class="card-text">{{i.insumo.nombre}} X{{i.cantidad}}</p>
+                </h5>
+                <h6>
+                  <p class="card-text">PRECIO: ${{i.precio_ticket}}</p>
+                </h6>
+              </div>
+            </div>
+
+              {% endfor %}
           {% endif %}
-
-          </div>
-        </div>
-    </div>
-
-
-  </div>
-</div>
-<script>
-  function guardar(insumo){
-      console.log("aaa",insumo);
-      document.getElementsByName('cantidad').value = document.getElementById('cantidad+'+insumo)
-      //document.getElementById('id_user').value = "{{usuario}}"
-      //document.getElementById('viaje').value = "{{viaje.id}}"
-      //document.getElementById('insumo').value = insumo.id
-      //document.getElementById('precio').value =  (document.getElementById('cantidad').value * insumo.precio)
-      console.log("llego");
-    }
-</script>
+            </div>
+        <br><br><br>
+    <a class="btn btn-dark" href="/comprar_pasaje/tienda/{{viaje.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:left">Atras</a>
 
 {% endblock %}

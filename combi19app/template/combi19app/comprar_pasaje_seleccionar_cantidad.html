@@ -1,0 +1,86 @@
+{% extends "usuario_base.html" %}
+{% load static %}
+{% block title %}DatosCompra{% endblock %}
+{% block h1 %}<center>Datos de la compra</center>{% endblock %}
+{% block content %}
+
+<form action="/comprar_pasaje/tienda/{{viaje.id}}/{{insumo.id}}/ok/" method="POST">
+{% csrf_token %}
+
+<div class = "container">
+  <br><br>
+  <h3>
+    <center>
+    Seleccione cuantas/os {{insumo.nombre}} quiere comprar
+  </center>
+  </h3>
+  <input hidden type="text" name="id_user"  id="id_user">
+  <input hidden type="text" name="viaje"  id="viaje">
+  <input hidden type="text" name="insumo"  id="insumo">
+  <input hidden type="text" name="cantidad"  id="cantidad">
+
+
+  <input hidden type="text" name="nombre"  id="nombre">
+  <input hidden type="text" name="precio"  id="precio">
+  <input hidden type="text" name="stock"  id="stock">
+  <input hidden type="text" name="sabor"  id="sabor">
+  <input hidden type="text" name="categoria"  id="categoria">
+    <br>
+    <br>
+    <br>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <td>Nombre</td>
+          <td>Precio X1</td>
+          <td>Seleccione una cantidad</td>
+          <td></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{insumo.nombre}}</td>
+          <td>${{insumo.precio}}</td>
+          <td>
+                <select class="custom-select" type=IntegerField name="cantidad" id="cantidad" required>
+                  {% for key, value in stocks.items %}
+                     {% if key == insumo.id %}
+                        {% for i in value %}
+                            <option value="{{i}}">{{i}}</option>
+                          {% endfor %}
+                        {% endif %}
+                  {% endfor %}
+                </select>
+          </td>
+          <td>
+            <p>
+              <button style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Confirmar</button>
+            </p>
+          </td>
+            </tr>
+            </tbody>
+            </table>
+            <br><br>
+            <div class='alert alert-warning' role='alert'>
+              ATENCION: la cantidad de productos que puede seleccionar esta relacionado con su stock actual.
+            </div>
+
+</div>
+
+<br><br><br>
+<a class="btn btn-dark" href="/comprar_pasaje/tienda/{{viaje.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:left">Volver</a>
+  <script>
+      document.getElementById('id_user').value = "{{usuario}}"
+      document.getElementById('viaje').value = "{{viaje.id}}"
+      document.getElementById('insumo').value= "{{insumo.id}}"
+      document.getElementById('cantidad').value = "{{cantidad}}"
+
+      document.getElementById('nombre').value = "{{insumo.nombre}}"
+      document.getElementById('precio').value = "{{insumo.precio}}".replace(',','.')
+      document.getElementById('stock').value = "{{insumo.stock}}"
+      document.getElementById('categoria').value = "{{insumo.categoria}}"
+      document.getElementById('sabor').value = "{{insumo.sabor}}"
+
+  </script>
+
+{% endblock %}

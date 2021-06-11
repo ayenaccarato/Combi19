@@ -133,7 +133,7 @@ class Viaje (models.Model):
     asientos_total = models.IntegerField(default=0)
     asientos_disponibles = models.IntegerField(default=0)
     vendidos = models.IntegerField()
-
+    precio = models.FloatField()
     def publish(self):
         self.save()
 
@@ -146,8 +146,8 @@ class InformacionDeContacto(models.Model):
     descripcion = models.CharField(max_length=50)
 
 class Insumo(models.Model):
-    nombre = models.CharField(max_length=20)
-    precio = models.DecimalField(max_digits=5, decimal_places=2) #Hay que poner como maximo 5 números, 2 tienen que ser decimal ej.150.00-20.00 etc
+    nombre = models.CharField(max_length=60)
+    precio = models.FloatField() #Hay que poner como maximo 5 números, 2 tienen que ser decimal ej.150.00-20.00 etc
     stock = models.IntegerField()
     sabor = models.BooleanField()
     categoria = models.CharField(max_length=20)
@@ -180,7 +180,7 @@ class Pasaje(models.Model):
 
 class Ticket(models.Model):
     viaje = models.ForeignKey(Viaje, related_name='+', on_delete=models.PROTECT)
-    insumo = models.ForeignKey(Insumo, related_name='+', on_delete=models.PROTECT)
-    cantidad= models.IntegerField()
-    precio = models.DecimalField(max_digits=5, decimal_places=2)
+    insumo = models.ForeignKey(Insumo, related_name='+', on_delete=models.PROTECT, null = True)
+    cantidad= models.IntegerField(null=True)
+    precio_ticket = models.FloatField(null=True)
     id_user = models.IntegerField()

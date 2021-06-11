@@ -17,20 +17,22 @@
       </h4>
         <div class="card-body">
         <h5>
-          <p class="card-text">     PASAJE X1 A: {{nombre}}</p>
+          <p class="card-text">     PASAJE: </p>
               <br>
-          <p class="card-text">  PRECIO: $ {{viaje.precio}}</p>
+          <p class="card-text">  VIAJE A {{nombre}} X1       ${{viaje.precio}}</p>
+          <p class="card-text">  SALIDA: {{viaje.fecha_salida}} </p>
+          <p class="card.text">  LLEGADA: {{viaje.fecha_llegada}} </p>
               <br>
-          {% if tienda != 0 %}
+          {% if compro != 0 %}
             <p class="card-text">  INSUMOS:</p>
-            {% for i in insumos %}
-              <p class="card-text">     {{nombre_insumo}} X{{ticket_insumo.cantidad}}</p>
+            {% for i in carrito %}
+              <p class="card-text">     {{i.insumo.nombre}} X{{i.cantidad}}           ${{i.precio_ticket}}</p>
             {% endfor %}
           {% endif %}
         </h5>
         <br>
         <br>
-        <h3 class="card-title">PRECIO TOTAL: $500</h3>
+        <h3 class="card-title">PRECIO TOTAL: ${{precio_total}}</h3>
         </div>
       </div>
     </div>
@@ -48,11 +50,11 @@
                 <div class="col-sm">
                 <div class="input-group-prepend">
                   <label class="input-group-text" type="text" name="numero" for="inputGroupSelect01">Numero</label>
-                    <p><input class="col-sm-15 col-form-label" type="text" name="numero" pattern="^([0-9-]+){19}" placeholder="XXXX-XXXX-XXXX-XXXX" required> </p>
+                    <p><input class="col-sm-15 col-form-label" type="text" name="numero" placeholder="XXXX-XXXX-XXXX-XXXX" required> </p>
                   </div>
                   <div class="input-group-prepend">
                     <label class="input-group-text" type="text" name="vencimiento" for="inputGroupSelect01">Fecha de caducidad</label>
-                    <p><input class="col-sm-15 col-form-label" type="text" name="vencimiento" placeholder="MM/AA" required> </p>
+                    <p><input class="col-sm-15 col-form-label" type="text" name="vencimiento" placeholder="MM/AA" title= "ingrese una fecha valida. Ej: 01/22" required> </p>
                   </div>
                   <div class="input-group-prepend">
                     <label class="input-group-text" type="text" name="titular" for="inputGroupSelect01">Titular</label>
@@ -73,11 +75,11 @@
                   </div>
                   <div class="input-group-prepend">
                     <label class="input-group-text" type="text" name="codigo" for="inputGroupSelect01">Codigo</label>
-                    <p><input class="col-sm-15 col-form-label" type="text" name="codigo" pattern="^([0-9]+){3}"  required> </p>
+                    <p><input class="col-sm-15 col-form-label" type="text" name="codigo" required> </p>
                   </div>
+                    <br>
+                    <br>
 
-                    <br>
-                    <br>
                   <button class="btn btn-success" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:right">Verificar tarjeta</button>
               </h5>
               </div>

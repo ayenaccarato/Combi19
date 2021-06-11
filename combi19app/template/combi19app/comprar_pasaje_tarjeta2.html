@@ -6,36 +6,37 @@
 
   <form action="/pagar/{{viaje.id}}/" method="POST">
   {% csrf_token %}
-<div class = "container">
+  <div class = "container">
   <div class= "row row-cols-2">
 
-      <div class= "col-6" style= "float:left">
+    <div class= "col-6" style= "float:left">
+      <br>
+      <br>
+      <div class="card text-black bg-susses mb-3" style="max-width: 40rem;">
+        <h4>
+        <div class="card-header">TICKET</div>
+      </h4>
+        <div class="card-body">
+        <h5>
+          <p class="card-text">     PASAJE: </p>
+              <br>
+          <p class="card-text">  VIAJE A {{nombre}} X1       ${{viaje.precio}}</p>
+          <p class="card-text">  SALIDA: {{viaje.fecha_salida}} </p>
+          <p class="card.text">  LLEGADA: {{viaje.fecha_llegada}} </p>
+              <br>
+          {% if compro != 0 %}
+            <p class="card-text">  INSUMOS:</p>
+            {% for i in carrito %}
+              <p class="card-text">     {{i.insumo.nombre}} X{{i.cantidad}}        ${{i.precio_ticket}}</p>
+            {% endfor %}
+          {% endif %}
+        </h5>
         <br>
         <br>
-        <div class="card text-black bg-susses mb-3" style="max-width: 40rem;">
-          <h4>
-          <div class="card-header">TICKET</div>
-        </h4>
-          <div class="card-body">
-          <h5>
-            <p class="card-text">     PASAJE X1 A: {{nombre}}</p>
-                <br>
-            <p class="card-text">  PRECIO: $ {{viaje.precio}}</p>
-                <br>
-            {% if tienda != 0 %}
-              <p class="card-text">  INSUMOS:</p>
-              {% for i in insumos %}
-                <p class="card-text">     {{nombre_insumo}} X{{ticket_insumo.cantidad}}</p>
-              {% endfor %}
-            {% endif %}
-          </h5>
-
-          <br>
-          <br>
-          <h3 class="card-title">PRECIO TOTAL: $500</h3>
-          </div>
+        <h3 class="card-title">PRECIO TOTAL: ${{precio_total}}</h3>
         </div>
       </div>
+    </div>
 
       <div class= "col-6" style="float:right;">
         <br>
@@ -80,7 +81,7 @@
           <label class="input-group-text" type="text" name="emisor" for="inputGroupSelect01">Emisor de la tarjeta</label>
           <p><input readonly class="col-sm-15 col-form-label" type="text" name="emisor" id="emisor" placeholder="emisor" required> </p>
         </div>
-      
+
         <div class="input-group-prepend">
           <label class="input-group-text" type="text" name="codigo" for="inputGroupSelect01">Codigo</label>
           <p><input class="col-sm-15 col-form-label" readonly type="text" name="codigo" id="codigo" pattern="^([0-9]+){3}"  required> </p>

@@ -132,7 +132,6 @@ def cambiar_contra(request):
 
 def procesar_contra(request):
     if request.POST.get('dni') != None:
-        print('ifff p')
         confirmacion = confirmar_usuario(request.POST.get('dni'))
         if len(confirmacion) != 0:
             usuario = Usuario.objects.get(dni=request.POST.get('dni'))
@@ -141,20 +140,15 @@ def procesar_contra(request):
         else:
             return render(request, "verificar_dni.html", {'mensaje': "no existe"})
     else:
-        print('elseee p')
         cambiar_contra(request)
         return render(request, "verificar_dni.html", {'dni': request.POST.get('dni')})
 
 def actualizar_contra(request):
-    print('post', request.POST.get('dni'))
     confirmacion = confirmar_usuario(request.POST.get('dni'))
-    print('con', confirmacion)
     if len(confirmacion) != 0:
-        print('ifffff')
         usuario = Usuario.objects.get(dni=request.POST.get('dni'))
         registro = Registro(request.POST, instance=usuario)
         if registro.is_valid():
-            print('es valido')
             if registro.cleaned_data.get('tipo_usuario') == 1:
                 registro.save_admin()
             elif registro.cleaned_data.get('tipo_usuario') == 2:
@@ -165,10 +159,6 @@ def actualizar_contra(request):
         response = redirect('/accounts/login/')
         return response
         #return render(request, "cambiar_contra.html", {'usuario': usuario, 'mensaje': "existe"})
-    else:
-        print('neee')
-
-
 
 
 def cambiar_contra_admin(request):
@@ -284,6 +274,7 @@ def errores_ciudad2(ciudad, c_vieja):
 
 def errores_viaje(viaje):
     lista=[]
+
 
     return set(lista)
 
@@ -668,6 +659,7 @@ class FormularioViaje (HttpRequest):
         ciudades = Ciudad.objects.all()
         rutas = Ruta.objects.all()
         return render (request, "agregar_viaje.html", {"dato": viaje, "minutos":minutos, "choferes":choferes, "vehiculos": vehiculos, "ciudades":ciudades, "rutas":rutas})
+
     @login_required
     def procesar_formulario(request):
         viaje = Registro_viaje(request.POST)
@@ -801,8 +793,8 @@ def errores_insumo(insumo):
         if insumo.cleaned_data.get('nombre') == i.nombre:
             lista+=[1]
             break
-    if str(insumo.cleaned_data.get('precio')).find('.') != 3:
-        lista+=[2]
+        if insumo.cleaned_data.get('precio') == None:
+            lista+=[2]
     return set(lista)
 
 class FormularioInsumo(HttpRequest):
@@ -817,12 +809,10 @@ class FormularioInsumo(HttpRequest):
         if insumo.is_valid():
             confirmacion = errores_insumo(insumo)
             if len(confirmacion) == 0:
-                print('entro')
                 insumo.save_insumo()
                 insumo = Registro_insumo()
                 return render (request, "agregar_insumo.html", {"dato": insumo, "mensaje":"ok"})
 
-        print('nope', insumo.cleaned_data.get('nombre'), insumo.cleaned_data.get('precio'))
         confirmacion=errores_insumo(insumo)
         insumo = Registro_insumo()
         return render (request, "agregar_insumo.html", {"errores":confirmacion, "mensaje": "not_ok"})
@@ -837,16 +827,16 @@ class FormularioInsumo(HttpRequest):
     def actualizar_insumo(request, id_insumo):
         insumo = Insumo.objects.get(id=id_insumo)
         registro = Registro_insumo(request.POST, instance=insumo)
-        nombre = insumo.nombre
         if registro.is_valid():
-            if nombre != registro.cleaned_data.get('nombre'):
-                confirmacion = errores_insumo(registro)
-                if len(confirmacion) == 0:
-                    registro.save_insumo()
-            else:
-                registro.save_insumo()
-        response = redirect('/listar_insumos/')
-        return response
+            registro.save_insumo()
+            insumos = Insumo.objects.all()
+            contexto = {'insumos': insumos, 'cantidad':len(insumos)}
+            return render (request, "listar_insumos.html", contexto)
+        else:
+            if registro.cleaned_data.get('precio') == None:
+                lista = []
+                lista+=[2]
+            return render (request, "modificar_insumo.html", {"errores":lista, "mensaje": "not_ok","insumos":insumo})
 
 class ListarInsumos(HttpRequest):
     @login_required
@@ -994,43 +984,28 @@ class ComprarPasaje(HttpRequest):
         chofer = Usuario.objects.get (id = viaje.chofer_id)
         patente = Vehiculo.objects.get ( id = viaje.vehiculo_id).patente
         tipo_asiento = Vehiculo.objects.get ( id = viaje.vehiculo_id).premium
-        return render (request, "comprar_pasaje_menu.html", {"viaje": viaje, "tipo_asiento":tipo_asiento,"nombre":nombre, "hora_llegada":hora_llegada, "chofer":chofer,"patente":patente})
+        pasaje = Pasaje.objects.filter(id_user=request.user.id, nro_viaje_id = id_viaje)
+        return render (request, "comprar_pasaje_menu.html", {"viaje": viaje, "tipo_asiento":tipo_asiento,"nombre":nombre, "hora_llegada":hora_llegada, "chofer":chofer,"patente":patente, "ya_tiene":len(pasaje)})
 
     @login_required
     def mi_carrito(request,id_viaje):
-        ticket= Registro_ticket()
         carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
-        insumos = Insumo.objects.all()
-        usuario=request.user.id
-        stocks={}
-        for i in insumos:
-            stocks[i.id]=range(1,i.stock+1)
-        return render (request, "comprar_pasaje_carrito.html", {"stocks":stocks,"usuario":usuario,"viaje":id_viaje,"insumos":insumos, "carrito":carrito, "cosas":len(carrito), "tienda":len(insumos)})
-
-
+        viaje = Viaje.objects.get(id = id_viaje)
+        precio_total =0
+        for i in carrito:
+            precio_total= precio_total + i.precio_ticket
+        return render (request, "comprar_pasaje_carrito.html", {"viaje":viaje,"insumos":carrito, "cosas":len(carrito), "precio_total":precio_total})
 
     @login_required
-    def guardar_carrito(request, id_viaje,id_viaje2):
-        ticket = Registro_ticket(request.POST)
-
-        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje2)
-        insumos = Insumo.objects.all()
-        usuario=request.user.id
-        stocks={}
-        for i in insumos:
-            stocks[i.id]=range(1,i.stock+1)
-
-        if ticket.is_valid():
-            ticket.save()
-
-            return render (request, "comprar_pasaje_carrito.html", {"stocks":stocks,"usuario":usuario,"viaje":id_viaje2,"insumos":insumos, "carrito":carrito, "cosas":len(carrito), "tienda":len(insumos)})
-        else:
-            print(ticket.cleaned_data.get('viaje'))
-            print('cant',ticket.cleaned_data.get('cantidad'))
-            print(ticket.cleaned_data.get('insumo'))
-            print(ticket.cleaned_data.get('id_user'))
-            print(ticket.cleaned_data.get('precio'))
-            return render (request, "comprar_pasaje_carrito.html", {"stocks":stocks,"usuario":usuario,"viaje":id_viaje2,"insumos":insumos, "carrito":carrito, "cosas":len(carrito), "tienda":len(insumos)})
+    def eliminar_mi_carrito(request,id_viaje,id_ticket):
+        insumo_eliminado = Ticket.objects.get(id=id_ticket)
+        insumo_eliminado.delete()
+        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
+        viaje = Viaje.objects.get(id = id_viaje)
+        precio_total =0
+        for i in carrito:
+            precio_total= precio_total + i.precio_ticket
+        return render (request, "comprar_pasaje_carrito.html", {"viaje":viaje,"insumos":carrito, "cosas":len(carrito),"precio_total":precio_total})
 
     @login_required
     def tarjeta(request, id_viaje):
@@ -1038,13 +1013,18 @@ class ComprarPasaje(HttpRequest):
         tarjetas_registradas = Tarjeta.objects.filter(id_user_id=request.user.id)
         viaje = Viaje.objects.get(id =id_viaje)
         nombre = Ruta.objects.get(id = viaje.ruta_id)
-        #carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
+        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
+        precio_total = 0
+        if len(carrito) != 0:
+            for i in carrito:
+                precio_total = precio_total + i.precio_ticket
+        precio_total = precio_total + viaje.precio
         usuario = request.user.id
         if len(tarjetas_registradas) != 0:
             tarjetas_registradas = errores_tareta2(tarjetas_registradas)
             if len(tarjetas_registradas) != 0:
-                return render (request, "comprar_pasaje_tarjeta.html", {"mensaje":"no","viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"tiene_tarjeta":1, "tarjetas":tarjetas_registradas,"tienda":0})
-        return render (request, "comprar_pasaje_tarjeta.html", {"mensaje":"no","viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"tiene_tarjeta":0,"tienda":0})
+                return render (request, "comprar_pasaje_tarjeta.html", {"mensaje":"no","viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"tiene_tarjeta":1, "tarjetas":tarjetas_registradas,"carrito":carrito, "compro":len(carrito), "precio_total":precio_total})
+        return render (request, "comprar_pasaje_tarjeta.html", {"mensaje":"no","viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"tiene_tarjeta":0,"carrito":carrito, "compro":len(carrito), "precio_total":precio_total})
 
     def otra_tarjeta(request, id_viaje):
         tarjeta = Registro_tarjeta()
@@ -1053,10 +1033,16 @@ class ComprarPasaje(HttpRequest):
         nombre = Ruta.objects.get(id = viaje.ruta_id)
         carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
         usuario = request.user.id
+        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
+        precio_total = 0
+        if len(carrito) != 0:
+            for i in carrito:
+                precio_total = precio_total + i.precio_ticket
+        precio_total = precio_total + viaje.precio
         if len(tarjetas_registradas) != 0:
-            return render (request, "comprar_pasaje_tarjeta.html", {"mensaje":"otra", "viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"tiene_tarjeta":1, "tarjetas":tarjetas_registradas,"tienda":0})
+            return render (request, "comprar_pasaje_tarjeta.html", {"mensaje":"otra", "viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"tiene_tarjeta":1, "tarjetas":tarjetas_registradas,"carrito":carrito, "compro":len(carrito), "precio_total":precio_total})
         else:
-            return render (request, "comprar_pasaje_tarjeta.html", {"mensaje":"no","viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"tiene_tarjeta":0,"tienda":0})
+            return render (request, "comprar_pasaje_tarjeta.html", {"mensaje":"no","viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"tiene_tarjeta":0,"carrito": carrito, "compro":len(carrito), "precio_total":precio_total})
 
 
     @login_required
@@ -1068,9 +1054,13 @@ class ComprarPasaje(HttpRequest):
         ruta_id = Ruta.objects.get(id=(viaje.ruta).id)
         nombre = Ruta.objects.get(id = viaje.ruta_id)
         usuario = request.user.id
-        #carrito = Ticket_insumo.objects.filter(id_user=request.user.id, viaje=id_viaje)
-        #usuario = request.user.id
-        return render (request, "comprar_pasaje_tarjeta2.html", {"viaje": viaje, "nombre":nombre,"tarjeta":tarjeta, "usuario":usuario})
+        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
+        precio_total = 0
+        if len(carrito) != 0:
+            for i in carrito:
+                precio_total = precio_total + i.precio_ticket
+        precio_total = precio_total + viaje.precio
+        return render (request, "comprar_pasaje_tarjeta2.html", {"viaje": viaje, "nombre":nombre,"tarjeta":tarjeta, "usuario":usuario, "carrito":carrito, "compro":len(carrito), "precio_total":precio_total})
 
 
     @login_required
@@ -1080,6 +1070,11 @@ class ComprarPasaje(HttpRequest):
         viaje = Viaje.objects.get(id =id_viaje)
         nombre = Ruta.objects.get(id = viaje.ruta_id)
         carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
+        precio_total = 0
+        if len(carrito) != 0:
+            for i in carrito:
+                precio_total = precio_total + i.precio_ticket
+        precio_total = precio_total + viaje.precio
         usuario = request.user.id
         if tarjeta.is_valid():
             confirmacion= errores_tarjeta(tarjeta)
@@ -1091,9 +1086,9 @@ class ComprarPasaje(HttpRequest):
                 else:
                     tarjeta.save()
                     id_t = Tarjeta.objects.last()
-                return render (request, "comprar_pasaje_tarjeta3.html", {"usuario":usuario, "viaje": viaje, "nombre":nombre, "tarjeta":id_t, "ok":"ok"})
+                return render (request, "comprar_pasaje_tarjeta3.html", {"usuario":usuario, "viaje": viaje, "nombre":nombre, "tarjeta":id_t, "ok":"ok", "carrito":carrito, "compro": len(carrito), "precio_total":precio_total})
             else:
-                return render (request, "comprar_pasaje_tarjeta3.html", {"usuario":usuario,"viaje": viaje, "nombre":nombre, "ok": "not_ok"})
+                return render (request, "comprar_pasaje_tarjeta3.html", {"usuario":usuario,"viaje": viaje, "nombre":nombre, "ok": "not_ok","carrito":carrito, "compro": len(carrito), "precio_total":precio_total})
 
     @login_required
     def procesar_pasaje(request, id_viaje):
@@ -1111,3 +1106,57 @@ class ComprarPasaje(HttpRequest):
                     return render (request, "comprar_pasaje_pagar.html", {"aceptado":"si"})
             else:
                 return render (request, "comprar_pasaje_pagar.html", {"aceptado":"no"})
+
+    @login_required
+    def ver_tienda(request, id_viaje):
+        insumos = Insumo.objects.all()
+        stocks={}
+        for i in insumos:
+            stocks[i.id] = range(1,i.stock+1)
+        viaje = Viaje.objects.get(id= id_viaje)
+        usuario = request.user.id
+        return render (request, "comprar_pasaje_tienda.html", {"insumos":insumos, "stocks":stocks,"tienda":len(insumos), "viaje":viaje, "usuario":usuario, "vendido":"no"})
+
+    @login_required
+    def procesar_ver_tienda(request, id_viaje, id_insumo):
+        carrito = Registro_ticket()
+        insumo_comprado = Registro_insumo()
+        viaje = Viaje.objects.get(id= id_viaje)
+        insumo = Insumo.objects.get(id=id_insumo)
+        usuario = request.user.id
+        insumos = Insumo.objects.all()
+        stocks={}
+        for i in insumos:
+            stocks[i.id] = range(1,i.stock+1)
+        return render (request, "comprar_pasaje_seleccionar_cantidad.html", {"insumos":insumos,"insumo":insumo, "stocks":stocks, "usuario":usuario, "viaje":viaje})
+
+    @login_required
+    def procesar_confirmacion_insumo(request, id_viaje, id_insumo):
+        ya_esta = Ticket.objects.filter(id_user = request.user.id, viaje_id = id_viaje, insumo_id = id_insumo)
+        if len(ya_esta) != 0:
+            ins = str(ya_esta).replace('<QuerySet [<Ticket: Ticket object (','').replace(')>]>','')
+            ins = Ticket.objects.get(id = ins)
+            cant= ins.cantidad
+            ticket = Registro_ticket(request.POST, instance= ins)
+            ok=True
+        else:
+            ticket = Registro_ticket(request.POST)
+            ok=False
+        insumo_comprado = Insumo.objects.get(id=id_insumo)
+        viaje = Viaje.objects.get(id= id_viaje)
+        usuario = request.user.id
+        form = Registro_insumo(request.POST, instance = insumo_comprado)
+        if ticket.is_valid():
+            cantidad = ticket.cleaned_data.get('cantidad')
+            if ok:
+                ticket.save_ticket2(insumo_comprado.precio, cant)
+            else:
+                ticket.save_ticket(insumo_comprado.precio)
+            form = Registro_insumo(request.POST, instance = insumo_comprado)
+            if form.is_valid():
+                form.save_insumo2(cantidad)
+                insumos = Insumo.objects.all()
+                stocks={}
+                for i in insumos:
+                    stocks[i.id] = range(1,i.stock+1)
+                return render (request, "comprar_pasaje_tienda.html", {"insumos":insumos, "stocks":stocks,"tienda":len(insumos), "viaje":viaje, "usuario":usuario, "vendido":"si"})

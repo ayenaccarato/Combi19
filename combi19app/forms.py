@@ -143,7 +143,8 @@ class Registro_viaje (forms.ModelForm):
                   'vehiculo',
                   'asientos_total',
                   'asientos_disponibles',
-                  'vendidos'
+                  'vendidos',
+                  'precio'
                   )
 
     def save_viaje(self, vehiculo, ruta, commit=True):
@@ -211,6 +212,13 @@ class Registro_insumo(forms.ModelForm):
             insumo.save()
         return insumo
 
+    def save_insumo2(self, cantidad, commit=True):
+        insumo = super().save(commit = True)
+        insumo.stock = insumo.stock - cantidad
+        if commit:
+            insumo.save()
+        return insumo
+
 class Registro_info_de_contacto(forms.ModelForm):
     class Meta:
         model = InformacionDeContacto
@@ -268,6 +276,9 @@ class Registro_pasaje(forms.ModelForm):
     def save_pasaje(self, commit=True):
         pasaje= super().save(commit = True)
         pasaje.nro_asiento = pasaje.nro_asiento+1
+        if commit:
+            pasaje.save()
+        return pasaje
 
 class Registro_tarjeta(forms.ModelForm):
 
@@ -286,8 +297,22 @@ class Registro_ticket(forms.ModelForm):
     class Meta:
         model = Ticket
         fields = ('viaje',
+                  'id_user',
                   'insumo',
                   'cantidad',
-                  'precio',
-                  'id_user'
                   )
+
+    def save_ticket(self, precio_insumo,commit=True):
+        ticket= super().save(commit = True)
+        ticket.precio_ticket = precio_insumo * float(ticket.cantidad)
+        if commit:
+            ticket.save()
+        return ticket
+
+    def save_ticket2(self, precio_insumo, cant, commit=True):
+        ticket= super().save(commit = True)
+        ticket.cantidad = ticket.cantidad + cant
+        ticket.precio_ticket = precio_insumo * float(ticket.cantidad)
+        if commit:
+            ticket.save()
+        return ticket
