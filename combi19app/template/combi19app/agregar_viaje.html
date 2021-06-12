@@ -39,6 +39,11 @@
             Fallo en el registro del viaje. El viaje no se puede realizar porque el chofer esta en otro viaje en ese momento
           </div>
       {% endif %}
+      {% if i == 5 %}
+        <div class= 'alert alert-danger' role='alert'>
+          Fallo en el registro del viaje. El precio ingresado debe contener un punto (Ej: 500.50)
+        </div>
+    {% endif %}
       {% endif %}
     {% endfor %}
   {% endif %}

@@ -158,6 +158,7 @@ class Comentario(models.Model):
     usuario_nombre = models.CharField(max_length=50)
     texto=models.CharField(max_length=10000)
     fecha_y_hora=models.CharField(max_length=50)
+    viaje = models.ForeignKey(Viaje, related_name='+', on_delete=models.PROTECT)
 
 class Anuncio(models.Model):
     titulo = models.CharField(max_length=20)

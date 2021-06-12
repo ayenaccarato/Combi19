@@ -1,0 +1,107 @@
+{% extends base %}
+{% load static %}
+{% block title %}Cartelera{% endblock %}
+{% block h1 %}<center>Comentarios de los usuarios</center>{% endblock %}
+{% block content %}
+<div class = "container">
+    <div class='alert alert-primary' role='alert' style="float:center;padding-right:200px;">
+      informacion del viaje a {{viaje.ruta}}:<br>
+      salida: {{viaje.fecha_salida}}<br>
+      llegada: {{viaje.fecha_llegada}}<br>
+      chofer: {{chofer.nombre}}  {{chofer.apellido}}<br>
+      combi: {{viaje.vehiculo}}<br>
+    </div>
+    <br>
+
+      {% if is_c == 0 %}
+        <div class='alert alert-warning' role='alert'>
+          Actualmente no hay comentarios
+        </div>
+       {% endif %}
+       {% if puede_comentar == 0%}
+       <div class='alert alert-warning' role='alert'>
+         ATENCION: solo los pasajeros de este viaje pueden comentar
+       </div>
+       {% endif %}
+
+
+    {% if tipo == 3 and puede_comentar != 0 %}
+          <form action="/guardar_comentario/{{viaje.id}}/{{tipo}}/{{usuario.id}}/" method="POST">
+            {% csrf_token %}
+            <center>
+            <p>
+            <h5>
+            <textarea name="texto" id="texto" rows="5" cols="50" maxlength=255 placeholder="Escriba su experiencia con Combi19" required></textarea>
+          </p><p>
+            <button type="submit" class="btn btn-success" >Comentar</button>
+            </h5>
+            </p>
+              <input hidden type="text" name="fecha_y_hora"  id="fecha_y_hora">
+              <input hidden type="text" name="usuario_nombre"  id="usuario_nombre">
+              <input hidden type="text" name="usuario_dni"  id="usuario_dni">
+              <input hidden type="text" name="viaje"  id="viaje">
+            </p>
+            <br>
+            <br>
+            <br>
+          </center>
+    {% endif %}
+    {% for i in comentarios %}
+        <div class="media">
+          <img class="d-flex rounded-circle avatar z-depth-1-half mr-2" src={% static 'person_coment.png' %}  width="220" height="220" alt="Avatar">
+          <div class="media-body">
+              <div class="card" style="width: 40rem">
+                <h4>
+                  <div class="card-header">{{i.usuario_nombre}} escribio...
+                  {% if i.usuario_dni == usuario.dni or tipo == 1 %}
+                      <a class="btn btn-danger" href= "/eliminar_comentario/{{viaje.id}}/{{tipo}}/{{i.id}}/{{usuario.id}}/" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;float:right;">Eliminar</a>
+                  {% endif %}
+                  </div>
+                </h4>
+                <div class="card-body">
+                  <h5>
+                    <p class="card-text">{{i.texto}}</p>
+                    <p class="card-text"></p>
+                  </h6>
+                  <h6>
+                    <p class="card-text">{{i.fecha_y_hora}}</p>
+                  </h6>
+                </div>
+              </div>
+            </div>
+          </div>
+      {% endfor %}
+</div>
+ <a class="btn btn-dark" href="/cartelera" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:left">Atras</a>
+<script>
+    if ("{{tipo}}" == 3){
+        document.getElementById('usuario_dni').value = "{{usuario.dni}}"
+        document.getElementById('usuario_nombre').value = "{{usuario.nombre}}" + ' '+ "{{usuario.apellido}}"
+        document.getElementById('viaje').value = "{{viaje.id}}"
+        var f = new Date();
+        var mes = f.getMonth() + 1;
+        var hora = f.getHours();
+        var minutos = f.getMinutes();
+        var dia = f.getDate();
+        if (hora < 10){
+          hora = '0' + f.getHours()
+        }
+        if (minutos < 10){
+          minutos = '0' + f.getMinutes()
+        }
+        if (dia < 10){
+          dia = '0' + f.getDate()
+        }
+        if (mes < 10){
+          mes = '0' + (f.getMonth() + 1)
+        }
+        if (hora < 12){
+            document.getElementById('fecha_y_hora').value = dia + '/' + mes + '/' + f.getFullYear()+ '    '+ hora + ':'+ minutos + ' a.m'
+        }
+        else{
+            document.getElementById('fecha_y_hora').value = dia + '/' + mes + '/' + f.getFullYear()+ '    '+ hora + ':'+ minutos + ' p.m'
+        }
+      }
+
+</script>
+{% endblock %}

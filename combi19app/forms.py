@@ -251,9 +251,9 @@ class Registro_comentario(forms.ModelForm):
         fields = ('usuario_dni',
                   'texto',
                   'fecha_y_hora',
-                  'usuario_nombre'
+                  'usuario_nombre',
+                  'viaje'
                   )
-
 class Registro_anuncio(forms.ModelForm):
 
     class Meta:

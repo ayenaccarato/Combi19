@@ -274,6 +274,8 @@ def errores_ciudad2(ciudad, c_vieja):
 
 def errores_viaje(viaje):
     lista=[]
+    if viaje.cleaned_data.get('precio') == None:
+        lista+=[5]
     viajes = Viaje.objects.filter(vehiculo_id = viaje.cleaned_data.get('vehiculo').id)
     for v in viajes:
         #date = dateutil.parser.parse
@@ -327,7 +329,6 @@ def errores_viaje(viaje):
                         lista+=[4]
                         break
     return set(lista)
-
 
 def errores_vehiculo(vehiculo):
     lista = []
@@ -969,45 +970,78 @@ class FormularioInfoDeContacto(HttpRequest):
 
 class FormularioComentario(HttpRequest):
     @login_required
-    def crear_formulario(request):
-        comentario = Registro_comentario()
+    def mostrar_viajes(request):
         anuncio = Registro_anuncio()
-        comentarios = Comentario.objects.all().order_by('-id')
         anuncios = Anuncio.objects.all().order_by('-id')
+        viajes = Viaje.objects.all()
+#        viajes_hechos=[]
+        nombre_chofer={}
+        usuario = request.user.id
+        #faltaria agregar que el viaje sea realizado
+        for i in viajes:
+#            if i.fecha_llegada.date() > date.today():
+#                viajes_hechos+=[i]
+            chofer = Usuario.objects.get (id = i.chofer_id)
+            nombre_chofer[i.chofer]= chofer.nombre +' '+ chofer.apellido
         if (request.user.tipo_usuario == 1):
-            return render (request, "carteleraPasajero.html",{"base": "admin_base.html", "tipo": request.user.tipo_usuario,"comentarios": comentarios, "anuncios":anuncios, "is_c":len(comentarios), "is_a":len(anuncios)})
+             return render (request, "carteleraPasajero.html",{"base": "admin_base.html", "tipo": request.user.tipo_usuario,"viajes": viajes, "anuncios":anuncios, "is_c":len(viajes), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer})
         else:
-            if (request.user.tipo_usuario == 2):
-                return render (request, "carteleraPasajero.html",{"base": "chofer_base.html","tipo": request.user.tipo_usuario,"comentarios": comentarios, "anuncios":anuncios ,"is_c":len(comentarios), "is_a":len(anuncios)})
-            else:
-                return render (request, "carteleraPasajero.html",{"base": "usuario_base.html","dni":request.user.dni, "user":request.user.nombre + ' '+ request.user.apellido,"tipo": request.user.tipo_usuario,"comentarios": comentarios, "anuncios":anuncios ,"is_c":len(comentarios), "is_a":len(anuncios)})
+             if (request.user.tipo_usuario == 2):
+                 return render (request, "carteleraPasajero.html",{"base": "chofer_base.html","tipo": request.user.tipo_usuario,"anuncios":anuncios ,"viajes":viajes,"is_c":len(viajes), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer})
+             else:
+                 return render (request, "carteleraPasajero.html",{"base": "usuario_base.html","tipo": request.user.tipo_usuario,"anuncios":anuncios ,"viajes":viajes, "is_c":len(viajes), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer})
 
     @login_required
-    def procesar_formulario(request):
+    def ver_comentarios(request,id_viaje,tipo, id_user):
+        comentario = Registro_comentario()
+        viaje = Viaje.objects.get(id = id_viaje)
+        chofer = Usuario.objects.get(id = viaje.chofer_id)
+        usuario = Usuario.objects.get(id = id_user)
+        comentarios = Comentario.objects.filter(viaje_id = id_viaje).order_by('-id')
+        pasaje = Pasaje.objects.filter(id_user = id_user, nro_viaje_id = id_viaje)
+        if (tipo == 1):
+             return render (request, "ver_comentario.html",{"base": "admin_base.html", "tipo": tipo ,"viaje": viaje, "comentarios":comentarios, "is_c":len(comentarios), "puede_comentar":len(pasaje),"usuario":usuario, "chofer":chofer})
+        else:
+             if (tipo == 2):
+                 return render (request, "ver_comentario.html",{"base": "chofer_base.html","tipo": tipo ,"viaje": viaje, "comentarios":comentarios, "is_c":len(comentarios), "puede_comentar":len(pasaje), "usuario":usuario, "chofer":chofer})
+             else:
+                 return render (request, "ver_comentario.html",{"base": "usuario_base.html","tipo": tipo ,"viaje": viaje, "comentarios":comentarios, "is_c":len(comentarios), "puede_comentar":len(pasaje), "usuario":usuario, "chofer":chofer})
+
+    @login_required
+    def guardar_comentario(request,id_viaje, tipo, id_user):
         comentario = Registro_comentario(request.POST)
+        viaje = Viaje.objects.get(id = id_viaje)
+        chofer = Usuario.objects.get(id = viaje.chofer_id)
+        usuario = Usuario.objects.get(id = id_user)
+        pasaje = Pasaje.objects.filter(id_user = id_user)
         if comentario.is_valid():
-                comentario.save()
-                comentario = Registro_comentario()
-                anuncios = Anuncio.objects.all().order_by('-id')
-                comentarios = Comentario.objects.all().order_by('-id')
-                if (request.user.tipo_usuario == 1):
-                    return render (request, "carteleraPasajero.html",{"base": "admin_base.html", "tipo": request.user.tipo_usuario,"comentarios": comentarios, "anuncios":anuncios, "is_c":len(comentarios), "is_a":len(anuncios)})
-                else:
-                    if (request.user.tipo_usuario == 2):
-                        return render (request, "carteleraPasajero.html",{"base": "chofer_base.html","tipo": request.user.tipo_usuario,"comentarios": comentarios, "anuncios":anuncios ,"is_c":len(comentarios), "is_a":len(anuncios)})
-                    else:
-                        return render (request, "carteleraPasajero.html",{"base": "usuario_base.html","dni":request.user.dni, "user":request.user.nombre + ' '+ request.user.apellido,"tipo": request.user.tipo_usuario,"comentarios": comentarios, "anuncios":anuncios ,"is_c":len(comentarios), "is_a":len(anuncios)})
+            comentario.save()
+            comentarios = Comentario.objects.filter(viaje_id = id_viaje).order_by('-id')
+            if (tipo == 1):
+                 return render (request, "ver_comentario.html",{"base": "admin_base.html", "tipo": tipo ,"viaje": viaje, "comentarios":comentarios, "is_c":len(comentarios), "puede_comentar":len(pasaje),"usuario":usuario, "chofer":chofer})
+            else:
+                 if (tipo == 2):
+                     return render (request, "ver_comentario.html",{"base": "chofer_base.html","tipo": tipo ,"viaje": viaje, "comentarios":comentarios, "is_c":len(comentarios), "puede_comentar":len(pasaje), "usuario":usuario, "chofer":chofer})
+                 else:
+                     return render (request, "ver_comentario.html",{"base": "usuario_base.html","tipo": tipo ,"viaje": viaje, "comentarios":comentarios, "is_c":len(comentarios), "puede_comentar":len(pasaje), "usuario":usuario, "chofer":chofer})
 
     @login_required
-    def eliminar_comentario(request, id_coment):
+    def eliminar_comentario(request, id_viaje,tipo,id_coment, id_user):
         comentario_eliminado = Comentario.objects.get(pk=id_coment)
         comentario_eliminado.delete()
-        comentarios = Comentario.objects.all().order_by('-id')
-        anuncios = Anuncio.objects.all().order_by('-id')
-        if (request.user.tipo_usuario == 1):
-            return render (request, "carteleraPasajero.html",{"base": "admin_base.html", "tipo": request.user.tipo_usuario,"comentarios": comentarios, "anuncios":anuncios, "is_c":len(comentarios), "is_a":len(anuncios)})
+        comentarios = Comentario.objects.filter(viaje_id = id_viaje).order_by('-id')
+        viaje = Viaje.objects.get(id = id_viaje)
+        chofer = Usuario.objects.get(id = viaje.chofer_id)
+        usuario = Usuario.objects.get(id = id_user)
+        pasaje = Pasaje.objects.filter(id_user = id_user)
+        if (tipo == 1):
+            return render (request, "ver_comentario.html",{"base": "admin_base.html", "tipo": tipo ,"viaje": viaje, "comentarios":comentarios, "is_c":len(comentarios), "puede_comentar":len(pasaje),"usuario":usuario, "chofer":chofer})
         else:
-            return render (request, "carteleraPasajero.html",{"base": "usuario_base.html","dni":request.user.dni, "user":request.user.nombre + ' '+ request.user.apellido,"tipo": request.user.tipo_usuario,"comentarios": comentarios, "anuncios":anuncios ,"is_c":len(comentarios), "is_a":len(anuncios)})
+            if (tipo == 2):
+                return render (request, "ver_comentario.html",{"base": "chofer_base.html","tipo": tipo ,"viaje": viaje, "comentarios":comentarios, "is_c":len(comentarios), "puede_comentar":len(pasaje), "usuario":usuario, "chofer":chofer})
+            else:
+                return render (request, "ver_comentario.html",{"base": "usuario_base.html","tipo": tipo ,"viaje": viaje, "comentarios":comentarios, "is_c":len(comentarios), "puede_comentar":len(pasaje), "usuario":usuario, "chofer":chofer})
+
 
 class FormularioAnuncio(HttpRequest):
     @login_required
@@ -1196,9 +1230,11 @@ class ComprarPasaje(HttpRequest):
                 if form.is_valid():
                     ruta = Ruta.objects.get(id=(viaje.ruta).id)
                     form.save_viaje3(ruta)
-                    return render (request, "comprar_pasaje_pagar.html", {"aceptado":"si"})
+                    verificar=Pasaje.objects.get(id_user = request.user.id, nro_viaje = id_viaje)
+                    return render (request, "comprar_pasaje_pagar.html", {"aceptado":"si", "pasaje":verificar, "viaje":viaje})
             else:
-                return render (request, "comprar_pasaje_pagar.html", {"aceptado":"no"})
+                verificar=Pasaje.objects.get(id_user = request.user.id, nro_viaje = id_viaje)
+                return render (request, "comprar_pasaje_pagar.html", {"aceptado":"no", "pasaje":verificar, "viaje":viaje})
 
     @login_required
     def ver_tienda(request, id_viaje):
@@ -1264,3 +1300,18 @@ class ComprarPasaje(HttpRequest):
         viaje.save()
 
         return ListarViajes.listar_viajes_por_realizar(request)
+
+    @login_required
+    def ver_detalle_pasaje(request, id_viaje):
+        viaje = Viaje.objects.get(id = id_viaje)
+        chofer = Usuario.objects.get (id = viaje.chofer_id)
+        pasaje = Pasaje.objects.get(nro_viaje_id = id_viaje, id_user = request.user.id)
+        usuario = Usuario.objects.get(id = pasaje.id_user)
+        tarjeta = Tarjeta.objects.get(id = pasaje.tarjeta_id)
+        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
+        precio_total = 0
+        if len(carrito) != 0:
+            for i in carrito:
+                precio_total = precio_total + i.precio_ticket
+        precio_total = precio_total + viaje.precio
+        return render (request, "ver_detalle_pasaje.html", {"viaje":viaje, "tarjeta":tarjeta, "usuario":usuario, "chofer":chofer, "precio_total":precio_total, "insumos":carrito, "inumo":len(carrito), "pasaje":pasaje})

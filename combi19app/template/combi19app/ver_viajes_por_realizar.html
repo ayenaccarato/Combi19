@@ -10,10 +10,8 @@
           <h5>
             <br>
               <p>
-              {% if viajes %}
-                {% for i in viajes %}
-                    <div class="media">
-                      <div class="media-body">
+                        {% if viajes %}
+                          {% for i in viajes %}
                           <div class="card" style="width: 40rem">
                             <h4>
                               <div class="card-header">{{i.viaje}}
@@ -26,18 +24,14 @@
                                   <p class="card-text">{{r.nombre}}</p>
                                   <p class="card-text">Fecha de salida: {{i.fecha_salida}} | Fecha de llegada {{i.fecha_llegada}}</p>
                                 {% endif %}
-
-                                {% endfor %}
+                                <center>
                               <a class="btn btn-danger" href= "/cancelar_pasaje/{{i.id}}" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;float:right;">Cancelar pasaje</a>
-                              <a class="btn btn-warning" href= "#" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;float:right;">Ver pasaje</a>
-                              </h6>
-                              <h6>
-                                <p class="card-text">{{i.fecha_y_hora}}</p>
+                              <a class="btn btn-primary" href= "/ver_pasaje/detalle/{{i.id}}/"  style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;float:right;">Ver pasaje</a>
+                            </center>
                               </h6>
                             </div>
                           </div>
-                        </div>
-                      </div>
+                        {% endfor %}
                   {% endfor %}
               </p>
               {% else %}
@@ -49,7 +43,6 @@
                   <div class="container">
                     <h1 class="display-4">Ups!</h1>
                     <p class="lead">No hay viajes por hacer.</p>
-                  </div>
                 </div>
               </tbody>
             </table>
@@ -58,6 +51,7 @@
       </div>
     </div>
   </center>
+</div>
 </div>
 
 {% endblock %}

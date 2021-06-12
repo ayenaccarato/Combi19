@@ -24,24 +24,29 @@
                                 {% for r in rutas %}
                                 {% if r.id == i.ruta_id %}
                                   <p class="card-text">{{r.nombre}}</p>
-                                  <p class="card-text">Fecha de salida: {{i.fecha_salida}} | Fecha de llegada {{i.fecha_llegada}}</p>
+                                  <p class="card-text">SALIDA: {{i.fecha_salida}}</p>
+                                  <p class="card-text"> LLEGADA: {{i.fecha_llegada}}</p>
+                                  {% if i.premium %}
+                                    <p class="card-text"> TIPO DE ASIENTO: CAMA</p>
+                                  {% else %}
+                                    <p class="card-text"> TIPO DE ASIENTO: SEMI CAMA</p>
+                                  {% endif %}
+                                  <p class="card-text"> PRECIO: ${{i.precio}}</p>
                                 {% endif %}
 
                                 {% endfor %}
                               {% if i.asientos_disponibles == 0 %}
                                 <a disabled class="btn btn-danger" href= "#" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;float:right;">Agotado</a>
                               {% else %}
-                              <a class="btn btn-warning" href= "/comprar_pasaje_menu/{{i.id}}/" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;float:right;">Comprar pasaje</a>
+                              <a class="btn btn-success" href= "/comprar_pasaje_menu/{{i.id}}/" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;">Comprar pasaje</a>
                               {% endif %}
 
-                              </h6>
-                              <h6>
-                                <p class="card-text">{{i.fecha_y_hora}}</p>
                               </h6>
                             </div>
                           </div>
                         </div>
                       </div>
+                      <br>
                   {% endfor %}
               </p>
               {% else %}
