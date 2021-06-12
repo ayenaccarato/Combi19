@@ -28,7 +28,12 @@
                                 {% endif %}
 
                                 {% endfor %}
+                              {% if i.asientos_disponibles == 0 %}
+                                <a disabled class="btn btn-danger" href= "#" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;float:right;">Agotado</a>
+                              {% else %}
                               <a class="btn btn-warning" href= "/comprar_pasaje_menu/{{i.id}}/" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;float:right;">Comprar pasaje</a>
+                              {% endif %}
+
                               </h6>
                               <h6>
                                 <p class="card-text">{{i.fecha_y_hora}}</p>
