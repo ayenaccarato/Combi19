@@ -144,7 +144,8 @@ class Registro_viaje (forms.ModelForm):
                   'asientos_total',
                   'asientos_disponibles',
                   'vendidos',
-                  'precio'
+                  'precio',
+                  'estado'
                   )
 
     def save_viaje(self, vehiculo, ruta, commit=True):

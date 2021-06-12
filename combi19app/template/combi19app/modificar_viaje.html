@@ -24,17 +24,27 @@ crossorigin="anonymous"></script>
       {% for i in errores %}
         {% if i == 1 %}
           <div class= 'alert alert-danger' role='alert'>
-              Fallo en el registro del viaje. No se puede realizar un viaje dentro de la misma ciudad
+              Fallo en el registro del viaje. Un vehiculo no puede realizar 2 viajes el mismo dia
             </div>
         {% else %}
           {% if i == 2 %}
             <div class= 'alert alert-danger' role='alert'>
-              Fallo en el registro del viaje. Fecha de llegada expirada
+              Fallo en el registro del viaje. El viaje no se puede realizar porque el vehiculo está en otro viaje en ese momento
             </div>
-          {% endif %}
         {% endif %}
-      {% endfor %}
-    {% endif %}
+        {% if i == 3 %}
+          <div class= 'alert alert-danger' role='alert'>
+            Fallo en el registro del viaje. El chofer ya tiene un viaje el mismo dia
+          </div>
+      {% endif %}
+        {% if i == 4 %}
+          <div class= 'alert alert-danger' role='alert'>
+            Fallo en el registro del viaje. El viaje no se puede realizar porque el chofer esta en otro viaje en ese momento
+          </div>
+      {% endif %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
 
     <div class="container">
       <center>
@@ -123,6 +133,7 @@ crossorigin="anonymous"></script>
               <p> <input hidden type="text" name="asientos_total" placeholder="asientos_total" id="asientos_total"></p>
               <p> <input hidden type="text" name="asientos_disponibles" placeholder="asientos disponibles" id="asientos_disponibles"></p>
               <p> <input hidden type="text" name="vendidos" placeholder="vendidos" id="vendidos"></p>
+              <p> <input hidden type="text" name="estado" id="estado" value="activo"></p>
               <p>
                 <div class="input-group">
                   <div class="input-group-prepend">
@@ -156,6 +167,12 @@ crossorigin="anonymous"></script>
                 </div>
               </p>
             </h5>
+            <p>
+                <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="precio0" for="inputGroupSelect01">Precio $</label>
+                  <input class="col-sm-11 col-form-label" type="text" name="precio" title="Ingresar un precio (Ej. 150,50)" required>
+                </div>
+            </p>
           </div>
         </div>
       </center>

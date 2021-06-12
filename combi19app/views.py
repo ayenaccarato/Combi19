@@ -665,9 +665,9 @@ class BuscarCiudad(HttpRequest):
                 print(date.day)
                 print(date.month)
                 if(date.day>12):
-                    viajes += Viaje.objects.filter(ruta_id=r.id ,fecha_salida__year=date.year,fecha_salida__day=date.day, fecha_salida__month=date.month)
+                    viajes += Viaje.objects.filter(ruta_id=r.id ,fecha_salida__year=date.year,fecha_salida__day=date.day, fecha_salida__month=date.month, estado='activo')
                 else:
-                    viajes += Viaje.objects.filter(ruta_id=r.id ,fecha_salida__year=date.year,fecha_salida__day=date.month, fecha_salida__month=date.day)
+                    viajes += Viaje.objects.filter(ruta_id=r.id ,fecha_salida__year=date.year,fecha_salida__day=date.month, fecha_salida__month=date.day, estado='activo')
             else:
                 viajes += Viaje.objects.filter(ruta_id=r.id)
         return render (request, "buscar_viaje_result.html",{"viajes": viajes, "rutas":ruta})
@@ -788,7 +788,22 @@ class ListarViajes(HttpRequest):
         detalle= Viaje.objects.get(id=id_viaje)
         return render (request, "listar_viajes.html", {"dato":detalle, "mensaje":"detalle"})
 
-
+    @login_required
+    def listar_viajes_por_realizar(request):
+        pasajes = Pasaje.objects.filter(id_user=request.user.id)
+        viajes = []
+        rutas = []
+        for p in pasajes:
+            if p.estado == 'activo':
+                viaje = Viaje.objects.get(id=p.nro_viaje_id)
+                ruta = Ruta.objects.get(id=viaje.ruta_id)
+                if ruta not in rutas:
+                    rutas.append(ruta)
+                current_time = date.today()
+                if(viaje.fecha_salida.date() >= current_time):
+                    viajes.append(viaje)
+        contexto ={'viajes': viajes, 'rutas': rutas}
+        return render (request, "ver_viajes_por_realizar.html", contexto)
 
 class ListarChofer(HttpRequest):
 
@@ -1238,3 +1253,14 @@ class ComprarPasaje(HttpRequest):
                 for i in insumos:
                     stocks[i.id] = range(1,i.stock+1)
                 return render (request, "comprar_pasaje_tienda.html", {"insumos":insumos, "stocks":stocks,"tienda":len(insumos), "viaje":viaje, "usuario":usuario, "vendido":"si"})
+
+    @login_required
+    def cancelar_pasaje(request, id_viaje):
+        pasaje = Pasaje.objects.get(id_user=request.user.id ,nro_viaje_id= id_viaje)
+        pasaje.estado ='cancelado'
+        pasaje.save()
+        viaje = Viaje.objects.get(id=id_viaje)
+        viaje.asientos_disponibles = viaje.asientos_disponibles + 1
+        viaje.save()
+
+        return ListarViajes.listar_viajes_por_realizar(request)

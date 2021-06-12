@@ -136,6 +136,8 @@ urlpatterns = [
     path('comprar_pasaje/tienda/<int:id_viaje>/agregar/<int:id_insumo>/', views.ComprarPasaje.procesar_ver_tienda),
     path('comprar_pasaje/tienda/<int:id_viaje>/<int:id_insumo>/ok/', views.ComprarPasaje.procesar_confirmacion_insumo),
     path('comprar_pasaje/carrito/<int:id_viaje>/<int:id_ticket>/confirmar_eliminado/', views.ComprarPasaje.confirmar_eliminado),
+    path('ver_viajes_por_realizar', views.ListarViajes.listar_viajes_por_realizar),
+    path('cancelar_pasaje/<int:id_viaje>', views.ComprarPasaje.cancelar_pasaje),
     path('home/', views.home),
     path('accounts/', include ('django.contrib.auth.urls')),
     path('', views.home),

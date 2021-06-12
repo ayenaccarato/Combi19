@@ -134,6 +134,7 @@ class Viaje (models.Model):
     asientos_disponibles = models.IntegerField(default=0)
     vendidos = models.IntegerField()
     precio = models.FloatField()
+    estado = models.CharField(max_length=20)
     def publish(self):
         self.save()
 
