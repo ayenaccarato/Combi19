@@ -274,9 +274,60 @@ def errores_ciudad2(ciudad, c_vieja):
 
 def errores_viaje(viaje):
     lista=[]
+    viajes = Viaje.objects.filter(vehiculo_id = viaje.cleaned_data.get('vehiculo').id)
+    for v in viajes:
+        #date = dateutil.parser.parse
+        diaDespues = v.fecha_salida.date()+timedelta(days=+1)
+        fechaDelViaje = viaje.cleaned_data.get('fecha_salida').date()
+        fechaDelViajeDT = viaje.cleaned_data.get('fecha_salida')
+        print(diaDespues.strftime("%Y-%m-%d") == fechaDelViaje.strftime("%Y-%m-%d"))
+        if v.fecha_salida.date() == viaje.cleaned_data.get('fecha_salida').date():
+            lista+=[1]
+            break
+        elif diaDespues.strftime("%Y-%m-%d") == fechaDelViaje.strftime("%Y-%m-%d"):
+            hora = viaje.cleaned_data.get('hora_salida').split(':')
+            if hora[2] == "AM":
+                fechaDelViajeDT = fechaDelViajeDT.replace(hour = int(hora[0]), minute=int(hora[1]))
+            else:
+                if int(hora[0]) == 12 :
+                    fechaDelViajeDT = fechaDelViajeDT.replace(hour = 0, minute=int(hora[1]))
+                else:
+                    fechaDelViajeDT = fechaDelViajeDT.replace(hour = int(hora[0]) + 12, minute=int(hora[1]))
+            print(v.fecha_llegada.hour)
+            print(fechaDelViajeDT.hour)
+            if (v.fecha_llegada.hour >= fechaDelViajeDT.hour):
+                lista+=[2]
+                break
+        else:
+            print(type(diaDespues))
+            print(type(v.fecha_salida.date()+timedelta(days=+1)))
 
-
+            print(type(viaje.cleaned_data.get('fecha_salida').date()))
+            print(viaje.cleaned_data.get('chofer').id)
+            viajes2 = Viaje.objects.filter(chofer_id = viaje.cleaned_data.get('chofer').id)
+            for v in viajes2:
+                #date = dateutil.parser.parse
+                diaDespues = v.fecha_salida.date()+timedelta(days=+1)
+                fechaDelViaje = viaje.cleaned_data.get('fecha_salida').date()
+                fechaDelViajeDT = viaje.cleaned_data.get('fecha_salida')
+                print(diaDespues.strftime("%Y-%m-%d") == fechaDelViaje.strftime("%Y-%m-%d"))
+                if v.fecha_salida.date() == viaje.cleaned_data.get('fecha_salida').date():
+                    lista+=[3]
+                    break
+                elif diaDespues.strftime("%Y-%m-%d") == fechaDelViaje.strftime("%Y-%m-%d"):
+                    hora = viaje.cleaned_data.get('hora_salida').split(':')
+                    if hora[2] == "AM":
+                        fechaDelViajeDT = fechaDelViajeDT.replace(hour = int(hora[0]), minute=int(hora[1]))
+                    else:
+                        if int(hora[0]) == 12 :
+                            fechaDelViajeDT = fechaDelViajeDT.replace(hour = 0, minute=int(hora[1]))
+                        else:
+                            fechaDelViajeDT = fechaDelViajeDT.replace(hour = int(hora[0]) + 12, minute=int(hora[1]))
+                    if (v.fecha_llegada.hour >= fechaDelViajeDT.hour):
+                        lista+=[4]
+                        break
     return set(lista)
+
 
 def errores_vehiculo(vehiculo):
     lista = []
@@ -604,14 +655,23 @@ class BuscarCiudad(HttpRequest):
     @login_required
     def listar_ciudades_result(request):
         ruta = Ruta.objects.filter(origen=request.GET.get('origen'), destino=request.GET.get('destino'))
-        print(ruta[1].id)
+        #print(ruta[1].id)
         viajes = []
         for r in ruta:
-            date = dateutil.parser.parse(request.GET.get('fecha_salida'))
             #viajes += Viaje.objects.filter(ruta_id=r.id).filter(fecha_salida=date.date())
-            viajes += Viaje.objects.filter(ruta_id=r.id ,fecha_salida__year=date.year,fecha_salida__day=date.day, fecha_salida__month=date.month)
+            if(request.GET.get('fecha_salida') != ""):
+                date = dateutil.parser.parse(request.GET.get('fecha_salida'))
+                print(request.GET.get('fecha_salida'))
+                print(date.day)
+                print(date.month)
+                if(date.day>12):
+                    viajes += Viaje.objects.filter(ruta_id=r.id ,fecha_salida__year=date.year,fecha_salida__day=date.day, fecha_salida__month=date.month)
+                else:
+                    viajes += Viaje.objects.filter(ruta_id=r.id ,fecha_salida__year=date.year,fecha_salida__day=date.month, fecha_salida__month=date.day)
+            else:
+                viajes += Viaje.objects.filter(ruta_id=r.id)
+        return render (request, "buscar_viaje_result.html",{"viajes": viajes, "rutas":ruta})
 
-        return render (request, "buscar_viaje_result.html",{"viajes": viajes})
 
 class ListarRuta (HttpRequest):
     @login_required

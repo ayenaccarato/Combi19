@@ -1,42 +1,62 @@
 {% extends "usuario_base.html" %}
 {% load static %}
 {% block title %}Buscar viaje por ciudad{% endblock %}
-{% block h1 %}<center>Buscar viaje por ciudad</center>{% endblock %}
+{% block h1 %}<center>Buscar viajes</center>{% endblock %}
 {% block content %}
 <div class="container">
   <center>
     <div class="row">
       <div class="col-sm">
-        <h4> <p style="margin: 40px">Ingrese los datos del viaje a realizar</p></h4>
-
           <h5>
             <br>
               <p>
-                <div class="input-group-prepend">
-                  <label class="input-group-text" type="text" name="origen" for="inputGroupSelect01">Ciudad origen</label>
-                  <select class="col-sm col-form-label custom-select-md" type="text" name="origen" id="origen" required>
-                    <option value="" disabled=True selected> --Seleccione-- </option>
-                      {% for i in viajes %}
-                        <option value= "{{i.id}}">{{i.id}}</option>
-                        {% endfor %}
-                  </select>
-                </div>
+              {% if viajes %}
+                {% for i in viajes %}
+                    <div class="media">
+                      <div class="media-body">
+                          <div class="card" style="width: 40rem">
+                            <h4>
+                              <div class="card-header">{{i.viaje}}
+                              </div>
+                            </h4>
+                            <div class="card-body">
+                              <h5>
+                                {% for r in rutas %}
+                                {% if r.id == i.ruta_id %}
+                                  <p class="card-text">{{r.nombre}}</p>
+                                  <p class="card-text">Fecha de salida: {{i.fecha_salida}} | Fecha de llegada {{i.fecha_llegada}}</p>
+                                {% endif %}
+
+                                {% endfor %}
+                              <a class="btn btn-warning" href= "/comprar_pasaje_menu/{{i.id}}/" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;float:right;">Comprar pasaje</a>
+                              </h6>
+                              <h6>
+                                <p class="card-text">{{i.fecha_y_hora}}</p>
+                              </h6>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  {% endfor %}
               </p>
+              {% else %}
+                <br>
+                <br>
+                <br>
+                <br>
+                <div class="jumbotron jumbotron-fluid">
+                  <div class="container">
+                    <h1 class="display-4">Ups!</h1>
+                    <p class="lead">No encontramos el viaje que desea realizar.</p>
+                  </div>
+                </div>
+              </tbody>
+            </table>
+          {% endif %}
           </h5>
       </div>
     </div>
-      <button onclick="enviar()" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Buscar</button>
   </center>
 </div>
-<input hidden name="nombre" id="nom">
-<input hidden name="provincia" id="prov" value="{{i.provincia}}">
-<input hidden name="codigo_postal" id="cod" value="{{i.codigo_postal}}">
-<input hidden name="pais" id="pais" value="{{i.pais}}">
 
-<script>
-
-  function enviar(){
-    console.log(document.getElementById("origen").value)
-  }
-</script>
 {% endblock %}

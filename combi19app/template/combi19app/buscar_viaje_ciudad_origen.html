@@ -1,7 +1,7 @@
 {% extends "usuario_base.html" %}
 {% load static %}
 {% block title %}Buscar viaje por ciudad{% endblock %}
-{% block h1 %}<center>Buscar viaje por ciudad</center>{% endblock %}
+{% block h1 %}<center>Buscar viajes</center>{% endblock %}
 {% block content %}
 <div class="container">
   <center>
@@ -35,7 +35,7 @@
                     <div class="input-group-prepend">
                         <label class="input-group-text" type="text" name="fecha_salida1" for="inputGroupSelect01">Fecha de salida  </label>
                     </div>
-                      <input value="" type="text" autocomplete="off" class="form-control" name="fecha_salida" id="fecha" placeholder="dd-mm-aaaa" required />
+                      <input value="" type="text" autocomplete="off" class="form-control" name="fecha_salida" id="fecha" placeholder="dd-mm-aaaa"/>
                     </div>
                   </div>
               </p>
@@ -54,6 +54,7 @@
 
   function enviar(){
     console.log(document.getElementById("origen").value)
+
   }
 </script>
 {% endblock %}
