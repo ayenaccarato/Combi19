@@ -52,7 +52,13 @@
         <div class='alert alert-success' role='alert'>
           El insumo se eliminó exitosamente!
         </div>
+      {% else %}
+        {% if mensaje == "no_puede"%}
+        <div class='alert alert-danger' role='alert'>
+          El insumo no puede ser eliminado, fue comprado para un viaje!
+        </div>
       {% endif %}
+    {% endif %}
 
     {% if insumos %}
 

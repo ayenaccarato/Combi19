@@ -914,6 +914,17 @@ class FormularioInsumo(HttpRequest):
                 lista+=[2]
             return render (request, "modificar_insumo.html", {"errores":lista, "mensaje": "not_ok","insumos":insumo})
 
+def eliminar(insumo):
+    lista=[]
+    tickets = Ticket.objects.all()
+    fecha_actual = datetime.now()
+    for ticket in tickets:
+        if ticket.viaje.fecha_salida.date() > fecha_actual.date():
+            if ticket.insumo.id == insumo.id:
+                lista+=[1]
+                break
+    return set(lista)
+
 class ListarInsumos(HttpRequest):
     @login_required
     def crear_listado(request):
@@ -926,11 +937,17 @@ class ListarInsumos(HttpRequest):
         detalle= Insumo.objects.get(pk=id_insumo)
         return render (request, "listar_insumos.html", {"dato":detalle, "mensaje":"detalle"})
 
+    @login_required
     def eliminar_insumo(request, id_insumo):
         insumo = Insumo.objects.get(id=id_insumo)
-        insumo.delete()
-        insumo = Insumo.objects.all()
-        return render (request, "listar_insumos.html", {"insumos": insumo, "mensaje":"eliminado", "cantidad": len(insumo)})
+        in_eliminar = eliminar(insumo)
+        if len(in_eliminar) == 0:
+            insumo.delete()
+            insumo = Insumo.objects.all()
+            return render (request, "listar_insumos.html", {"insumos": insumo, "mensaje":"eliminado", "cantidad": len(insumo)})
+        else:
+            insumo = Insumo.objects.all()
+            return render (request, "listar_insumos.html", {"insumos": insumo, "mensaje":"no_puede", "cantidad": len(insumo)})
 
 class FormularioInfoDeContacto(HttpRequest):
     @login_required
