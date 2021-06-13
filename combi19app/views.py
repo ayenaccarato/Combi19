@@ -651,6 +651,10 @@ class BuscarCiudad(HttpRequest):
 
     @login_required
     def listar_ciudades_result(request):
+        if request.GET.get('origen')==request.GET.get('destino'):
+            ciudades = Ciudad.objects.all()
+            return render (request, "buscar_viaje_ciudad_origen.html",{"ciudades": ciudades, "errores": 1})
+
         ruta = Ruta.objects.filter(origen=request.GET.get('origen'), destino=request.GET.get('destino'))
         #print(ruta[1].id)
         viajes = []

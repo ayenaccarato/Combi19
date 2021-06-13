@@ -3,6 +3,12 @@
 {% block title %}Buscar viaje por ciudad{% endblock %}
 {% block h1 %}<center>Buscar viajes</center>{% endblock %}
 {% block content %}
+
+{% if errores == 1 %}
+  <div class= 'alert alert-danger' role='alert'>
+    Por favor ingrese una ciudad de origen diferente a la ciudad de destino
+  </div>
+{% endif %}
 <div class="container">
   <center>
     <div class="row">
@@ -13,7 +19,7 @@
             <br>
               <p>
                 <div class="input-group-prepend">
-                  <label class="input-group-text" type="text" name="origen" for="inputGroupSelect01">Ciudad origen</label>
+                  <label class="input-group-text" type="text" name="origen" for="inputGroupSelect01">Ciudad origen*</label>
                   <select class="col-sm col-form-label custom-select-md" type="text" name="origen" id="origen" required>
                     <option value="" disabled=True selected> --Seleccione-- </option>
                       {% for i in ciudades %}
@@ -22,7 +28,7 @@
                   </select>
                 </div>
                 <div class="input-group-prepend">
-                  <label class="input-group-text" type="text" name="origen" for="inputGroupSelect01">Ciudad destino</label>
+                  <label class="input-group-text" type="text" name="origen" for="inputGroupSelect01">Ciudad destino*</label>
                   <select class="col-sm col-form-label custom-select-md" type="text" name="destino" id="origen" required>
                     <option value="" disabled=True selected> --Seleccione-- </option>
                       {% for i in ciudades %}
@@ -38,6 +44,8 @@
                       <input value="" type="text" autocomplete="off" class="form-control" name="fecha_salida" id="fecha" placeholder="dd-mm-aaaa"/>
                     </div>
                   </div>
+                  <br>
+                <p align="left">  (*) Campos obligatorios </p>
               </p>
           </h5>
       </div>

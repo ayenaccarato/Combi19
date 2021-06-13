@@ -10,12 +10,25 @@
     <strong>{{texto.descripcion}}</strong><br>
     {{texto.direccion}}<br>
     CABA, Buenos Aires. Argentina<br>
+
+    {% if texto.telefono1 == None %}
+    <br>
+    {% else %}
     {% if texto.telefono2 == None %}
     Telefonos:  {{texto.telefono1}}<br>
     {% else %}
     Telefonos:  {{texto.telefono1}},  {{texto.telefono2}}<br>
     {% endif %}
-    Whatsapp: {{texto.celular}}
+    {% endif %}
+
+
+
+
+    {% if texto.celular == None %}
+    <br>
+    {% else %}
+    Whatsapp: {{texto.celular}}<br>
+    {% endif %}
 
   </address>
 
