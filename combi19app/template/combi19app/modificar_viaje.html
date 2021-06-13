@@ -170,7 +170,7 @@ crossorigin="anonymous"></script>
             <p>
                 <div class="input-group-prepend">
                   <label class="input-group-text" type="text" name="precio0" for="inputGroupSelect01">Precio $</label>
-                  <input class="col-sm-11 col-form-label" type="text" name="precio" title="Ingresar un precio (Ej. 150,50)" required>
+                  <input class="col-sm-11 col-form-label" type="text" id="precio" name="precio" title="Ingresar un precio (Ej. 150,50)" required>
                 </div>
             </p>
           </div>
@@ -210,6 +210,8 @@ crossorigin="anonymous"></script>
   document.getElementById('horario_de_salida').value = "{{viajes.hora_salida}}".split(":")[2]
   document.getElementById('chofer').value = "{{viajes.chofer.id}}"
   document.getElementById('vehiculo').value = "{{viajes.vehiculo.id}}"
+  document.getElementById('precio').value = "{{viajes.precio}}".replace(/,/g, '.');
+
   document.getElementById('hora_salida').value = (document.getElementById('hora_de_salida').value + ":" + document.getElementById('minuto_de_salida').value + " " + document.getElementById('horario_de_salida').value)
   //document.getElementById('asientos_total').value = "{{viajes.asientos_total}}"
 //  document.getElementById('asientos_disponibles').value = "{{viajes.asientos_disponibles}}"

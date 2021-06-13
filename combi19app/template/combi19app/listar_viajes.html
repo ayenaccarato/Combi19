@@ -28,38 +28,31 @@
       <tr>
         <td>Viaje</td>
         <td>Fecha de salida</td>
-        <td>Hora de salida</td>
         <td>Ciudad de origen</td>
         <td>Fecha de llegada</td>
-        <td>Hora de llegada</td>
         <td>Ciudad de destino</td>
-        <td>Ruta</td>
         <td>Chofer</td>
         <td>Vehiculo</td>
+        <td>Precio</td>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>{{dato.id}}</td>
       <td>{{dato.fecha_salida}}</td>
-      <td>{{dato.hora_salida}}</td>
-      <td>{{dato.ciudad_origen}}
-      <a style= "margin:0px 20px; padding-top:10px;padding-bottom:10px;padding-left:10px;padding-right:10px;" href="/listar_ciudades/ver_detalle_viaje_ciudad/{{dato.ciudad_origen}}" type="submit" class="btn btn-success" name=nombre >Ver</a></td>
+      <td>{{ruta.origen}}
 
       </td>
       <td>{{dato.fecha_llegada}}</td>
-      <td>{{dato.hora_llegada}}</td>
-      <td>{{dato.ciudad_destino}}
-        <a style= "margin:0px 20px; padding-top:10px;padding-bottom:10px;padding-left:10px;padding-right:10px;" href="/listar_ciudades/ver_detalle_viaje_ciudad/{{dato.ciudad_destino}}" type="submit" class="btn btn-success" name=nombre >Ver</a></td>
-      <td>{{dato.ruta}}
-      <a style= "margin:0px 20px; padding-top:10px;padding-bottom:10px;padding-left:10px;padding-right:10px;" href="/listar_rutas/ver_detalle_viaje_ruta/{{dato.ruta}}" type="submit" class="btn btn-success" name=nombre >Ver</a>
+      <td>{{ruta.destino}}
       </td>
-      <td>{{dato.chofer}}
-      <a style= "margin:0px 20px; padding-top:10px;padding-bottom:10px;padding-left:10px;padding-right:10px;" href="/listar_choferes/ver_detalle_viaje_chofer/{{dato.chofer}}" type="submit" class="btn btn-success" name=nombre >Ver</a>
+      <td>{{dato.chofer.nombre}} {{dato.chofer.apellido}}
+        <BR>  DNI {{dato.chofer}}
       </td>
-      <td>{{dato.vehiculo}}
-      <a style= "margin:0px 20px; padding-top:10px;padding-bottom:10px;padding-left:10px;padding-right:10px;" href="/listar_vehiculos/ver_detalle_viaje_vehiculo/{{dato.vehiculo}}" type="submit" class="btn btn-success" name=nombre >Ver</a>
+      <td>{{dato.vehiculo.marca}} {{dato.vehiculo.modelo}}<BR> {{dato.vehiculo}}
       </td>
+      <td>${{dato.precio}}</td>
+
     </tr>
   </table>
 
@@ -93,8 +86,16 @@
             <tr>
               <td>{{viaje.id}}</td>
               <td>{{viaje.fecha_salida}}</td>
-              <td>{{viaje.ciudad_origen}}</td>
-              <td>{{viaje.ciudad_destino}}</td>
+            {% for r in rutas %}
+              {% if r.id == viaje.ruta_id %}
+
+              <td>{{r.origen}}</td>
+              <td>{{r.destino}}</td>
+              {% endif %}
+
+            {% endfor %}
+
+
               <td> <a class="btn btn-primary" href= "ver_detalle_viaje/{{viaje.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver detalle</a>
                 <td> <a class="btn btn-warning" href= "modificar_viaje/{{viaje.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Editar</a>  </td>
                 <td> <a class="btn btn-danger" href= "eliminar_viaje/{{viaje.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Eliminar</a>  </td>

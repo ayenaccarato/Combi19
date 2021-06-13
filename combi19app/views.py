@@ -272,62 +272,58 @@ def errores_ciudad2(ciudad, c_vieja):
 
     return set(lista)
 
-def errores_viaje(viaje):
+def errores_viaje(viaje,id_viaje):
     lista=[]
     if viaje.cleaned_data.get('precio') == None:
         lista+=[5]
     viajes = Viaje.objects.filter(vehiculo_id = viaje.cleaned_data.get('vehiculo').id)
     for v in viajes:
-        #date = dateutil.parser.parse
-        diaDespues = v.fecha_salida.date()+timedelta(days=+1)
-        fechaDelViaje = viaje.cleaned_data.get('fecha_salida').date()
-        fechaDelViajeDT = viaje.cleaned_data.get('fecha_salida')
-        print(diaDespues.strftime("%Y-%m-%d") == fechaDelViaje.strftime("%Y-%m-%d"))
-        if v.fecha_salida.date() == viaje.cleaned_data.get('fecha_salida').date():
-            lista+=[1]
-            break
-        elif diaDespues.strftime("%Y-%m-%d") == fechaDelViaje.strftime("%Y-%m-%d"):
-            hora = viaje.cleaned_data.get('hora_salida').split(':')
-            if hora[2] == "AM":
-                fechaDelViajeDT = fechaDelViajeDT.replace(hour = int(hora[0]), minute=int(hora[1]))
-            else:
-                if int(hora[0]) == 12 :
-                    fechaDelViajeDT = fechaDelViajeDT.replace(hour = 0, minute=int(hora[1]))
-                else:
-                    fechaDelViajeDT = fechaDelViajeDT.replace(hour = int(hora[0]) + 12, minute=int(hora[1]))
-            print(v.fecha_llegada.hour)
-            print(fechaDelViajeDT.hour)
-            if (v.fecha_llegada.hour >= fechaDelViajeDT.hour):
-                lista+=[2]
+        if(id_viaje == 0 or id_viaje != v.id):
+            #date = dateutil.parser.parse
+            diaDespues = v.fecha_salida.date()+timedelta(days=+1)
+            fechaDelViaje = viaje.cleaned_data.get('fecha_salida').date()
+            fechaDelViajeDT = viaje.cleaned_data.get('fecha_salida')
+            if v.fecha_salida.date() == viaje.cleaned_data.get('fecha_salida').date():
+                lista+=[1]
                 break
-        else:
-            print(type(diaDespues))
-            print(type(v.fecha_salida.date()+timedelta(days=+1)))
-
-            print(type(viaje.cleaned_data.get('fecha_salida').date()))
-            print(viaje.cleaned_data.get('chofer').id)
-            viajes2 = Viaje.objects.filter(chofer_id = viaje.cleaned_data.get('chofer').id)
-            for v in viajes2:
-                #date = dateutil.parser.parse
-                diaDespues = v.fecha_salida.date()+timedelta(days=+1)
-                fechaDelViaje = viaje.cleaned_data.get('fecha_salida').date()
-                fechaDelViajeDT = viaje.cleaned_data.get('fecha_salida')
-                print(diaDespues.strftime("%Y-%m-%d") == fechaDelViaje.strftime("%Y-%m-%d"))
-                if v.fecha_salida.date() == viaje.cleaned_data.get('fecha_salida').date():
-                    lista+=[3]
-                    break
-                elif diaDespues.strftime("%Y-%m-%d") == fechaDelViaje.strftime("%Y-%m-%d"):
-                    hora = viaje.cleaned_data.get('hora_salida').split(':')
-                    if hora[2] == "AM":
-                        fechaDelViajeDT = fechaDelViajeDT.replace(hour = int(hora[0]), minute=int(hora[1]))
+            elif v.fecha_llegada.date().strftime("%Y-%m-%d") == fechaDelViaje.strftime("%Y-%m-%d"):
+                hora = viaje.cleaned_data.get('hora_salida').split(':')
+                if hora[2] == "AM":
+                    fechaDelViajeDT = fechaDelViajeDT.replace(hour = int(hora[0]), minute=int(hora[1]))
+                else:
+                    if int(hora[0]) == 12 :
+                        fechaDelViajeDT = fechaDelViajeDT.replace(hour = 0, minute=int(hora[1]))
                     else:
-                        if int(hora[0]) == 12 :
-                            fechaDelViajeDT = fechaDelViajeDT.replace(hour = 0, minute=int(hora[1]))
-                        else:
-                            fechaDelViajeDT = fechaDelViajeDT.replace(hour = int(hora[0]) + 12, minute=int(hora[1]))
-                    if (v.fecha_llegada.hour >= fechaDelViajeDT.hour):
-                        lista+=[4]
-                        break
+                        fechaDelViajeDT = fechaDelViajeDT.replace(hour = int(hora[0]) + 12, minute=int(hora[1]))
+                if (v.fecha_llegada.hour >= fechaDelViajeDT.hour):
+                    lista+=[2]
+
+                    break
+
+    viajes2 = Viaje.objects.filter(chofer_id = viaje.cleaned_data.get('chofer').id)
+    for v in viajes2:
+        #date = dateutil.parser.parse
+        if(id_viaje == 0 or id_viaje != v.id):
+            diaDespues = v.fecha_salida.date()+timedelta(days=+1)
+            fechaDelViaje = viaje.cleaned_data.get('fecha_salida').date()
+            fechaDelViajeDT = viaje.cleaned_data.get('fecha_salida')
+            if v.fecha_salida.date() == viaje.cleaned_data.get('fecha_salida').date():
+                lista+=[3]
+
+                break
+            elif v.fecha_llegada.date().strftime("%Y-%m-%d") == fechaDelViaje.strftime("%Y-%m-%d"):
+                hora = viaje.cleaned_data.get('hora_salida').split(':')
+                if hora[2] == "AM":
+                    fechaDelViajeDT = fechaDelViajeDT.replace(hour = int(hora[0]), minute=int(hora[1]))
+                else:
+                    if int(hora[0]) == 12 :
+                        fechaDelViajeDT = fechaDelViajeDT.replace(hour = 0, minute=int(hora[1]))
+                    else:
+                        fechaDelViajeDT = fechaDelViajeDT.replace(hour = int(hora[0]) + 12, minute=int(hora[1]))
+                if (v.fecha_llegada.hour >= fechaDelViajeDT.hour):
+                    lista+=[4]
+
+                    break
     return set(lista)
 
 def errores_vehiculo(vehiculo):
@@ -730,14 +726,14 @@ class FormularioViaje (HttpRequest):
         ciudades = Ciudad.objects.all()
         rutas = Ruta.objects.all()
         if viaje.is_valid():
-            confirmacion = errores_viaje(viaje)
+            confirmacion = errores_viaje(viaje,0)
             if len(confirmacion) == 0:
                 v = Vehiculo.objects.get(patente=viaje.cleaned_data.get('vehiculo'))
                 r = Ruta.objects.get(nombre=viaje.cleaned_data.get('ruta'))
                 viaje.save_viaje(v,r)
                 viaje = Registro_viaje()
                 return render (request, "agregar_viaje.html", {"dato": viaje, "mensaje":"ok", "minutos":minutos, "choferes":choferes, "vehiculos": vehiculos, "ciudades":ciudades, "rutas":rutas})
-        confirmacion=errores_viaje(viaje)
+        confirmacion=errores_viaje(viaje,0)
         viaje = Registro_viaje()
         return render (request, "agregar_viaje.html", {"errores":confirmacion, "mensaje": "not_ok", "minutos":minutos, "choferes":choferes, "vehiculos": vehiculos, "ciudades":ciudades, "rutas":rutas})
     @login_required
@@ -754,15 +750,25 @@ class FormularioViaje (HttpRequest):
     @csrf_exempt
     def actualizar_viaje(request, id_viaje):
         viaje = Viaje.objects.get(id=id_viaje)
+        registro1 = Registro_viaje(instance=viaje)
         registro = Registro_viaje(request.POST, instance=viaje)
+        minutos = calcular_minutos()
+        choferes = Usuario.objects.all()
+        vehiculos = Vehiculo.objects.all()
+        ciudades = Ciudad.objects.all()
+        rutas = Ruta.objects.all()
         if registro.is_valid():
             print("ok")
-            confirmacion = errores_viaje(registro)
+            confirmacion = errores_viaje(registro,id_viaje)
             if len(confirmacion) == 0:
                 v = Vehiculo.objects.get(patente=registro.cleaned_data.get('vehiculo'))
                 r = Ruta.objects.get(nombre=registro.cleaned_data.get('ruta'))
                 registro.save_viaje(v,r)
+            else:
+                viajes = Viaje.objects.all()
+                return render (request, "modificar_viaje.html", {"viajes": viaje, "errores":confirmacion, "mensaje": "not_ok", "minutos":minutos, "choferes":choferes, "vehiculos": vehiculos, "ciudades":ciudades, "rutas":rutas})
         else:
+            print(registro.cleaned_data.get('precio'))
             print(registro.cleaned_data.get('vehiculo'))
             dato = errores_viajes(registro, viaje)
             if dato.is_valid():
@@ -782,12 +788,18 @@ class ListarViajes(HttpRequest):
     @login_required
     def crear_listado(request):
         viaje = Viaje.objects.all()
-        contexto = {'viajes': viaje, 'cantidad':len(viaje)}
+        rutas = []
+        for v in viaje:
+            r = Ruta.objects.get(id = v.ruta_id)
+            if r not in rutas:
+                rutas.append(r)
+        contexto = {'viajes': viaje, 'cantidad':len(viaje), 'rutas':rutas}
         return render (request, "listar_viajes.html", contexto)
     @login_required
     def mostrar_detalle(request, id_viaje):
         detalle= Viaje.objects.get(id=id_viaje)
-        return render (request, "listar_viajes.html", {"dato":detalle, "mensaje":"detalle"})
+        ruta= Ruta.objects.get(id=detalle.ruta_id)
+        return render (request, "listar_viajes.html", {"dato":detalle,"ruta":ruta, "mensaje":"detalle"})
 
     @login_required
     def listar_viajes_por_realizar(request):
