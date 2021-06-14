@@ -61,7 +61,7 @@ def ver_perfil_chofer(request):
     long_c = chofer.long_contra
     return render (request, "ver_perfil_chofer.html", {'chofer': chofer, 'longitud': long_c})
 
-def editar_chofer(request):
+def editar_chofer2(request):
     chofer = Usuario.objects.get(id=request.user.id)
     registro = Registro_chofer(instance=chofer)
     return render(request, "modificar_chofer2.html", {"dato": registro, "chofer": chofer})
@@ -104,7 +104,7 @@ def actualizar_admin(request, id_admin):
     response = redirect('/ver_perfil_admin/')
     return response
 
-def actualizar_chofer(request, id_chofer):
+def actualizar_chofer2(request, id_chofer):
     chofer = Usuario.objects.get(id=request.user.id)
     registro = Registro_chofer(request.POST, instance=chofer)
     if registro.is_valid():
@@ -359,10 +359,11 @@ def errores_tarjeta(tarjeta):
     else:
         if int(vencido[1]) == 21:
             if int(vencido[0]) <= 6:
-                lista+=[2]
+                lista+=[1]
 
     if len(tarjeta.cleaned_data.get('numero')) < 16:
         lista+=[3]
+
     return set(lista)
 
 def errores_ven(tarjeta):
@@ -833,6 +834,7 @@ class FormularioViaje (HttpRequest):
             return render (request, "listar_viajes.html", {"rutas": rutas, "viajes": viaje, "mensaje":"eliminado", "cantidad": len(viaje)})
         except:
             pasaje_activo = Pasaje.objects.filter(nro_viaje_id= id_viaje, estado='activo')
+            print('activo', pasaje_activo)
             if len(pasaje_activo) == 0:
                 eliminar = eliminar_pasajes(pasaje, ticket)
                 viaje.delete()
@@ -1374,7 +1376,7 @@ class ComprarPasaje(HttpRequest):
                     id_t = Tarjeta.objects.last()
                 return render (request, "comprar_pasaje_tarjeta3.html", {"usuario":usuario, "viaje": viaje, "nombre":nombre, "tarjeta":id_t, "ok":"ok", "carrito":carrito, "compro": len(carrito), "precio_total":precio_total})
             else:
-                return render (request, "comprar_pasaje_tarjeta3.html", {"mensaje":"invalido", "usuario":usuario,"viaje": viaje, "nombre":nombre, "ok": "not_ok","carrito":carrito, "compro": len(carrito), "precio_total":precio_total})
+                return render (request, "comprar_pasaje_tarjeta3.html", {"errores": confirmacion, "usuario":usuario,"viaje": viaje, "nombre":nombre, "ok": "not_ok","carrito":carrito, "compro": len(carrito), "precio_total":precio_total})
 
     @login_required
     def procesar_pasaje(request, id_viaje):
@@ -1452,6 +1454,7 @@ class ComprarPasaje(HttpRequest):
     @login_required
     def cancelar_pasaje(request, id_viaje):
         pasaje = Pasaje.objects.filter(id_user=request.user.id, nro_viaje_id= id_viaje, estado= 'activo')
+        print('pasaje', pasaje )
         if len(pasaje) != 0:
             pasaje = Pasaje.objects.get(id_user=request.user.id, nro_viaje_id= id_viaje, estado= 'activo')
         pasaje.estado ='cancelado'

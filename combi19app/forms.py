@@ -151,7 +151,7 @@ class Registro_viaje (forms.ModelForm):
     def save_viaje(self, vehiculo, ruta, commit=True):
         viaje = super().save(commit= False)
         viaje.asientos_total = vehiculo.capacidad
-        viaje.asientos_disponibles = vehiculo.capacidad
+        viaje.asientos_disponibles = vehiculo.capacidad - viaje.vendidos
         hora = viaje.hora_salida.split(':')
         if hora[2] == "AM":
             viaje.fecha_salida = viaje.fecha_salida.replace(hour = int(hora[0]), minute=int(hora[1]))

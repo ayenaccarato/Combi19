@@ -9,7 +9,7 @@
     </div>
     {% endif %}
 
-  <form action="/actualizar_chofer/{{chofer.id}}/" method="POST">
+  <form action="/actualizar_chofer2/{{chofer.id}}/" method="POST">
     {% csrf_token %}
     {% if mensaje == "ok" %}
       <div class='alert alert-success' role='alert'>

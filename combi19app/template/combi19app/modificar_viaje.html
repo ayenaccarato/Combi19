@@ -211,6 +211,7 @@ crossorigin="anonymous"></script>
   document.getElementById('chofer').value = "{{viajes.chofer.id}}"
   document.getElementById('vehiculo').value = "{{viajes.vehiculo.id}}"
   document.getElementById('precio').value = "{{viajes.precio}}".replace(/,/g, '.');
+  document.getElementById('ruta').value = "{{viajes.ruta.id}}"
 
   document.getElementById('hora_salida').value = (document.getElementById('hora_de_salida').value + ":" + document.getElementById('minuto_de_salida').value + " " + document.getElementById('horario_de_salida').value)
   //document.getElementById('asientos_total').value = "{{viajes.asientos_total}}"
@@ -218,9 +219,9 @@ crossorigin="anonymous"></script>
 //  document.getElementById('vendidos').value = "{{viajes.vendidos}}"
   document.write('Fecha ' + date)
   function horario(){
-    document.getElementById('vendidos').value = 0
-    document.getElementById('asientos_total').value=0
-    document.getElementById('asientos_disponibles').value=0
+    document.getElementById('vendidos').value = "{{viajes.vendidos}}"
+    document.getElementById('asientos_total').value="{{viajes.asientos_total}}"
+    document.getElementById('asientos_disponibles').value= ("{{viajes.asientos_total}}"-"{{viajes.vendidos}}");
     document.getElementById('hora_salida').value = (document.getElementById('hora_de_salida').value + ":" + document.getElementById('minuto_de_salida').value + ":" + document.getElementById('horario_de_salida').value)
   //  document.getElementById('vendidos').value = document.getElementById('vendidos').value
   // document.getElementById('asientos_total').value=  document.getElementById('asientos_total').value
