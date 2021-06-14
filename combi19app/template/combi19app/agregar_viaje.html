@@ -44,6 +44,11 @@
           Fallo en el registro del viaje. El precio ingresado debe contener un punto (Ej: 500.50)
         </div>
     {% endif %}
+    {% if i == 6 %}
+      <div class= 'alert alert-danger' role='alert'>
+        Fallo en el registro del viaje. El viaje no se puede realizar porque no pasaron 8 horas del último viaje del chofer
+      </div>
+  {% endif %}
       {% endif %}
     {% endfor %}
   {% endif %}
@@ -64,9 +69,7 @@
                     <input value="" type="text" autocomplete="off" class="form-control" name="fecha_salida" id="fecha" placeholder="dd-mm-aaaa" required />
                   </div>
                 </div>
-
                   <br>
-
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
                       <label class="input-group-text" type="text" name="hora" for="inputGroupSelect01">Hora salida  </label>
@@ -153,7 +156,6 @@
                     <option class="dropdown-item" value="PM">PM</option>
                   </select>
               </div-->
-              <br>
 
               <p>
                 <div class="input-group">

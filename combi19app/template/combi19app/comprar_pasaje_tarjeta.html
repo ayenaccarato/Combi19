@@ -49,22 +49,24 @@
                 <h5>
                 <div class="col-sm">
                 <div class="input-group-prepend">
-                  <label class="input-group-text" type="text" name="numero" for="inputGroupSelect01">Numero</label>
-                    <p><input class="col-sm-15 col-form-label" type="text" name="numero" placeholder="XXXX-XXXX-XXXX-XXXX" required> </p>
+                  <label class="input-group-text" style="width:35%;"type="text" name="numero" pattern="^([0-9]){16}" for="inputGroupSelect01">Número</label>
+                    <input class="list-group-item" style="width: 50%;" type="text" name="numero" placeholder="XXXXXXXXXXXXXXXX" required>
                   </div>
+                  <br>
                   <div class="input-group-prepend">
-                    <label class="input-group-text" type="text" name="vencimiento" for="inputGroupSelect01">Fecha de caducidad</label>
-                    <p><input class="col-sm-15 col-form-label" type="text" name="vencimiento" placeholder="MM/AA" title= "ingrese una fecha valida. Ej: 01/22" required> </p>
+                    <label class="input-group-text" style="width:35%;" type="text" name="vencimiento" for="inputGroupSelect01">Fecha de caducidad</label>
+                    <input class="list-group-item" style="width: 50%;" type="text" name="vencimiento" pattern="[0-9]{2}/[0-9]{2}" placeholder="MM/AA" title= "ingrese una fecha valida. Ej: 01/22" required>
                   </div>
+                  <br>
                   <div class="input-group-prepend">
-                    <label class="input-group-text" type="text" name="titular" for="inputGroupSelect01">Titular</label>
-                    <p><input class="col-sm-15 col-form-label" type="text" name="titular" placeholder="Nombre y apellido" required> </p>
+                    <label class="input-group-text" style="width:35%;" type="text" name="titular" for="inputGroupSelect01">Titular</label>
+                    <input class="list-group-item" style="width: 50%;" type="text" name="titular" placeholder="Nombre y apellido" required>
                   </div>
+                  <br>
                     <div class="input-group mb-3">
-                      <div class="input-group-prepend">
-                        <label class="input-group-text" name="categoria_label" for="inputGroupSelect01">Emisor de la tarjeta</label>
-                      </div>
-                      <select class="custom-select" type=IntegerField name="emisor" id="emisor" required>
+                      <label class="input-group-text" style="width:35%;" name="categoria_label" for="inputGroupSelect01">Emisor de la tarjeta</label>
+
+                      <select class="custom-select-md" type=IntegerField name="emisor" id="emisor" style="width: 50%;" required>
                         <option value="" disabled=True selected>--Seleccione--</option>
                         <option value="visa">Visa</option>
                         <option value="master card">Master card</option>
@@ -72,10 +74,11 @@
                         <option value="naranja">Naranja</option>
                         <option value="nativa">Nativa</option>
                       </select>
+
                   </div>
                   <div class="input-group-prepend">
-                    <label class="input-group-text" type="text" name="codigo" for="inputGroupSelect01">Codigo</label>
-                    <p><input class="col-sm-15 col-form-label" type="text" name="codigo" required> </p>
+                    <label class="input-group-text" style="width:35%;" type="text" name="codigo" for="inputGroupSelect01">Código</label>
+                    <input class="list-group-item" style="width: 50%;" pattern="^([0-9]+){3}" title="El código debe ser de 3 dígitos" type="text" name="codigo" required>
                   </div>
                     <br>
                     <br>
@@ -89,10 +92,10 @@
                     Tarjetas ya registradas:</h5>
                     <br>
                     {% for i in tarjetas %}
-                      <a class="btn btn-primary"href="/comprar_pasaje_con/{{viaje.id}}/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Pagar con {{i.emisor}} {{i.numero}}</button>
+                      <p><a class="btn btn-primary"href="/comprar_pasaje_con/{{viaje.id}}/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Pagar con {{i.emisor}} {{i.numero}}</a></p>
                     {% endfor %}
 
-                    <a class="btn btn-success" href="/otra_tarjeta/{{viaje.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:right">Pagar con otra tarjeta</a>
+                    <p><a class="btn btn-success" href="/otra_tarjeta/{{viaje.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:right">Pagar con otra tarjeta</a></p>
                     <a class="btn btn-dark" href="/comprar_pasaje_menu/{{viaje.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:left">Atras</a>
     {% endif %}
           <input hidden type="text" name="id_user"  id="id_user">

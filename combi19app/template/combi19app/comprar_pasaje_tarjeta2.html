@@ -65,26 +65,28 @@
 
       <div class="col-sm">
       <div class="input-group-prepend">
-        <label class="input-group-text" type="text" name="numero" for="inputGroupSelect01">Numero</label>
-          <p><input readonly class="col-sm-15 col-form-label" type="text" name="numero" id="numero" pattern="^([0-9-]+){19}" placeholder="XXXX-XXXX-XXXX-XXXX" required> </p>
+        <label class="input-group-text" style="width:35%;" type="text" name="numero" for="inputGroupSelect01">Numero</label>
+        <input readonly class="list-group-item" style="width: 50%;" type="text" name="numero" id="numero" pattern="^([0-9-]+){16}" placeholder="XXXX-XXXX-XXXX-XXXX" required>
         </div>
+        <br>
         <div class="input-group-prepend">
-          <label class="input-group-text" type="text" name="vencimiento" for="inputGroupSelect01">Fecha de caducidad</label>
-          <p><input readonly class="col-sm-15 col-form-label" type="text" name="vencimiento" id="vencimiento" placeholder="MM/AA" required> </p>
+          <label class="input-group-text" style="width:35%;" type="text" name="vencimiento" for="inputGroupSelect01">Fecha de caducidad</label>
+          <input readonly class="list-group-item" style="width: 50%;" type="text" name="vencimiento" id="vencimiento" placeholder="MM/AA" required>
         </div>
+        <br>
         <div class="input-group-prepend">
-          <label class="input-group-text" type="text" name="titular" for="inputGroupSelect01">Titular</label>
-          <p><input readonly class="col-sm-15 col-form-label" type="text" name="titular" id="titular" placeholder="Nombre y apellido" required> </p>
+          <label class="input-group-text" style="width:35%;" type="text" name="titular" for="inputGroupSelect01">Titular</label>
+          <input readonly class="list-group-item" style="width: 50%;" type="text" name="titular" id="titular" placeholder="Nombre y apellido" required>
         </div>
-
+        <br>
         <div class="input-group-prepend">
-          <label class="input-group-text" type="text" name="emisor" for="inputGroupSelect01">Emisor de la tarjeta</label>
-          <p><input readonly class="col-sm-15 col-form-label" type="text" name="emisor" id="emisor" placeholder="emisor" required> </p>
+          <label class="input-group-text" style="width:35%;" type="text" name="emisor" for="inputGroupSelect01">Emisor de la tarjeta</label>
+          <input readonly class="list-group-item" style="width: 50%;" type="text" name="emisor" id="emisor" placeholder="emisor" required>
         </div>
-
+        <br>
         <div class="input-group-prepend">
-          <label class="input-group-text" type="text" name="codigo" for="inputGroupSelect01">Codigo</label>
-          <p><input class="col-sm-15 col-form-label" readonly type="text" name="codigo" id="codigo" pattern="^([0-9]+){3}"  required> </p>
+          <label class="input-group-text" style="width:35%;" type="text" name="codigo" for="inputGroupSelect01">Codigo</label>
+          <input readonly class="list-group-item" style="width: 50%;" type="text" name="codigo" id="codigo" pattern="^([0-9]+){3}" title="El código debe ser de 3 dígitos" required>
         </div>
         </h5>
           <br>
@@ -96,8 +98,10 @@
   <button type = "submit"  class="btn btn-success" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:right">Pagar</button>
 
 <script>
-      var date = new Date("{{viaje.fecha_salida.isoformat}}");
-      var date2 = new Date("{{viaje.fecha_llegada.isoformat}}");
+      //var date = new Date("{{viaje.fecha_salida.isoformat}}");
+      //var date2 = new Date("{{viaje.fecha_llegada.isoformat}}");
+      var date = new Date("{{viaje.fecha_salida}}");
+      var date2 = new Date("{{viaje.fecha_llegada}}");
 
       function formatDate(date) {
         var day = date.getDate();

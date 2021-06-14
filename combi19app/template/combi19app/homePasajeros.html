@@ -11,11 +11,35 @@
       <br>
     </h4>
     <h5>
-      <p>  - ...  viaje/s por realizar </p>
+      <p>  - {{viajes}} viaje/s por realizar </p>
       <br>
       <br>
       <br>
-      <p> Página en construcción </p>
     </h5>
   </div>
+  <script type="text/javascript">
+    var f = new Date();
+    var mes = f.getMonth() + 1;
+    var hora = f.getHours();
+    var minutos = f.getMinutes();
+    var dia = f.getDate();
+    if (hora < 10){
+      hora = '0' + f.getHours()
+    }
+    if (minutos < 10){
+      minutos = '0' + f.getMinutes()
+    }
+    if (dia < 10){
+      dia = '0' + f.getDate()
+    }
+    if (mes < 10){
+      mes = '0' + (f.getMonth() + 1)
+    }
+    if (hora < 12){
+      document.write('ÚLTIMA ACTUALIZACIÓN: '+ dia + '/' + mes + '/' + f.getFullYear()+ '    '+ hora + ':'+ minutos + ' a.m')
+    }
+    else{
+      document.write('ÚLTIMA ACTUALIZACIÓN: '+ dia + '/' + mes + '/' + f.getFullYear()+ '    '+ hora + ':'+ minutos + ' p.m')
+    }
+  </script>
 {% endblock %}

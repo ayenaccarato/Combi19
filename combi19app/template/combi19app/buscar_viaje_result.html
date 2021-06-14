@@ -36,8 +36,10 @@
 
                                 {% endfor %}
                               {% if i.asientos_disponibles == 0 %}
-                                <a disabled class="btn btn-danger" href= "#" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;float:right;">Agotado</a>
+                              <p class="card-text"> ASIENTOS DISPONIBLES: {{i.asientos_disponibles}}</p>
+                                <button disabled class="btn btn-danger" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;float:center;">Agotado</button>
                               {% else %}
+                                <p class="card-text"> ASIENTOS DISPONIBLES: {{i.asientos_disponibles}}</p>
                               <a class="btn btn-success" href= "/comprar_pasaje_menu/{{i.id}}/" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;">Comprar pasaje</a>
                               {% endif %}
 

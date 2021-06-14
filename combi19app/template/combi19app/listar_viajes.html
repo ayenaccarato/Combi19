@@ -19,10 +19,6 @@
     </p>
     <br>
     <br>
-    <br>
-    <br>
-    <br>
-    <br>
   <table class="table table-bordered">
     <thead>
       <tr>
@@ -58,15 +54,19 @@
 
     {% else %}
 
-      {% if mensaje == "eliminado"%}
+      {% if mensaje == "eliminado" %}
         <div class='alert alert-success' role='alert'>
-          El viaje se elimino exitosamente!
+          El viaje se eliminó exitosamente!
         </div>
+      {% else %}
+        {% if mensaje == "no_puede" %}
+        <div class='alert alert-danger' role='alert'>
+          El viaje no puede ser eliminado, porque tiene pasajes vendidos
+        </div>
+        {% endif %}
       {% endif %}
 
     {% if viajes %}
-        <br>
-        <br>
         <br>
         <br>
         <table class="table table-bordered">

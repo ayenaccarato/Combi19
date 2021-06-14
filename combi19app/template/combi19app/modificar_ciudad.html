@@ -12,19 +12,19 @@
     {% csrf_token %}
     {% if mensaje == "ok" %}
       <div class='alert alert-success' role='alert'>
-        La ciudad se actualizo exitosamente!
+        La ciudad se actualizó exitosamente!
       </div>
     {% endif %}
     {% if mensaje == "not_ok" %}
       {% for i in errores %}
         {% if i == 1 %}
           <div class= 'alert alert-danger' role='alert'>
-              Fallo en la actualizacion de la ciudad. El codigo postal ingresado ya está registrado
+              Fallo en la actualización de la ciudad. El codigo postal ingresado ya está registrado
             </div>
         {% else %}
           {% if i == 2 %}
             <div class= 'alert alert-danger' role='alert'>
-              Fallo en la actualizacion de la ciudad. La ciudad ya existe.
+              Fallo en la actualización de la ciudad. La ciudad ya existe.
             </div>
           {% endif %}
         {% endif %}

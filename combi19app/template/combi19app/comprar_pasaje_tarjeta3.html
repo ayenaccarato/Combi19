@@ -81,6 +81,12 @@
 
           </h5>
               </div>
+    {% elif mensaje == "invalido" %}
+      <div class= 'alert alert-danger' role='alert'>
+        Número de tarjeta inválido. El número debe contener 16 números
+      </div>
+      <br>
+      <a class="btn btn-dark" href="/comprar_pasaje/tarjeta/{{viaje.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:left">Atras</a>
     {% else %}
         <div class= 'alert alert-danger' role='alert'>
           Tarjeta vencida, por favor ingrese otra tarjeta
@@ -93,8 +99,10 @@
 </div>
 <script>
 
-    var date = new Date("{{viaje.fecha_salida.isoformat}}");
-    var date2 = new Date("{{viaje.fecha_llegada.isoformat}}");
+    // var date = new Date("{{viaje.fecha_salida.isoformat}}");
+    // var date2 = new Date("{{viaje.fecha_llegada.isoformat}}");
+    var date = new Date("{{viaje.fecha_salida}}");
+    var date2 = new Date("{{viaje.fecha_llegada}}");
 
     function formatDate(date) {
       var day = date.getDate();
