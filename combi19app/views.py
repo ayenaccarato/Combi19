@@ -484,6 +484,16 @@ class FormularioRegistroAdmin (HttpRequest):
         registro = Registro()
         return render(request, "registrar_admin.html", {"mensaje": "not_ok", "errores": confirmacion})
 
+def errores_vehiculo2(vehiculo, v_viejo):
+    lista = []
+    vehiculos = Vehiculo.objects.all()
+    if vehiculo.cleaned_data.get('patente').upper() != v_viejo.patente:
+        for v in vehiculos:
+            if vehiculo.cleaned_data.get('patente').upper() == v.patente:
+                lista+=[1]
+                break
+    return set(lista)
+
 class FormularioVehiculo (HttpRequest):
     @login_required
     def crear_formulario(request):
@@ -514,10 +524,15 @@ class FormularioVehiculo (HttpRequest):
     @login_required
     def actualizar(request, id_vehiculo):
         vehiculo = Vehiculo.objects.get(id=id_vehiculo)
+        vehiculo2 = Vehiculo.objects.get(id=id_vehiculo)
         form = Registro_vehiculo(request.POST, instance = vehiculo)
         if form.is_valid():
         #    db.connections.close_all()
-            form.save()
+            confirmacion = errores_vehiculo2(form, vehiculo2)
+            if len(confirmacion) == 0:
+                form.save()
+            else:
+                return render (request, "modificar_vehiculo.html", {"form":form, "vehiculo":vehiculo, "mensaje": "not_ok"})
             response = redirect('/listar_vehiculos/')
             return response
         #    vehiculos= Vehiculo.objects.all()
@@ -582,11 +597,12 @@ class FormularioRuta (HttpRequest):
     def actualizar_ruta(request, id_ruta):
         ruta = Ruta.objects.get(id=id_ruta)
         ruta2 = Ruta.objects.get(id=id_ruta)
+        ciudad = Ciudad.objects.all()
         registro = Registro_ruta(request.POST, instance=ruta)
         if registro.is_valid():
             confirmacion = errores_ruta2(registro, ruta2)
             if len(confirmacion) == 0 :
-                registro.save()
+                registro.save_ruta(ciudad)
                 response = redirect('/listar_rutas/')
                 return response
             else:
@@ -991,6 +1007,8 @@ def errores_insumo2(insumo, i_vieja):
                 lista+=[1]
                 break
 
+    if insumo.cleaned_data.get('precio') == None:
+        lista+=[2]
     return set(lista)
 
 class FormularioInsumo(HttpRequest):
@@ -1035,7 +1053,9 @@ class FormularioInsumo(HttpRequest):
                 insumo = Insumo.objects.get(id=id_insumo)
                 return render (request, "modificar_insumo.html", {"insumos": insumo, "errores": confirmacion, "mensaje": "not_ok"})
         else:
-            return render (request, "modificar_insumo.html", {"errores":confirmacion, "mensaje": "not_ok","insumos":insumo})
+            confirmacion = errores_insumo2(registro, insumo2)
+            print(confirmacion)
+            return render (request, "modificar_insumo.html", {"errores":confirmacion, "mensaje": "not_ok", "insumos":insumo})
 
         response = redirect('/listar_insumos/')
         return response

@@ -34,6 +34,7 @@ class Registro (forms.ModelForm):
 
     def save_admin(self, commit=True):
         usuario = super().save(commit= False)
+        usuario.long_contra = len(usuario.password)
         usuario.set_password(self.cleaned_data['password'])
         usuario.tipo_usuario=1
         if commit:
@@ -111,6 +112,7 @@ class Registro_ruta (forms.ModelForm):
                 ruta.codigo_origen = i.codigo_postal
             if ruta.destino == i.nombre:
                 ruta.codigo_destino = i.codigo_postal
+        ruta.nombre = ruta.nombre.upper()
         if commit:
             ruta.save()
         return ruta
