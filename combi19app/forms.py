@@ -197,6 +197,12 @@ class Registro_viaje (forms.ModelForm):
             viaje.save()
         return viaje
 
+    def save_viaje4(self, commit=True):
+        viaje = super().save(commit=False)
+        viaje.estado = 'cancelado'
+        if commit:
+            viaje.save()
+        return viaje
 
 class Registro_insumo(forms.ModelForm):
 

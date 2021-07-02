@@ -19,12 +19,13 @@ def home (request):
         ciudades = Ciudad.objects.all()
         rutas = Ruta.objects.all()
         vehiculos = Vehiculo.objects.all()
-        viajes = Viaje.objects.all()
+        viajes = Viaje.objects.filter(estado='activo')
         choferes = Usuario.objects.filter(tipo_usuario=2)
         usuarios = Usuario.objects.filter(tipo_usuario=3)
         return render (request, "home.html", {"ciudades":len(ciudades), "rutas":len(rutas), "choferes":len(choferes), "vehiculos":len(vehiculos), "viajes":len(viajes), "usuarios":len(usuarios), "nombre": request.user.nombre})
     elif request.user.tipo_usuario == 2:
-        return render(request, "homeChofer.html", {"nombre": request.user.nombre})
+        viajes = Viaje.objects.filter(chofer_id=request.user.id, estado='activo')
+        return render(request, "homeChofer.html", {"nombre": request.user.nombre, "viajes": len(viajes)})
     else:
         pasajes = Pasaje.objects.filter(id_user=request.user.id)
         viajes = []
@@ -288,7 +289,7 @@ def errores_viaje(viaje,id_viaje):
     lista=[]
     if viaje.cleaned_data.get('precio') == None:
         lista+=[5]
-    viajes = Viaje.objects.filter(vehiculo_id = viaje.cleaned_data.get('vehiculo').id)
+    viajes = Viaje.objects.filter(vehiculo_id = viaje.cleaned_data.get('vehiculo').id, estado='activo')
     for v in viajes:
         if(id_viaje == 0 or id_viaje != v.id):
             #date = dateutil.parser.parse
@@ -312,7 +313,7 @@ def errores_viaje(viaje,id_viaje):
 
                     break
 
-    viajes2 = Viaje.objects.filter(chofer_id = viaje.cleaned_data.get('chofer').id)
+    viajes2 = Viaje.objects.filter(chofer_id = viaje.cleaned_data.get('chofer').id, estado='activo')
     for v in viajes2:
         #date = dateutil.parser.parse
         if(id_viaje == 0 or id_viaje != v.id):
@@ -874,13 +875,23 @@ class ListarViajes(HttpRequest):
     @login_required
     def crear_listado(request):
         viaje = Viaje.objects.all()
+        viajes = []
         rutas = []
         for v in viaje:
+            if v.estado == 'activo':
+                hoy = datetime.today()
+                if v.fecha_salida.date() >= hoy.date():
+                    viajes.append(v)
+                else:
+                    if v.fecha_salida.date() < hoy.date():
+                        v.estado = 'realizado'
+                        v.save()
             r = Ruta.objects.get(id = v.ruta_id)
             if r not in rutas:
                 rutas.append(r)
-        contexto = {'viajes': viaje, 'cantidad':len(viaje), 'rutas':rutas}
+        contexto = {'viajes': viajes, 'cantidad':len(viajes), 'rutas':rutas}
         return render (request, "listar_viajes.html", contexto)
+
     @login_required
     def mostrar_detalle(request, id_viaje):
         detalle= Viaje.objects.get(id=id_viaje)
@@ -931,6 +942,44 @@ class ListarViajes(HttpRequest):
         contexto ={'viajes': viajes, 'rutas': rutas}
         return render (request, "ver_viajes_realizados.html", contexto)
 
+    @login_required
+    def listar_proximos_viajes(request):
+        viajes = Viaje.objects.filter(chofer_id=request.user.id)
+        viajes_por_hacer = []
+        rutas = []
+        for v in viajes:
+            if v.estado == 'activo':
+                viaje = Viaje.objects.get(id=v.id)
+                ruta = Ruta.objects.get(id=viaje.ruta_id)
+                if ruta not in rutas:
+                    rutas.append(ruta)
+                current_time = datetime.today()
+                hora = str((current_time.hour - 3)) +":"+ str(current_time.minute) +":"+ str(current_time.second)
+                if(viaje.fecha_salida.date() > current_time.date()):
+                    viajes_por_hacer.append(viaje)
+                else:
+                    if(viaje.fecha_salida.date() == current_time.date()):
+                        if(str(viaje.fecha_salida.time()) > hora):
+                            viajes_por_hacer.append(viaje)
+        contexto ={'viajes': viajes_por_hacer, 'rutas': rutas, 'cantidad': len(viajes_por_hacer)}
+        return render (request, "listar_proximos_viajes.html", contexto)
+
+    @login_required
+    def mostrar_detalle_chofer(request, id_viaje):
+        detalle= Viaje.objects.get(id=id_viaje)
+        ruta= Ruta.objects.get(id=detalle.ruta_id)
+        return render (request, "listar_proximos_viajes.html", {"dato":detalle,"ruta":ruta, "mensaje":"detalle"})
+
+    @login_required
+    def cancelar_viaje_chofer(request, id_viaje):
+        viajes = Viaje.objects.filter(chofer_id=request.user.id)
+        if len(viajes) != 0:
+            hoy = datetime.today()
+            viaje = Viaje.objects.get(id=id_viaje, chofer_id=request.user.id)
+        viaje.estado = 'cancelado'
+        viaje.save()
+        return ListarViajes.listar_proximos_viajes(request)
+
 class ListarChofer(HttpRequest):
 
     @csrf_exempt
@@ -970,11 +1019,17 @@ class ListarAdministradores(HttpRequest):
 
     @login_required
     def eliminar_admin(request, id_admin):
+        admins = Usuario.objects.filter(tipo_usuario=1)
         admin_eliminado = Usuario.objects.get(pk=id_admin)
         try:
-            admin_eliminado.delete()
-            admin = Usuario.objects.filter(tipo_usuario=1)
-            return render (request, "listar_admin.html", {"admin": admin, "mensaje":"eliminado", "cantidad": len(admin)})
+            if id_admin != request.user.id:
+                if len(admins) > 1:
+                    admin_eliminado.delete()
+                    admin = Usuario.objects.filter(tipo_usuario=1)
+                    return render (request, "listar_admin.html", {"admin": admin, "mensaje":"eliminado", "cantidad": len(admin)})
+            else:
+                admin = Usuario.objects.filter(tipo_usuario=1)
+                return render (request, "listar_admin.html", {"admin": admin, "mensaje":"no_puede", "cantidad": len(admin)})
         except:
             admin = Usuario.objects.filter(tipo_usuario=1)
             return render (request, "listar_admin.html", {"admin": admin, "mensaje":"no_puede", "cantidad": len(admin)})
@@ -985,6 +1040,13 @@ class ListarPasajeros(HttpRequest):
         usuarios = Usuario.objects.filter(tipo_usuario=3)
         contexto = {'usuarios': usuarios, 'cantidad':len(usuarios)}
         return render (request, "listar_pasajeros.html", contexto)
+
+    # @login_required
+    # def crear_listado_chofer(request):
+    #     usuarios = Usuario.objects.filter(tipo_usuario=3)
+    #     contexto = {'usuarios': usuarios, 'cantidad':len(usuarios)}
+    #     return render (request, "listar_pasajeros_chofer.html", contexto)
+
 
 def errores_insumo(insumo):
     lista= []
@@ -1054,7 +1116,6 @@ class FormularioInsumo(HttpRequest):
                 return render (request, "modificar_insumo.html", {"insumos": insumo, "errores": confirmacion, "mensaje": "not_ok"})
         else:
             confirmacion = errores_insumo2(registro, insumo2)
-            print(confirmacion)
             return render (request, "modificar_insumo.html", {"errores":confirmacion, "mensaje": "not_ok", "insumos":insumo})
 
         response = redirect('/listar_insumos/')

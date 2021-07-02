@@ -55,6 +55,12 @@
         <div class='alert alert-success' role='alert'>
           El administrador se modificó exitosamente!
         </div>
+        {% else %}
+          {% if mensaje == "no_puede" %}
+            <div class='alert alert-danger' role='alert'>
+              El administrador no puede ser eliminado!
+            </div>
+          {% endif %}
         {% endif %}
       {% endif %}
       {% if admin %}
@@ -71,6 +77,7 @@
               <td>Email</td>
               <td>Teléfono</td>
               <td>Dirección</td>
+              <td></td>
             </tr>
           </thead>
           <tbody>
