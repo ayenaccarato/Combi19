@@ -4,22 +4,6 @@
 {% block content %}
 
   {% csrf_token %}
-  {% if ya_tiene != 0 %}
-    <br>
-    <h5>
-    <div class= 'alert alert-danger' role='alert'>
-      Usted ya tiene un pasaje en este viaje.
-      <br>
-      <br>
-      Para ver el pasaje click aqui:
-
-      <a class="btn btn-primary" href="/ver_pasaje/detalle/{{viaje.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:center">PASAJE</a>
-      <br><br>
-      Tambien los puede ver en la seccion "MIS VIAJES" --> "VIAJES POR REALIZAR"
-      <br><br>
-    </div>
-  </h5>
-  {% else %}
         <div class = "container">
           <div class= "row row-cols-2">
 
@@ -31,7 +15,7 @@
               </h4>
                 <div class="card-body">
                 <h5>
-                  <p class="card-text">     ASIENTOS DISPONIBLES: {{viaje.asientos_disponibles}}</p>
+                  <p class="card-text">     CANTIDAD DE PASAJES: {{ya_tiene}}</p>
                       <br>
                   <p class="card-text">  SALIDA:</p>
                   <p class="card-text">     {{viaje.fecha_salida}}</p>
@@ -55,7 +39,7 @@
 
                 <br>
                 <br>
-                <h3 class="card-title">PRECIO: ${{viaje.precio}}</h3>
+                <h3 class="card-title" id="precio">PRECIO: ${{precio}}</h3>
                 </div>
               </div>
             </div>
@@ -81,5 +65,4 @@
         </div>
       </div>
       </div>
-    {% endif %}
 {% endblock %}

@@ -47,6 +47,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     direccion = models.CharField(max_length=20)
     telefono = models.IntegerField()
     long_contra = models.IntegerField()
+    date_joined = models.DateTimeField(('date joined'), auto_now_add=True)
     #is_active = models.BooleanField(default= True)
     #staff = models.BooleanField(default= False)
     #admin = models.BooleanField(default=False)
@@ -175,9 +176,12 @@ class Tarjeta(models.Model):
 
 class Pasaje(models.Model):
     id_user = models.BigIntegerField()
+    dni = models.BigIntegerField()
+    nombre = models.CharField(max_length=20)
+    apellido = models.CharField(max_length=20)
     nro_viaje = models.ForeignKey(Viaje, related_name='+', on_delete=models.PROTECT)
     estado = models.CharField(max_length=20)
-    tarjeta = models.ForeignKey(Tarjeta, related_name='+', on_delete=models.PROTECT)
+    tarjeta = models.ForeignKey(Tarjeta, related_name='+', on_delete=models.PROTECT, null = True, blank=True)
     nro_asiento = models.IntegerField()
 
 class Ticket(models.Model):

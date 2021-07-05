@@ -20,7 +20,7 @@
           <h5>
             <p class="card-text">     PASAJE: </p>
                 <br>
-            <p class="card-text">  VIAJE A {{nombre}} X1       ${{viaje.precio}}</p>
+            <p class="card-text">  VIAJE A {{nombre}} X{{cant}}       ${{viaje.precio}}</p>
             <p class="card-text">  SALIDA: {{viaje.fecha_salida}} </p>
             <p class="card.text">  LLEGADA: {{viaje.fecha_llegada}} </p>
                 <br>
@@ -128,7 +128,7 @@
 
   document.getElementById("hora_salida").value = "{{viaje.hora_salida}}";
   document.getElementById("asientos_total").value = "{{viaje.asientos_total}}";
-  document.getElementById("asientos_disponibles").value = "{{viaje.asientos_disponibles}}"-1;
+  document.getElementById("asientos_disponibles").value = "{{viaje.asientos_disponibles}}"-{{cant}};
   document.getElementById("vendidos").value = "{{viaje.vendidos}}";
   document.getElementById("precio").value = "{{viaje.precio}}".replace(',','.')
   document.getElementById("chofer").value = "{{viaje.chofer.id}}";

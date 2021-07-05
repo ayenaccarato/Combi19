@@ -40,7 +40,7 @@
                                 <button disabled class="btn btn-danger" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;float:center;">Agotado</button>
                               {% else %}
                                 <p class="card-text"> ASIENTOS DISPONIBLES: {{i.asientos_disponibles}}</p>
-                              <a class="btn btn-success" href= "/comprar_pasaje_menu/{{i.id}}/" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;">Comprar pasaje</a>
+                              <a class="btn btn-success" href= "/comprar_pasaje_cantidad/{{i.id}}/" type="submit" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;">Comprar pasaje</a>
                               {% endif %}
 
                               </h6>

@@ -1,0 +1,43 @@
+{% extends "usuario_base.html" %}
+{% block title %}Comprar pasajes{% endblock %}
+{% block h1 %}<center>Compra de pasajes</center>{% endblock %}
+{% block content %}
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+crossorigin="anonymous"></script>
+
+
+  <form action="/comprar_pasaje_completar_datos/{{viaje.id}}/?actual={{actual}}-{{cant}} " method="POST">
+    {% csrf_token %}
+    <center>
+    <p><input class="col-sm-8 col-form-label" type="text" name="dni" pattern="^([0-9]+)" placeholder="DNI" required></p>
+    <p><input class="col-sm-4 col-form-label" type="text" name="nombre" placeholder="Nombre" required> <input class="col-sm-4 col-form-label" type="text" name="apellido" placeholder="Apellido" required> </p>
+    <input hidden type="text" name="id_user"  id="id_user">
+    <input hidden type="text" name="nro_viaje"  id="nro_viaje">
+    <input hidden type="text" name="estado"  id="estado">
+    <input hidden type="text" name="nro_asiento"  id="nro_asiento">
+    <input hidden type="text" name="tarjeta"  id="tarjeta">
+
+  <form action="buscar_viaje" method="POST">
+    <button class="btn btn-primary" href="/comprar_pasaje_completar_datos/{{viaje.id}}/?actual={{actual}}-{{cant}} " type="submit" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;">Agregar pasaje{{actual}}/{{cant}}</button>
+    <button class="btn btn-success" href= "/comprar_pasaje_menu/{{viaje.id}}/" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;">Confirmar compra</button>
+    <button class="btn btn-danger" href= "/comprar_pasaje_completar_datos/{{i.id}}/" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;">Cancelar</button>
+
+    </center>
+    <script>
+
+    document.getElementById('nro_viaje').value = "{{viaje.id}}"
+    document.getElementById('estado').value =  "no abonado"
+    document.getElementById('id_user').value="{{usuario}}"
+    document.getElementById('nro_asiento').value = "{{viaje.vendidos}}"
+    document.getElementById('tarjeta').value = ""
+
+
+    console.log(document.getElementById('nro_viaje').value);
+
+
+    </script>
+
+
+{% endblock %}

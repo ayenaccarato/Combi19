@@ -1,0 +1,30 @@
+{% extends "usuario_base.html" %}
+{% block title %}Comprar pasajes{% endblock %}
+{% block h1 %}<center>Compra de pasajes</center>{% endblock %}
+{% block content %}
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+crossorigin="anonymous"></script>
+
+  {% csrf_token %}
+
+  <form action="comprar_pasaje_completar_datos" method="GET">
+  <label for="pasajes">Numero de pasajes:</label>
+  <input type="number" value="1" id="pasajes" name="pasajes"
+       min="1" max={{viaje.asientos_disponibles}}>
+  <input type="hidden" value="false" name="post" >
+  <input type="hidden" value="0" name="actual" >
+
+
+    <button class="btn btn-success" type="submit" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;">Seleccionar</a>
+
+
+    <script>
+
+
+
+    </script>
+
+
+{% endblock %}
