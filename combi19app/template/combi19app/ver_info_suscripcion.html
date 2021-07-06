@@ -1,0 +1,62 @@
+{% extends "admin_base.html" %}
+{% block title %}info_de_suscripcion{% endblock %}
+{% block h1 %}<center>Informacion de suscripcion</center>{% endblock %}
+
+{% block content %}
+    {% csrf_token %}
+<h5>
+    {% if editado == "ok" %}
+      <div class='alert alert-success' role='alert'>
+        La informacion de la suscripcion se actualizo exitosamente!
+      </div>
+    {% endif %}
+    {% if editado == "error" %}
+          <div class= 'alert alert-danger' role='alert'>
+              Fallo en la actualizacion. El precio de la cuota ingresado no debe contener coma
+          </div>
+    {% endif %}
+  </h5>
+    <style type="text/css">
+      table,th,td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        background-color: #adb5b8;
+      }
+
+      th, td {
+        padding: 10px;
+      }
+
+      table{
+        width: 100%;
+      }
+
+      tr:hover td{
+        background-color: #f2f3f3;
+      }
+
+    </style>
+        <br>
+        <br>
+        <br>
+        <br>
+        <table>
+          <thead>
+            <tr>
+              <th>Descuento</th>
+              <th>Cuota</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{premium.descuento}}%</td>
+              <td>${{premium.cuota}}</td>
+              <td> <a class="btn btn-warning" href= "/modificar_suscripcion/{{premium.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Editar</a>  </td>
+              </td>
+
+            </tr>
+            <div class='alert alert-success' role='alert'>
+              ATENCIÓN: EL DESCUENTO SE APLICA AL TOTAL DE LA COMPRA DEL USUARIO PREMIUM (INCLUYENDO PASAJES E INSUMOS)
+            </div>
+{% endblock %}

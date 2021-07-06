@@ -1,0 +1,15 @@
+{% extends "premium_base.html" %}
+{% load static %}
+{% block title %}Suscripcion{% endblock %}
+{% block h1 %}<center>Suscripcion Confirmada</center>{% endblock %}
+{% block content %}
+{% csrf_token %}
+
+<div align="center" class= "animate__animated animate__zoomIn">
+  <img class="d-flex rounded avatar z-depth-1-half mr-2" src={% static 'premium.png' %}  width="1100" height="600" alt="Avatar">
+</div>
+
+<center>
+  <a class="btn btn-success" href="/home/">Volver al menú</a>
+<center>
+{% endblock %}

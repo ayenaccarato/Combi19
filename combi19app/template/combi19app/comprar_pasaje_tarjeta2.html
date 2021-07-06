@@ -1,4 +1,4 @@
-{% extends "usuario_base.html" %}
+{% extends base %}
 {% load static %}
 {% block title %}DatosCompra{% endblock %}
 {% block h1 %}<center>Datos de la compra</center>{% endblock %}
@@ -20,7 +20,7 @@
         <h5>
           <p class="card-text">     FACTURA: </p>
               <br>
-          <p class="card-text">  VIAJE A {{nombre}} X{{cant}}       ${{viaje.precio}}</p>
+          <p class="card-text">  VIAJE A {{nombre}} X{{cantidad}}       ${{precio_pasajes}}</p>
           <p class="card-text">  SALIDA: {{viaje.fecha_salida}} </p>
           <p class="card.text">  LLEGADA: {{viaje.fecha_llegada}} </p>
               <br>
@@ -33,7 +33,13 @@
         </h5>
         <br>
         <br>
-        <h3 class="card-title">PRECIO TOTAL: ${{precio_total}}</h3>
+        {% if base == "premium_base.html"%}
+              <h3 class="card-title">PRECIO: ${{precio_total}}</h3>
+              <h3 class="card-title">DESCUENTO POR USUARIO PREMIUM: {{premium.descuento}}%</h3>
+              <h3 class="card-title">PRECIO TOTAL: ${{precio_p}}</h3>
+        {% else %}
+          <h3 class="card-title">PRECIO TOTAL: ${{precio_total}}</h3>
+        {% endif %}
         </div>
       </div>
     </div>
@@ -89,14 +95,13 @@
           <input readonly class="list-group-item" style="width: 50%;" type="text" name="codigo" id="codigo" pattern="^([0-9]+){3}" title="El código debe ser de 3 dígitos" required>
         </div>
         </h5>
-          <br>
-          <br>
         </div>
       </div>
     </div>
   </div>
+  <p style="padding-right:490px; padding-bottom:200px">
   <button type = "submit"  class="btn btn-success" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:right">Pagar</button>
-
+</p>
 <script>
       //var date = new Date("{{viaje.fecha_salida.isoformat}}");
       //var date2 = new Date("{{viaje.fecha_llegada.isoformat}}");
@@ -133,7 +138,7 @@
 
       document.getElementById("hora_salida").value = "{{viaje.hora_salida}}";
       document.getElementById("asientos_total").value = "{{viaje.asientos_total}}";
-      document.getElementById("asientos_disponibles").value = "{{viaje.asientos_disponibles}}"-{{cant}};
+      document.getElementById("asientos_disponibles").value = "{{viaje.asientos_disponibles}}"-"{{cantidad}}";
       document.getElementById("vendidos").value = "{{viaje.vendidos}}";
       document.getElementById("precio").value = "{{viaje.precio}}".replace(',','.')
       document.getElementById("chofer").value = "{{viaje.chofer.id}}";

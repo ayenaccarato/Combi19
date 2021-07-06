@@ -1,0 +1,62 @@
+{% extends "admin_base.html" %}
+
+{% block title %}modificar_info_suscripcion{% endblock %}
+{% block h1 %}<center>Modificar informacion de suscripcion</center>{% endblock %}
+{% block content %}
+
+    <form action="/actualizar_info_suscripcion/{{premium.id}}/" method="POST">
+    {% csrf_token %}
+
+    <div class="container">
+      <center>
+        <div class="row">
+          <div class="col-sm">
+            <h4> <p style="margin: 40px">Actualice la informacion de suscripcion </p></h4>
+            <h5>
+              <br>
+              <div class='alert alert-success' role='alert'>
+                ATENCIÓN: EL PRECIO DE LA CUOTA PUEDE SER UN NUMERO ENTERO O UN NUMERO CON PUNTO (NO SE ACEPTA COMA)
+              </div>
+              <div class="input-group mb-4" style="padding-right:100px">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" type="text" name="descuento" for="inputGroupSelect01">Descuento</label>
+                </div>
+                <select class="custom-select-md" style="width: 85%;"  type="text" name="descuento" id="descuento" required>
+                  <option value="" disabled=True selected>--Seleccione--</option>
+                  {% for i in descuentos %}
+                    <option value={{i}}>{{i}}%</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <p>
+                  <div class="input-group-prepend" style="padding-right:250px">
+                    <label class="input-group-text" type="text" name="precio0" for="inputGroupSelect01">Precio de la cuota $</label>
+                    <input class="col-sm-11 col-form-label" type="text" id="cuota" name="cuota" title="Ingresar un precio (Ej. 150,50)" required>
+                  </div>
+              </p>
+
+                <br>
+            </h5>
+          </div>
+        </div>
+      </center>
+    </div>
+  <center>
+    <br>
+    <br>
+    <br>
+      <p>
+        <button href="/ver_info_suscripcion" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Guardar</button>
+      </p>
+      <p>
+        <a class="btn btn-dark" href="/ver_info_suscripcion">Cancelar</a>
+      </p>
+</center>
+  </form>
+  <script>
+
+  document.getElementById("descuento").value = "{{premium.descuento}}";
+  document.getElementById("cuota").value = "{{premium.cuota}}";
+  </script>
+
+{% endblock %}

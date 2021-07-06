@@ -1,10 +1,30 @@
-{% extends "usuario_base.html" %}
+{% extends base %}
 {% load static %}
 {% block title %}DatosCompra{% endblock %}
 {% block h1 %}<center>Datos de la compra</center>{% endblock %}
 {% block content %}
 
 {% csrf_token %}
+<style type="text/css">
+  table,th,td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    background-color: #adb5b8;
+  }
+
+  th, td {
+    padding: 10px;
+  }
+
+  table{
+    width: 100%;
+  }
+
+  tr:hover td{
+    background-color: #f2f3f3;
+  }
+
+</style>
 
   <br>
   <h3>
@@ -28,12 +48,12 @@
     {% endif %}
         <a class="btn btn-success" href= "/comprar_pasaje/carrito/{{viaje.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:50px;float:right">Ver carrito</a>
         <br>
-      <table class="table table-bordered">
+      <table>
         <thead>
           <tr>
-            <td>Nombre</td>
-            <td>Precio X1</td>
-            <td></td>
+            <th>Nombre</th>
+            <th>Precio X1</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>

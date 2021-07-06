@@ -5,23 +5,44 @@
 
 {% block content %}
     {% csrf_token %}
+    <style type="text/css">
+      table,th,td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        background-color: #adb5b8;
+      }
+
+      th, td {
+        padding: 10px;
+      }
+
+      table{
+        width: 100%;
+      }
+
+      tr:hover td{
+        background-color: #f2f3f3;
+      }
+
+    </style>
+
     {% if mensaje == "detalle" %}
     <p style="float: right;">
       <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_proximos_viajes" type="submit" class="btn btn-success" name="nombre" >Volver a los listados</a>
     </p>
     <br>
     <br>
-  <table class="table table-bordered">
+  <table>
     <thead>
       <tr>
-        <td>Viaje</td>
-        <td>Fecha de salida</td>
-        <td>Ciudad de origen</td>
-        <td>Fecha de llegada</td>
-        <td>Ciudad de destino</td>
-        <td>Chofer</td>
-        <td>Vehiculo</td>
-        <td>Precio</td>
+        <th>Viaje</th>
+        <th>Fecha de salida</th>
+        <th>Ciudad de origen</th>
+        <th>Fecha de llegada</th>
+        <th>Ciudad de destino</th>
+        <th>Chofer</th>
+        <th>Vehiculo</th>
+        <th>Precio</th>
     </tr>
   </thead>
   <tbody>
@@ -37,7 +58,7 @@
       <td>{{dato.chofer.nombre}} {{dato.chofer.apellido}}
         <BR>  DNI {{dato.chofer}}
       </td>
-      <td>{{dato.vehiculo.marca}} {{dato.vehiculo.modelo}}<BR> {{dato.vehiculo}}
+      <td>{{dato.vehiculo.marca}} {{dato.vehiculo.modelo}}<br> {{dato.vehiculo}}
       </td>
       <td>${{dato.precio}}</td>
 
@@ -61,16 +82,16 @@
     {% if viajes %}
         <br>
         <br>
-        <table class="table table-bordered">
+        <table>
           <thead>
             <tr>
-              <td>Viaje</td>
-              <td>Fecha de salida</td>
-              <td>Ciudad de origen</td>
-              <td>Ciudad de destino</td>
-              <td></td>
-              <td></td>
-              <td></td>
+              <th>Viaje</th>
+              <th>Fecha de salida</th>
+              <th>Ciudad de origen</th>
+              <th>Ciudad de destino</th>
+              <th></th>
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -87,7 +108,7 @@
 
             {% endfor %}
 
-              <td> <a class="btn btn-dark" href="#" style="color:white;padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Pasajeros</a> </td>
+              <td> <a class="btn btn-dark" href="/ver_pasajeros/{{viaje.id}}/" style="color:white;padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Pasajeros</a> </td>
               <td> <a class="btn btn-primary" href= "ver_detalle_viaje_chofer/{{viaje.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver detalle</a>
                 <td> <a class="btn btn-danger" href= "cancelar_viaje_chofer/{{viaje.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Cancelar</a> </td>
             </td>

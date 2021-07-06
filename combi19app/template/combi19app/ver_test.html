@@ -1,0 +1,57 @@
+{% extends base %}
+
+{% block title %}Testeo{% endblock %}
+{% block h1 %}<center>Ver test</center>{% endblock %}
+{% block content %}
+
+<div class = "container">
+  <div class= "row row-cols-2">
+
+    <div class= "col-6" style="float:left;">
+      <br><br><br>
+        <div class="alert alert-success" role="alert" style="padding-right:100px">
+          <h2 class="alert-heading">Pasajero</h2>
+          <h4>
+            <p> Nombre: {{pasaje.nombre}}</p>
+            <p> Apellido: {{pasaje.apellido}}</p>
+            <p> DNI: {{pasaje.dni}}</p>
+            <p> Estado del pasaje: {{pasaje.estado}}</p>
+            <p> N° de asiento: {{pasaje.nro_asiento}}</p>
+          </h4>
+        </div>
+      </div>
+  <div class= "col-6" style="float:right;">
+      <br><br><br>
+      <div class="alert alert-primary" role="alert" style="padding-right:100px">
+        <h2 class="alert-heading">TEST</h2>
+        <h4>
+          <p> TEMPERATURA: {{test.temperatura}}</p>
+          {% if test.olfato == 1 %}
+            <p> PERDIDA DE OLFATO: POSITIVO</p>
+          {% else %}
+            <p> PERDIDA DE OLFATO: NEGATIVO</p>
+          {% endif %}
+          {% if test.gusto == 1 %}
+            <p> PERDIDA DE GUSTO: POSITIVO</p>
+          {% else %}
+            <p> PERDIDA DE GUSTO: NEGATIVO</p>
+          {% endif %}
+          {% if test.contacto == 1 %}
+            <p> CONTACTO ESTRECHO CON PACIENTE COVID-19: POSITIVO</p>
+          {% else %}
+                  <p> CONTACTO ESTRECHO CON PACIENTE COVID-19: NEGATIVO</p>
+          {% endif %}
+          <br>
+        </h4>
+      </div>
+
+        <br><br><br>
+              </div>
+          <p style="padding-left:20px;padding-top:40px">
+          <a class="btn btn-dark" href="/ver_pasajeros/{{viaje.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:left">Atras</a>
+        </p>
+
+        </div>
+      </div>
+
+{% endblock %}

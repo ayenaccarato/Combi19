@@ -1,0 +1,106 @@
+{% extends base %}
+{% block title %}Pasajeos{% endblock %}
+{% block h1 %}<center>Listado de pasajeros</center>{% endblock %}
+{% block content %}
+    {% csrf_token %}
+    <br>
+    <div class="container">
+      <h4>
+      <div class='alert alert-success' role='alert'>
+        VIAJE: {{viaje.ruta}} <br>
+        SALIDA: {{viaje.fecha_salida}}<br>
+        LLEGADA: {{viaje.fecha_llegada}}<br>
+        CHOFER: {{viaje.chofer}}<br>
+        VEHICULO: {{viaje.vehiculo}}<br>
+        PASAJES VENDIDOS: {{viaje.vendidos}}<br>
+        ASIENTOS DISPONIBLES: {{viaje.asientos_disponibles}}<br>
+        PRECIO: $ {{viaje.precio}}<br>
+
+      </div>
+      {% if editado == "si" %}
+      <div class='alert alert-success' role='alert'>
+        El test del pasajero fue editado exitosamente!
+      </div>
+      {% endif %}
+    </div>
+    </h4>
+    <style type="text/css">
+      table,th,td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        background-color: #adb5b8;
+      }
+
+      th, td {
+        padding: 10px;
+      }
+
+      table{
+        width: 100%;
+      }
+
+      tr:hover td{
+        background-color: #f2f3f3;
+      }
+
+    </style>
+<h4>
+    <table>
+      <thead>
+        <tr>
+          <th>DNI</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Estado del pasaje</th>
+          {% if base == "admin_base.html" %}
+            <th></th>
+            <th></th>
+          {% else %}
+            <th></th>
+            <th></th>
+            <th></th>
+          {% endif %}
+
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in pasajeros %}
+      <tr>
+        <td>{{i.dni}}</td>
+        <td>{{i.nombre}}</td>
+        <td>{{i.apellido}}</td>
+        <td>{{i.estado}}</td>
+        {% if i.estado == "Presente: ACEPTADO" or i.estado == "Presente: RECHAZADO" or i.estado == "Ausente: RECHAZADO" %}
+              {% if i.estado == "Ausente: RECHAZADO" %}
+                {% if base == "admin_base.html"%}
+                  <td></td>
+                {% else %}
+                  <td></td>
+                  <td></td>
+                {% endif %}
+
+              {% else %}
+              <td> <a class="btn btn-primary" href= "/ver_test/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver test</a>  </td>
+              {% if base == "chofer_base.html"%}
+                <td> <a class="btn btn-warning" href= "/editar_test/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Editar test</a>  </td>
+              {% endif %}
+
+              {% endif %}
+          <td> NO SE PUEDE ELIMINAR (el pasajero ya fue testeado o esta ausente) </td>
+
+        {% else %}
+            {% if base == "admin_base.html"%}
+                <td> EL PASAJERO AUN NO FUE TESTEADO </td>
+            {% endif %}
+            {% if base == "chofer_base.html"%}
+              <td> <a class="btn btn-success" href= "/testeo/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Testear</a>  </td>
+                <td> <a class="btn btn-dark" href= "/confirmar_ausente/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ausente</a>  </td>
+            {% endif %}
+            <td> <a class="btn btn-danger" href= "#" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Eliminar</a>  </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </table>
+  </h4>
+    <br><br><br>
+{% endblock %}

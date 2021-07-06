@@ -1,0 +1,94 @@
+{% extends "premium_base.html" %}
+{% block title %}Suscripcion{% endblock %}
+{% block h1 %}<center>Confirmar Desuscripcion</center>{% endblock %}
+{% block content %}
+
+<form action="/home/des/" method="POST">
+{% csrf_token %}
+<br><br><br>
+<div class = "container">
+    <div class="alert alert-warning animate__animated animate__zoomIn" role="alert">
+      <h4>
+        <p> ¿ ESTA SEGURO DE QUE SE QUIERE DESUSCRIBIR ? </p>
+        <br><br>
+        <p>
+        <button class="btn btn-success" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:right;">Aceptar</button>
+        <a href="/ver_suscripcion/" class="btn btn-dark" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:left">Cancelar</a>
+        </p>
+        <br><br><br>
+
+
+      </h4>
+    </div>
+  </div>
+
+  <div hidden class= "input-group-prepend">
+    <label class="input-group-text" type="text" name="dni_label" for="inputGroupSelect01">DNI</label>
+    <input class="col-sm col-form-label" type="text" name="dni" placeholder="DNI" id="dni">
+  </div>
+
+  <div hidden class="input-group-prepend">
+    <label class="input-group-text" type="text" name="nombre" for="inputGroupSelect01">Nombre</label>
+    <input class="col-sm col-form-label" type="text" name="nombre" placeholder="Nombre" id="nombre">
+  </div>
+
+  <div hidden class="input-group-prepend">
+    <label class="input-group-text" type="text" name="apellido" for="inputGroupSelect01">Apellido</label>
+    <input class="col-sm col-form-label" type="text" name="apellido" placeholder="Apellido" id="apellido">
+  </div>
+
+  <div hidden class="input-group-prepend">
+    <label class="input-group-text" type="text" name="email" for="inputGroupSelect01">Email</label>
+    <input class="col-sm col-form-label" type="email" pattern= "[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{1,5}" title= "Ingrese un mail valido" name="email" placeholder="Email" id="email">
+  </div>
+
+  <div hidden class="input-group-prepend">
+    <label class="input-group-text" type="text" name="telefono" for="inputGroupSelect01">Teléfono</label>
+    <input class="col-sm col-form-label" type="text" pattern= "^([0-9]+)" name="telefono" placeholder="Telefono" id="telefono">
+  </div>
+
+  <div hidden class="input-group-prepend">
+    <label class="input-group-text" type="text" name="direccion" for="inputGroupSelect01">Dirección</label>
+    <input class="col-sm col-form-label" type="text" name="direccion" placeholder="Direccion" id="direccion">
+  </div>
+
+  <div hidden class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="is_premium" id="inlineRadio1" value="True" checked>
+    <label class="form-check-label" for="inlineRadio2">premium</label>
+  </div>
+
+  <div hidden class="dates">
+    <div class="input-group">
+      <div class="input-group-prepend">
+          <label class="input-group-text" type="text" name="fecha_p" for="inputGroupSelect01">Fecha 2 </label>
+      </div>
+        <input type="text" autocomplete="off" class="form-control" name="fecha_premium" id="fecha2" placeholder="dd-mm-aaaa"/>
+      </div>
+    </div>
+
+<script>
+    document.getElementById("nombre").value = "{{user.nombre}}"
+    document.getElementById("apellido").value = "{{user.apellido}}"
+    document.getElementById("dni").value = "{{user.dni}}"
+    document.getElementById("direccion").value = "{{user.direccion}}"
+    document.getElementById("email").value = "{{user.email}}"
+    document.getElementById("telefono").value = "{{user.telefono}}"
+    document.getElementById("inlineRadio1").checked = false;
+    var date = new Date();
+
+    function formatDate(date) {
+      var day = date.getDate();
+      if (day < 10) {
+          day = "0" + day;
+      }
+      var month = date.getMonth() + 1;
+      if (month < 10) {
+          month = "0" + month;
+      }
+      var year = date.getFullYear();
+      return day + "/" + month + "/" + year;
+    }
+    document.getElementById('fecha2').value = formatDate(date)
+</script>
+
+{% endblock %}

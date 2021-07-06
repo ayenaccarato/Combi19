@@ -1,4 +1,4 @@
-{% extends "usuario_base.html" %}
+{% extends base %}
 {% block title %}DatosCompra{% endblock %}
 {% block h1 %}<center>Datos de la compra</center>{% endblock %}
 {% block content %}
@@ -20,7 +20,7 @@
           <h5>
             <p class="card-text">     PASAJE: </p>
                 <br>
-            <p class="card-text">  VIAJE A {{nombre}} X{{cant}}       ${{viaje.precio}}</p>
+            <p class="card-text">  VIAJE A {{nombre}} X{{cantidad}}       ${{precio_pasajes}}</p>
             <p class="card-text">  SALIDA: {{viaje.fecha_salida}} </p>
             <p class="card.text">  LLEGADA: {{viaje.fecha_llegada}} </p>
                 <br>
@@ -33,7 +33,13 @@
           </h5>
           <br>
           <br>
-          <h3 class="card-title">PRECIO TOTAL: ${{precio_total}}</h3>
+          {% if base == "premium_base.html"%}
+                <h3 class="card-title">PRECIO: ${{precio_total}}</h3>
+                <h3 class="card-title">DESCUENTO POR USUARIO PREMIUM: {{premium.descuento}}%</h3>
+                <h3 class="card-title">PRECIO TOTAL: ${{precio_p}}</h3>
+          {% else %}
+            <h3 class="card-title">PRECIO TOTAL: ${{precio_total}}</h3>
+          {% endif %}
           </div>
         </div>
       </div>
@@ -128,7 +134,7 @@
 
   document.getElementById("hora_salida").value = "{{viaje.hora_salida}}";
   document.getElementById("asientos_total").value = "{{viaje.asientos_total}}";
-  document.getElementById("asientos_disponibles").value = "{{viaje.asientos_disponibles}}"-{{cant}};
+  document.getElementById("asientos_disponibles").value = "{{viaje.asientos_disponibles}}"-"{{cantidad}}";
   document.getElementById("vendidos").value = "{{viaje.vendidos}}";
   document.getElementById("precio").value = "{{viaje.precio}}".replace(',','.')
   document.getElementById("chofer").value = "{{viaje.chofer.id}}";
@@ -138,7 +144,7 @@
   document.getElementById('id_user').value="{{usuario}}"
   document.getElementById('nro_viaje').value = "{{viaje.id}}"
   document.getElementById('nro_asiento').value = "{{viaje.vendidos}}"
-  document.getElementById('tarjeta').value = "{{tarjeta.id}}"
+  document.getElementById('tarjeta').value = "{{tarjeta}}"
   document.getElementById('estado').value =  "activo"
 </script>
 {% endblock %}

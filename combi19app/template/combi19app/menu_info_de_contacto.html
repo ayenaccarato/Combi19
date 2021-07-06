@@ -4,21 +4,41 @@
 
 {% block content %}
     {% csrf_token %}
+    <style type="text/css">
+      table,th,td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        background-color: #adb5b8;
+      }
+
+      th, td {
+        padding: 10px;
+      }
+
+      table{
+        width: 100%;
+      }
+
+      tr:hover td{
+        background-color: #f2f3f3;
+      }
+
+    </style>
 
         <br>
         <br>
         <br>
         <br>
-        <table class="table table-bordered">
+        <table>
           <thead>
             <tr>
-              <td>Correo</td>
-              <td>Telefono 1</td>
-              <td>Telefono 2</td>
-              <td>Celular</td>
-              <td>Descripcion</td>
-              <td>Direccion</td>
-              <td></td>
+              <th>Correo</th>
+              <th>Telefono 1</th>
+              <th>Telefono 2</th>
+              <th>Celular</th>
+              <th>Descripcion</th>
+              <th>Direccion</th>
+              <th></th>
 
             </tr>
           </thead>

@@ -1,4 +1,4 @@
-{% extends "usuario_base.html" %}
+{% extends base %}
 {% load static %}
 {% block title %}DatosCompra{% endblock %}
 {% block h1 %}<center>Datos de la compra</center>{% endblock %}
@@ -6,6 +6,26 @@
 
 <form action="/comprar_pasaje/tienda/{{viaje.id}}/{{insumo.id}}/ok/" method="POST">
 {% csrf_token %}
+<style type="text/css">
+  table,th,td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    background-color: #adb5b8;
+  }
+
+  th, td {
+    padding: 10px;
+  }
+
+  table{
+    width: 100%;
+  }
+
+  tr:hover td{
+    background-color: #f2f3f3;
+  }
+
+</style>
 
 <div class = "container">
   <br><br>
@@ -28,13 +48,13 @@
     <br>
     <br>
     <br>
-    <table class="table table-bordered">
+    <table>
       <thead>
         <tr>
-          <td>Nombre</td>
-          <td>Precio X1</td>
-          <td>Seleccione una cantidad</td>
-          <td></td>
+          <th>Nombre</th>
+          <th>Precio X1</th>
+          <th>Seleccione una cantidad</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>

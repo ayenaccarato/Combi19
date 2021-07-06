@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from datetime import datetime, timedelta, date
 
 # Create your models here.
 class Usuario_Manager(BaseUserManager):
@@ -38,8 +39,6 @@ class Usuario_Manager(BaseUserManager):
 
 
 class Usuario(AbstractBaseUser, PermissionsMixin):
-    #usuario = models.CharField(max_length=15, unique=True)
-    #contraseña = models.CharField(max_length=3000)
     dni = models.BigIntegerField(unique=True)
     nombre = models.CharField(max_length=20)
     apellido = models.CharField(max_length=20)
@@ -50,9 +49,10 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(('date joined'), auto_now_add=True)
     #is_active = models.BooleanField(default= True)
     #staff = models.BooleanField(default= False)
-    #admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True, verbose_name='account is activated')
     is_admin = models.BooleanField(default=False, verbose_name='staff account')
+    is_premium = models.BooleanField(default=False)
+    fecha_premium =  models.DateTimeField('%m/%d/%Y', default=datetime.now)
     # super_usuario = models.BooleanField(default=False)
     tipo_usuario = models.IntegerField(default = 3)
     objects = Usuario_Manager()
@@ -66,17 +66,9 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return str(self.dni)
 
-#    @property
-#    def is_admin(self):
-#        return self.is_admin
-
     @property
     def is_staff(self):
         return self.is_admin
-    #class Meta:
-    #    verbose_name = "Usuario"
-    #    verbose_name_plural = "Usuarios"
-
 
 class Vehiculo (models.Model):
     patente = models.CharField(max_length=10)
@@ -123,12 +115,9 @@ class Ruta (models.Model):
 
 class Viaje (models.Model):
     fecha_salida = models.DateTimeField()
-    fecha_llegada = models.DateTimeField('%m/%d/%Y') # fijarse si es ida y vuelta
+    fecha_llegada = models.DateTimeField('%m/%d/%Y')
     hora_salida = models.CharField(max_length=20)
-#    hora_llegada = models.CharField(max_length=20)
     ruta = models.ForeignKey(Ruta, related_name='+', on_delete=models.PROTECT)
-#    ciudad_origen = models.ForeignKey(Ciudad, related_name='+', on_delete=models.PROTECT)
-#    ciudad_destino = models.ForeignKey(Ciudad, related_name='+',on_delete=models.PROTECT)
     chofer = models.ForeignKey(Usuario, related_name='+', on_delete=models.PROTECT)
     vehiculo = models.ForeignKey(Vehiculo, related_name='+', on_delete=models.PROTECT)
     asientos_total = models.IntegerField(default=0)
@@ -149,7 +138,7 @@ class InformacionDeContacto(models.Model):
 
 class Insumo(models.Model):
     nombre = models.CharField(max_length=60)
-    precio = models.FloatField() #Hay que poner como maximo 5 números, 2 tienen que ser decimal ej.150.00-20.00 etc
+    precio = models.FloatField()
     stock = models.IntegerField()
     sabor = models.BooleanField()
     categoria = models.CharField(max_length=20)
@@ -190,3 +179,19 @@ class Ticket(models.Model):
     cantidad= models.IntegerField(null=True)
     precio_ticket = models.FloatField(null=True)
     id_user = models.IntegerField()
+
+class Test(models.Model):
+    pasaje = models.IntegerField()
+    temperatura = models.CharField(max_length=20)
+    olfato = models.BooleanField()
+    gusto = models.BooleanField()
+    contacto = models.BooleanField()
+
+class Premium_pago(models.Model):
+    id_user = models.IntegerField()
+    fecha = models.DateTimeField('%m/%d/%Y')
+    nro_tarjeta = models.CharField(max_length=50)
+
+class Premium(models.Model):
+    descuento = models.IntegerField()
+    cuota = models.FloatField()

@@ -1,0 +1,66 @@
+{% extends "premium_base.html" %}
+{% block title %}Suscripcion{% endblock %}
+{% block h1 %}<center>Ver mi suscripcion</center>{% endblock %}
+{% block content %}
+
+<div class = "container">
+  <br>
+{% if ok %}
+  {% if pago == "ok" %}
+      <div class="alert alert-success animate__animated animate__zoomIn" role="alert">
+        <h4>
+          <p> EL PAGO SE REALIZO CON EXITO.</p>
+        </h4>
+      </div>
+  {% endif %}
+    <div class="alert alert-success animate__animated animate__zoomIn" role="alert">
+      <h4>
+        <p> RECUERDE: SIENDO USUARIO PREMIUM TIENE UN DESCUENTO DEL {{premium.descuento}}% EN TODOS LOS PASAJES DE COMBI-19.</p>
+        <p> ABONANDO VIA ONLINE ${{premium.cuota}} PESOS MENSUALES, CON SU TARJETA YA REGISTRADA.</p>
+        <br>
+        <p> DATOS DE LA TARJETA:</p>
+        <p> NUMERO: {{tarjeta.numero}} - {{tarjeta.emisor}}</p>
+        <p> TITULAR: {{tarjeta.titular}}</p>
+        <p> VENCIMIENTO: {{tarjeta.vencimiento}}</p>
+        <br>
+        <p> ATENCIÓN: USTED ESTA AL DIA CON LAS CUOTAS DE USUARIO PREMIUM.</p>
+        <p> SI LO DESEA SE PUEDE DESUSCRIBIR.</p>
+        <br><br><br>
+        <p>
+        <a href="/confirmar_desuscripcion/" class="btn btn-danger" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px">DESUSCRIBIR</a>
+      </p>
+      </h4>
+    </div>
+    <br><br><br><br><br><br><br>
+{% else %}
+    <div class="alert alert-success animate__animated animate__zoomIn" role="alert">
+      <h4>
+        <p> RECUERDE: SIENDO USUARIO PREMIUM TIENE UN DESCUENTO DEL {{premium.descuento}}% EN TODOS LOS PASAJES DE COMBI-19.</p>
+        <p> ABONANDO VIA ONLINE ${{premium.cuota}} PESOS MENSUALES, CON SU TARJETA YA REGISTRADA.</p>
+        <br>
+        <br>
+        <p> DATOS DE LA TARJETA:</p>
+        <p> NUMERO: {{tarjeta.numero}} - {{tarjeta.emisor}}</p>
+        <p> TITULAR: {{tarjeta.titular}}</p>
+        <p> VENCIMIENTO: {{tarjeta.vencimiento}}</p>
+        <br>
+      </h4>
+    </div>
+
+        <div class="alert alert-warning animate__animated animate__zoomIn" role="alert">
+          <h4>
+
+        <p> ATENCIÓN: USTED NO ESTA AL DIA CON LAS CUOTAS DE USUARIO PREMIUM. POR FAVOR REGULARICE SU SITUACION CUANTO ANTES.</p>
+        <p> ACTUALMENTE DEBE {{debe}} MES/ES.</p>
+        <p> PARA PODER DESUSCRIBIRSE NO DEBE TENER NINGUNA DEUDA </p>
+        <br><br>
+        <p>
+          <a href="/pagar_deuda/" class="btn btn-success" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px">PAGAR</a>
+        </p>
+      </h4>
+    </div>
+    <br><br><br><br>
+{% endif %}
+</div>
+
+{% endblock %}

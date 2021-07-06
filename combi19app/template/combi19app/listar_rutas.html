@@ -5,6 +5,27 @@
 {% endblock %}
 {% block content %}
     {% csrf_token %}
+    <style type="text/css">
+      table,th,td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        background-color: #adb5b8;
+      }
+
+      th, td {
+        padding: 10px;
+      }
+
+      table{
+        width: 100%;
+      }
+
+      tr:hover td{
+        background-color: #f2f3f3;
+      }
+
+    </style>
+
     <p style= "float: right;">
         <a id="agregar" style="display:block; padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_ruta" type="submit" class="btn btn-success" name=nombre >Agregar ruta</a>
     </p>
@@ -23,15 +44,15 @@
       <br>
       <br>
       <br>
-    <table class="table table-bordered">
+    <table>
       <thead>
         <tr>
-          <td>Nombre</td>
-          <td>Origen</td>
-          <td>Destino</td>
-          <td>Km</td>
-          <td>Duración</td>
-          <td>Duración en</td>
+          <th>Nombre</th>
+          <th>Origen</th>
+          <th>Destino</th>
+          <th>Km</th>
+          <th>Duración</th>
+          <th>Duración en</th>
       </tr>
     </thead>
     <tbody>
@@ -57,15 +78,15 @@
     <br>
     <br>
     <br>
-  <table class="table table-bordered">
+  <table>
     <thead>
       <tr>
-        <td>Nombre</td>
-        <td>Origen</td>
-        <td>Destino</td>
-        <td>Km</td>
-        <td>Duración</td>
-        <td>Duración en</td>
+        <th>Nombre</th>
+        <th>Origen</th>
+        <th>Destino</th>
+        <th>Km</th>
+        <th>Duración</th>
+        <th>Duración en</th>
     </tr>
   </thead>
   <tbody>
@@ -104,15 +125,15 @@
         <br>
         <br>
         <br>
-        <table class="table table-bordered">
+        <table>
           <thead>
             <tr>
-              <td>Nombre</td>
-              <td>Origen</td>
-              <td>Destino</td>
-              <td></td>
-              <td></td>
-              <td></td>
+              <th>Nombre</th>
+              <th>Origen</th>
+              <th>Destino</th>
+              <th></th>
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>

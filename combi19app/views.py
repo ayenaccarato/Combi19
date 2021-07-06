@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.template.loader import get_template
 from django.http import HttpResponse, HttpRequest
-from combi19app.forms import Registro, Registro_admin, Registro_vehiculo, Registro_ruta, Registro_ciudad, Registro_viaje, Registro_chofer, Registro_insumo, Registro_info_de_contacto, Registro_comentario, Registro_anuncio, Registro_usuario, Registro_contra, Registro_pasaje, Registro_tarjeta, Registro_ticket
-from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje, Insumo, InformacionDeContacto, Comentario, Anuncio, Pasaje, Tarjeta, Ticket
+from combi19app.forms import Registro, Registro_admin, Registro_vehiculo, Registro_ruta, Registro_ciudad, Registro_viaje, Registro_chofer, Registro_insumo, Registro_info_de_contacto, Registro_comentario, Registro_anuncio, Registro_usuario, Registro_contra, Registro_pasaje, Registro_tarjeta, Registro_ticket, Registro_premium, Registro_premium_pago, Registro_test, Registro_usuario_premium
+from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje, Insumo, InformacionDeContacto, Comentario, Anuncio, Pasaje, Tarjeta, Ticket, Premium, Test, Premium_pago
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.decorators import login_required
@@ -40,7 +40,19 @@ def home (request):
                     if viaje.fecha_salida.date() == current_time.date():
                         if str(viaje.fecha_salida.time()) > hora:
                             viajes.append(viaje)
-        return render (request,"homePasajeros.html", {"nombre": request.user.nombre, "viajes": len(viajes)})
+        if request.user.is_premium:
+            al_dia = Premium_pago.objects.filter(id_user= request.user.id)
+            al_dia_fecha = str(al_dia[len(al_dia)-1]).replace('Premium_pago object (', '').replace(')','')
+            al_dia_fecha = Premium_pago.objects.get(id = int(al_dia_fecha))
+            al_dia_fecha=str(al_dia_fecha.fecha).replace('00:00:00+00:00','').split('-')
+            if al_dia_fecha[1] == "07":
+                ok=True
+            else:
+                ok=False
+            debe = 7 - int(al_dia_fecha[1])
+            return render (request,"homePasajerosPremium.html", {"nombre": request.user.nombre, "viajes": len(viajes),"ok":ok, "debe":debe})
+        else:
+            return render (request,"homePasajeros.html", {"nombre": request.user.nombre, "viajes": len(viajes)})
 
 def login(request):
 
@@ -70,38 +82,34 @@ def editar_chofer2(request):
 def ver_perfil_usuario(request):
     usuario = Usuario.objects.get(id=request.user.id)
     long_c = usuario.long_contra
-    return render (request, "ver_perfil_usuario.html", {'usuario': usuario, 'longitud': long_c})
+    if request.user.is_premium:
+        return render (request, "ver_perfil_usuario.html", {'usuario': usuario, 'longitud': long_c, 'base': "premium_base.html"})
+    else:
+        return render (request, "ver_perfil_usuario.html", {'usuario': usuario, 'longitud': long_c, 'base': "usuario_base.html"})
 
 def editar_usuario(request):
     usuario = Usuario.objects.get(id=request.user.id)
     registro = Registro_usuario(instance=usuario)
-    return render(request, "modificar_usuario.html", {"dato": registro, "usuario": usuario})
+    if request.user.is_premium:
+        return render(request, "modificar_usuario.html", {"dato": registro, "usuario": usuario, 'base': "premium_base.html"})
+    else:
+        return render(request, "modificar_usuario.html", {"dato": registro, "usuario": usuario, 'base': "usuario_base.html"})
 
-#busca los campos incorrectos (repetidos) que llevan el valor None
+
 def errores(registro):
     lista = []
 
     if registro.cleaned_data.get('dni') == None:
         lista+=[1]
-    # user= Usuario.objects.all().__str__()
-    # base_de_datos=user.replace('<QuerySet [', '').replace('1>,', '1').replace('2>,', '2').replace('3>,', '3').replace('<Usuario: ', '').replace('>', '').replace(']', '').split(' ')
-    # lista_de_usuarios=[]
-    #
-    # for i in range(0,len(base_de_datos),4):
-    #     lista_de_usuarios.append(base_de_datos[i:i+4])
-    #
-    # lista_de_usuarios.pop(len(lista_de_usuarios) -1)
     return set(lista)
 
 def actualizar_admin(request, id_admin):
     admin = Usuario.objects.get(id=request.user.id)
     registro = Registro_admin(request.POST, instance=admin)
     if registro.is_valid():
-        print('entro')
         confirmacion = errores(registro)
         if len(confirmacion) == 0:
             registro.save()
-    print('neee')
     response = redirect('/ver_perfil_admin/')
     return response
 
@@ -109,11 +117,9 @@ def actualizar_chofer2(request, id_chofer):
     chofer = Usuario.objects.get(id=request.user.id)
     registro = Registro_chofer(request.POST, instance=chofer)
     if registro.is_valid():
-        print('entro')
         confirmacion = errores(registro)
         if len(confirmacion) == 0:
             registro.save()
-    print('neee')
     response = redirect('/ver_perfil_chofer/')
     return response
 
@@ -192,7 +198,11 @@ def actualizar_contra_admin(request, id_admin):
 def cambiar_contra_usuario(request):
     usuario = Usuario.objects.get(id=request.user.id)
     registro = Registro(instance=usuario)
-    return render(request, "cambiar_contra_usuario.html", {"dato": registro, "usuario": usuario})
+    if request.user.is_premium:
+        return render(request, "cambiar_contra_usuario.html", {"dato": registro, "usuario": usuario, 'base':"premium_base.html"})
+    else:
+        return render(request, "cambiar_contra_usuario.html", {"dato": registro, "usuario": usuario, 'base':"usuario_base.html"})
+
 
 def actualizar_contra_usuario(request, id_usuario):
     usuario = Usuario.objects.get(id=request.user.id)
@@ -359,12 +369,8 @@ def errores_tarjeta(tarjeta):
         lista+=[1]
     else:
         if int(vencido[1]) == 21:
-            if int(vencido[0]) <= 6:
+            if int(vencido[0]) <= 7:
                 lista+=[1]
-
-    if len(tarjeta.cleaned_data.get('numero')) < 16:
-        lista+=[3]
-
     return set(lista)
 
 def errores_ven(tarjeta):
@@ -376,7 +382,7 @@ def errores_ven(tarjeta):
         lista+=[1]
     else:
         if int(vencido[1]) == 21:
-            if int(vencido[0]) <= 6:
+            if int(vencido[0]) <= 7:
                 lista+=[2]
     return set(lista)
 
@@ -687,7 +693,11 @@ class BuscarCiudad(HttpRequest):
     @login_required
     def listar_ciudades(request):
         ciudades = Ciudad.objects.all()
-        return render (request, "buscar_viaje_ciudad_origen.html",{"ciudades": ciudades})
+        if request.user.is_premium:
+            return render (request, "buscar_viaje_ciudad_origen.html",{"ciudades": ciudades, "base":"premium_base.html"})
+        else:
+            return render (request, "buscar_viaje_ciudad_origen.html",{"ciudades": ciudades, "base":"usuario_base.html"})
+
 
     @login_required
     def listar_ciudades_result(request):
@@ -696,15 +706,10 @@ class BuscarCiudad(HttpRequest):
             return render (request, "buscar_viaje_ciudad_origen.html",{"ciudades": ciudades, "errores": 1})
 
         ruta = Ruta.objects.filter(origen=request.GET.get('origen'), destino=request.GET.get('destino'))
-        #print(ruta[1].id)
         viajes = []
         for r in ruta:
-            #viajes += Viaje.objects.filter(ruta_id=r.id).filter(fecha_salida=date.date())
             if(request.GET.get('fecha_salida') != ""):
                 date = dateutil.parser.parse(request.GET.get('fecha_salida'))
-                print(request.GET.get('fecha_salida'))
-                print(date.day)
-                print(date.month)
                 if(date.day>12):
                     viajes += Viaje.objects.filter(ruta_id=r.id ,fecha_salida__year=date.year,fecha_salida__day=date.day, fecha_salida__month=date.month, estado='activo')
                 else:
@@ -715,8 +720,11 @@ class BuscarCiudad(HttpRequest):
                 for v in viaje:
                     if v.fecha_salida.date() >= hoy.date():
                         viajes.append(v)
-                #viajes += Viaje.objects.filter(ruta_id=r.id)
-        return render (request, "buscar_viaje_result.html",{"viajes": viajes, "rutas":ruta})
+        if request.user.is_premium:
+            return render (request, "buscar_viaje_result.html",{"viajes": viajes, "rutas":ruta, "base":"premium_base.html"})
+        else:
+            return render (request, "buscar_viaje_result.html",{"viajes": viajes, "rutas":ruta, "base": "usuario_base.html"})
+
 
 
 class ListarRuta (HttpRequest):
@@ -918,7 +926,10 @@ class ListarViajes(HttpRequest):
                         if(str(viaje.fecha_salida.time()) > hora):
                             viajes.append(viaje)
         contexto ={'viajes': viajes, 'rutas': rutas}
-        return render (request, "ver_viajes_por_realizar.html", contexto)
+        if request.user.is_premium:
+            return render (request, "ver_viajes_por_realizar.html", {"contexto":contexto, "base":"premium_base.html"})
+        else:
+            return render (request, "ver_viajes_por_realizar.html", {"contexto":contexto, "base":"usuario_base.html"})
 
     @login_required
     def listar_viajes_realizados(request):
@@ -940,7 +951,10 @@ class ListarViajes(HttpRequest):
                         if(str(viaje.fecha_salida.time()) < hora):
                             viajes.append(viaje)
         contexto ={'viajes': viajes, 'rutas': rutas}
-        return render (request, "ver_viajes_realizados.html", contexto)
+        if request.user.is_premium:
+            return render (request, "ver_viajes_realizados.html", {"contexto":contexto, "base":"premium_base.html"})
+        else:
+            return render (request, "ver_viajes_realizados.html", {"contexto":contexto, "base":"usuario_base.html"})
 
     @login_required
     def listar_proximos_viajes(request):
@@ -1149,18 +1163,26 @@ class FormularioInfoDeContacto(HttpRequest):
     @login_required
     def ver_info_contacto(request):
         texto = InformacionDeContacto.objects.get(id=1)
-        contexto = {'texto':texto}
-        return render (request, "infoContacto.html", contexto)
+        if request.user.tipo_usuario == 2:
+            return render (request, "infoContacto.html", {"texto":texto, "base":"chofer_base.html"})
+        else:
+            if request.user.is_premium:
+                return render (request, "infoContacto.html", {"texto":texto, "base":"premium_base.html"})
+            else:
+                return render (request, "infoContacto.html", {"texto":texto, "base":"usuario_base.html"})
+
     @login_required
     def menu_editar_info_contacto(request):
         texto = InformacionDeContacto.objects.get(id=1)
         contexto = {'texto':texto}
         return render (request, "menu_info_de_contacto.html", contexto)
+
     @login_required
     def editar_info_contacto(request, id_texto):
         texto = InformacionDeContacto.objects.get(id=id_texto)
         form = Registro_info_de_contacto(instance=texto)
         return render (request, "modificar_info_de_contacto.html", {"form":form, "texto":texto})
+
     @login_required
     def actualizarInfoDeContacto(request, id_texto):
         texto = InformacionDeContacto.objects.get(id=id_texto)
@@ -1208,7 +1230,11 @@ class FormularioComentario(HttpRequest):
              if (request.user.tipo_usuario == 2):
                  return render (request, "carteleraPasajero.html",{"base": "chofer_base.html","tipo": request.user.tipo_usuario,"anuncios":anuncios ,"viajes":viajes_hechos,"is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer})
              else:
-                 return render (request, "carteleraPasajero.html",{"base": "usuario_base.html","tipo": request.user.tipo_usuario,"anuncios":anuncios ,"viajes":viajes_hechos, "is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer})
+                 if request.user.is_premium:
+                      return render (request, "carteleraPasajero.html",{"base": "premium_base.html","tipo": request.user.tipo_usuario,"anuncios":anuncios ,"viajes":viajes_hechos, "is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer})
+                 else:
+                     return render (request, "carteleraPasajero.html",{"base": "usuario_base.html","tipo": request.user.tipo_usuario,"anuncios":anuncios ,"viajes":viajes_hechos, "is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer})
+
 
     @login_required
     def ver_comentarios(request,id_viaje,tipo, id_user):
@@ -1224,7 +1250,10 @@ class FormularioComentario(HttpRequest):
              if (tipo == 2):
                  return render (request, "ver_comentario.html",{"base": "chofer_base.html","tipo": tipo ,"viaje": viaje, "comentarios":comentarios, "is_c":len(comentarios), "puede_comentar":len(pasaje), "usuario":usuario, "chofer":chofer})
              else:
-                 return render (request, "ver_comentario.html",{"base": "usuario_base.html","tipo": tipo ,"viaje": viaje, "comentarios":comentarios, "is_c":len(comentarios), "puede_comentar":len(pasaje), "usuario":usuario, "chofer":chofer})
+                  if request.user.is_premium:
+                      return render (request, "ver_comentario.html",{"base": "premium_base.html","tipo": tipo ,"viaje": viaje, "comentarios":comentarios, "is_c":len(comentarios), "puede_comentar":len(pasaje), "usuario":usuario, "chofer":chofer})
+                  else:
+                      return render (request, "ver_comentario.html",{"base": "usuario_base.html","tipo": tipo ,"viaje": viaje, "comentarios":comentarios, "is_c":len(comentarios), "puede_comentar":len(pasaje), "usuario":usuario, "chofer":chofer})
 
     @login_required
     def guardar_comentario(request,id_viaje, tipo, id_user):
@@ -1242,7 +1271,10 @@ class FormularioComentario(HttpRequest):
                  if (tipo == 2):
                      return render (request, "ver_comentario.html",{"base": "chofer_base.html","tipo": tipo ,"viaje": viaje, "comentarios":comentarios, "is_c":len(comentarios), "puede_comentar":len(pasaje), "usuario":usuario, "chofer":chofer})
                  else:
-                     return render (request, "ver_comentario.html",{"base": "usuario_base.html","tipo": tipo ,"viaje": viaje, "comentarios":comentarios, "is_c":len(comentarios), "puede_comentar":len(pasaje), "usuario":usuario, "chofer":chofer})
+                     if request.user.is_premium:
+                         return render (request, "ver_comentario.html",{"base": "premium_base.html","tipo": tipo ,"viaje": viaje, "comentarios":comentarios, "is_c":len(comentarios), "puede_comentar":len(pasaje), "usuario":usuario, "chofer":chofer})
+                     else:
+                          return render (request, "ver_comentario.html",{"base": "usuario_base.html","tipo": tipo ,"viaje": viaje, "comentarios":comentarios, "is_c":len(comentarios), "puede_comentar":len(pasaje), "usuario":usuario, "chofer":chofer})
 
     @login_required
     def eliminar_comentario(request, id_viaje,tipo,id_coment, id_user):
@@ -1259,7 +1291,10 @@ class FormularioComentario(HttpRequest):
             if (tipo == 2):
                 return render (request, "ver_comentario.html",{"base": "chofer_base.html","tipo": tipo ,"viaje": viaje, "comentarios":comentarios, "is_c":len(comentarios), "puede_comentar":len(pasaje), "usuario":usuario, "chofer":chofer})
             else:
-                return render (request, "ver_comentario.html",{"base": "usuario_base.html","tipo": tipo ,"viaje": viaje, "comentarios":comentarios, "is_c":len(comentarios), "puede_comentar":len(pasaje), "usuario":usuario, "chofer":chofer})
+                if request.user.is_premium:
+                    return render (request, "ver_comentario.html",{"base": "premium_base.html","tipo": tipo ,"viaje": viaje, "comentarios":comentarios, "is_c":len(comentarios), "puede_comentar":len(pasaje), "usuario":usuario, "chofer":chofer})
+                else:
+                    return render (request, "ver_comentario.html",{"base": "usuario_base.html","tipo": tipo ,"viaje": viaje, "comentarios":comentarios, "is_c":len(comentarios), "puede_comentar":len(pasaje), "usuario":usuario, "chofer":chofer})
 
 
 class FormularioAnuncio(HttpRequest):
@@ -1331,7 +1366,10 @@ class ComprarPasaje(HttpRequest):
         viaje = Viaje.objects.get(id = id_viaje)
         post = "true"
         usuario = request.user.id
-        return render (request, "comprar_pasaje_cantidad.html", {"viaje": viaje,"dato":pasaje,"usuario":usuario})
+        if request.user.is_premium:
+            return render (request, "comprar_pasaje_cantidad.html", {"viaje": viaje,"dato":pasaje,"usuario":usuario, "base":"premium_base.html"})
+        else:
+            return render (request, "comprar_pasaje_cantidad.html", {"viaje": viaje,"dato":pasaje,"usuario":usuario, "base": "usuario_base.html"})
 
     @login_required
     def comprar_pasaje_completar_datos(request,id_viaje):
@@ -1340,7 +1378,10 @@ class ComprarPasaje(HttpRequest):
             usuario = request.user.id
             viaje = Viaje.objects.get(id = id_viaje)
             cant = request.GET.get('pasajes')
-            return render (request, "comprar_pasaje_form.html", {"viaje": viaje, "actual":actual,"usuario":usuario, "cant":cant})
+            if request.user.is_premium:
+                return render (request, "comprar_pasaje_form.html", {"base":"premium_base.html","viaje": viaje, "actual":actual,"usuario":usuario, "cant":cant})
+            else:
+                return render (request, "comprar_pasaje_form.html", {"base":"usuario_base.html","viaje": viaje, "actual":actual,"usuario":usuario, "cant":cant})
         else:
             pasaje = Registro_pasaje(request.POST)
             if(pasaje.is_valid()):
@@ -1354,8 +1395,10 @@ class ComprarPasaje(HttpRequest):
                 return ComprarPasaje.comprar_pasaje_menu(request,id_viaje)
             else:
                 actual = actual+1
-                return render (request, "comprar_pasaje_form.html", {"viaje": viaje, "actual":actual,"usuario":usuario, "cant":cant})
-
+                if request.user.is_premium:
+                    return render (request, "comprar_pasaje_form.html", {"base":"premium_base.html","viaje": viaje, "actual":actual,"usuario":usuario, "cant":cant})
+                else:
+                    return render (request, "comprar_pasaje_form.html", {"base":"usuario_base.html","viaje": viaje, "actual":actual,"usuario":usuario, "cant":cant})
 
     @login_required
     def comprar_pasaje_menu(request,id_viaje):
@@ -1366,8 +1409,10 @@ class ComprarPasaje(HttpRequest):
         patente = Vehiculo.objects.get ( id = viaje.vehiculo_id).patente
         tipo_asiento = Vehiculo.objects.get ( id = viaje.vehiculo_id).premium
         pasaje = Pasaje.objects.filter(id_user=request.user.id, nro_viaje_id = id_viaje, estado= 'no abonado')
-        print (pasaje)
-        return render (request, "comprar_pasaje_menu.html", {"viaje": viaje, "tipo_asiento":tipo_asiento,"nombre":nombre, "hora_llegada":hora_llegada, "chofer":chofer,"patente":patente,"precio":len(pasaje)*viaje.precio, "ya_tiene":len(pasaje)})
+        if request.user.is_premium:
+            return render (request, "comprar_pasaje_menu.html", {"base":"premium_base.html", "viaje": viaje, "tipo_asiento":tipo_asiento,"nombre":nombre, "hora_llegada":hora_llegada, "chofer":chofer,"patente":patente,"precio":len(pasaje)*viaje.precio, "ya_tiene":len(pasaje)})
+        else:
+            return render (request, "comprar_pasaje_menu.html", {"base":"usuario_base.html", "viaje": viaje, "tipo_asiento":tipo_asiento,"nombre":nombre, "hora_llegada":hora_llegada, "chofer":chofer,"patente":patente,"precio":len(pasaje)*viaje.precio, "ya_tiene":len(pasaje)})
 
     @login_required
     def mi_carrito(request,id_viaje):
@@ -1376,16 +1421,21 @@ class ComprarPasaje(HttpRequest):
         precio_total =0
         for i in carrito:
             precio_total= precio_total + i.precio_ticket
-        return render (request, "comprar_pasaje_carrito.html", {"viaje":viaje,"insumos":carrito, "cosas":len(carrito), "precio_total":precio_total})
+        if request.user.is_premium:
+            return render (request, "comprar_pasaje_carrito.html", {"base":"premium_base.html", "viaje":viaje,"insumos":carrito, "cosas":len(carrito), "precio_total":precio_total})
+        else:
+            return render (request, "comprar_pasaje_carrito.html", {"base":"usuario_base.html", "viaje":viaje,"insumos":carrito, "cosas":len(carrito), "precio_total":precio_total})
 
     @login_required
     def confirmar_eliminado(request,id_viaje, id_ticket):
         ticket = Ticket.objects.get(id = id_ticket)
         ins = Insumo.objects.get(id=ticket.insumo.id)
-        print(ins)
         insumo = Registro_insumo(instance=ins)
         viaje = Viaje.objects.get(id = id_viaje)
-        return render (request, "comprar_pasaje_carrito_eliminar.html", {"ticket":ticket, "insumo":ins, "viaje": viaje})
+        if request.user.is_premium:
+            return render (request, "comprar_pasaje_carrito_eliminar.html", {"base":"premium_base.html", "ticket":ticket, "insumo":ins, "viaje": viaje})
+        else:
+            return render (request, "comprar_pasaje_carrito_eliminar.html", {"base":"usuario_base.html", "ticket":ticket, "insumo":ins, "viaje": viaje})
 
     @login_required
     def eliminar_mi_carrito(request,id_viaje,id_ticket):
@@ -1401,14 +1451,10 @@ class ComprarPasaje(HttpRequest):
             precio_total= precio_total + i.precio_ticket
         if form.is_valid():
             form.save_insumo3(cantidad)
-            return render (request, "comprar_pasaje_carrito.html", {"viaje":viaje,"insumos":carrito, "cosas":len(carrito),"precio_total":precio_total})
-        else:
-            print(form.cleaned_data.get('nombre'))
-            print(form.cleaned_data.get('precio'))
-            print(form.cleaned_data.get('stock'))
-            print(form.cleaned_data.get('sabor'))
-            print(form.cleaned_data.get('categoria'))
-
+            if request.user.is_premium:
+                return render (request, "comprar_pasaje_carrito.html", {"base":"premium_base.html", "viaje":viaje,"insumos":carrito, "cosas":len(carrito),"precio_total":precio_total})
+            else:
+                return render (request, "comprar_pasaje_carrito.html", {"base":"usuario_base.html", "viaje":viaje,"insumos":carrito, "cosas":len(carrito),"precio_total":precio_total})
 
     @login_required
     def tarjeta(request, id_viaje):
@@ -1428,8 +1474,20 @@ class ComprarPasaje(HttpRequest):
         if len(tarjetas_registradas) != 0:
             tarjetas_registradas = errores_tareta2(tarjetas_registradas)
             if len(tarjetas_registradas) != 0:
-                return render (request, "comprar_pasaje_tarjeta.html", {"mensaje":"no","viaje": viaje, "nombre":nombre, "ok":"no","cant":len(pasaje), "usuario":usuario,"tiene_tarjeta":1, "tarjetas":tarjetas_registradas,"carrito":carrito, "compro":len(carrito), "precio_total":precio_total})
-        return render (request, "comprar_pasaje_tarjeta.html", {"mensaje":"no","viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"cant":len(pasaje),"tiene_tarjeta":0,"carrito":carrito, "compro":len(carrito), "precio_total":precio_total})
+                if request.user.is_premium:
+                    premium = Premium.objects.get(id=1)
+                    precio_p = precio_total * float(premium.descuento) / float(100)
+                    precio_p = precio_total - precio_p
+                    return render (request, "comprar_pasaje_tarjeta.html", {"cantidad":len(pasaje), "precio_pasajes":precio_total_pasajes, "precio_p":precio_p, "premium": premium ,"base":"premium_base.html", "mensaje":"no","viaje": viaje, "nombre":nombre, "ok":"no","cant":len(pasaje), "usuario":usuario,"tiene_tarjeta":1, "tarjetas":tarjetas_registradas,"carrito":carrito, "compro":len(carrito), "precio_total":precio_total})
+                else:
+                    return render (request, "comprar_pasaje_tarjeta.html", {"cantidad":len(pasaje), "precio_pasajes":precio_total_pasajes, "base":"usuario_base.html", "mensaje":"no","viaje": viaje, "nombre":nombre, "ok":"no","cant":len(pasaje), "usuario":usuario,"tiene_tarjeta":1, "tarjetas":tarjetas_registradas,"carrito":carrito, "compro":len(carrito), "precio_total":precio_total})
+        if request.user.is_premium:
+            premium = Premium.objects.get(id=1)
+            precio_p = precio_total * float(premium.descuento) / float(100)
+            precio_p = precio_total - precio_p
+            return render (request, "comprar_pasaje_tarjeta.html", {"cantidad":len(pasaje), "precio_pasajes":precio_total_pasajes, "precio_p":precio_p, "premium": premium, "base":"premium_base.html", "mensaje":"no","viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"cant":len(pasaje),"tiene_tarjeta":0,"carrito":carrito, "compro":len(carrito), "precio_total":precio_total})
+        else:
+            return render (request, "comprar_pasaje_tarjeta.html", {"cantidad":len(pasaje), "precio_pasajes":precio_total_pasajes, "base":"usuario_base.html", "mensaje":"no","viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"cant":len(pasaje),"tiene_tarjeta":0,"carrito":carrito, "compro":len(carrito), "precio_total":precio_total})
 
     def otra_tarjeta(request, id_viaje):
         tarjeta = Registro_tarjeta()
@@ -1439,16 +1497,26 @@ class ComprarPasaje(HttpRequest):
         carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
         usuario = request.user.id
         carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
+        pasaje = Pasaje.objects.filter(id_user=request.user.id, nro_viaje_id = id_viaje, estado= 'no abonado')
+        precio_total_pasajes =len(pasaje)*viaje.precio
         precio_total = 0
         if len(carrito) != 0:
             for i in carrito:
                 precio_total = precio_total + i.precio_ticket
-        precio_total = precio_total + viaje.precio
+        precio_total = precio_total + precio_total_pasajes
         if len(tarjetas_registradas) != 0:
-            return render (request, "comprar_pasaje_tarjeta.html", {"mensaje":"otra", "viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"tiene_tarjeta":1, "tarjetas":tarjetas_registradas,"carrito":carrito, "compro":len(carrito), "precio_total":precio_total})
+            if request.user.is_premium:
+                premium = Premium.objects.get(id=1)
+                precio_p = precio_total * float(premium.descuento) / float(100)
+                precio_p = precio_total - precio_p
+                return render (request, "comprar_pasaje_tarjeta.html", {"precio_p":precio_p, "premium":premium, "base":"premium_base.html", "mensaje":"otra", "viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"tiene_tarjeta":1, "tarjetas":tarjetas_registradas,"carrito":carrito, "compro":len(carrito), "precio_total":precio_total, "cantidad":len(pasaje), "precio_pasajes":precio_total_pasajes})
+            else:
+                return render (request, "comprar_pasaje_tarjeta.html", {"base":"usuario_base.html", "mensaje":"otra", "viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"tiene_tarjeta":1, "tarjetas":tarjetas_registradas,"carrito":carrito, "compro":len(carrito), "precio_total":precio_total, "cantidad":len(pasaje), "precio_pasajes":precio_total_pasajes})
         else:
-            return render (request, "comprar_pasaje_tarjeta.html", {"mensaje":"no","viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"tiene_tarjeta":0,"carrito": carrito, "compro":len(carrito), "precio_total":precio_total})
-
+            if request.user.is_premium:
+                return render (request, "comprar_pasaje_tarjeta.html", {"base":"premium_base.html", "mensaje":"no","viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"tiene_tarjeta":0,"carrito": carrito, "compro":len(carrito), "precio_total":precio_tota, "cantidad":len(pasaje), "precio_pasajes":precio_total_pasajesl})
+            else:
+                return render (request, "comprar_pasaje_tarjeta.html", {"base":"usuario_base.html", "mensaje":"no","viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"tiene_tarjeta":0,"carrito": carrito, "compro":len(carrito), "precio_total":precio_total, "cantidad":len(pasaje), "precio_pasajes":precio_total_pasajes})
 
     @login_required
     def setear_tarjeta(request, id_viaje, id_tarjeta):
@@ -1467,8 +1535,13 @@ class ComprarPasaje(HttpRequest):
             for i in carrito:
                 precio_total = precio_total + i.precio_ticket
         precio_total = precio_total + precio_total_pasajes
-        return render (request, "comprar_pasaje_tarjeta2.html", {"viaje": viaje, "nombre":nombre,"tarjeta":tarjeta,"cant":len(pasaje), "usuario":usuario, "carrito":carrito, "compro":len(carrito), "precio_total":precio_total})
-
+        if request.user.is_premium:
+            premium = Premium.objects.get(id=1)
+            precio_p = precio_total * float(premium.descuento) / float(100)
+            precio_p = precio_total - precio_p
+            return render (request, "comprar_pasaje_tarjeta2.html", {"cantidad":len(pasaje),"precio_pasajes":precio_total_pasajes,"precio_p":precio_p,"premium":premium, "base":"premium_base.html", "viaje": viaje, "nombre":nombre,"tarjeta":tarjeta, "usuario":usuario, "carrito":carrito, "compro":len(carrito), "precio_total":precio_total})
+        else:
+            return render (request, "comprar_pasaje_tarjeta2.html", {"cantidad":len(pasaje),"precio_pasajes":precio_total_pasajes,"base":"usuario_base.html", "viaje": viaje, "nombre":nombre,"tarjeta":tarjeta,"usuario":usuario, "carrito":carrito, "compro":len(carrito), "precio_total":precio_total})
 
     @login_required
     def procesar_tarjeta(request, id_viaje):
@@ -1495,9 +1568,21 @@ class ComprarPasaje(HttpRequest):
                 else:
                     tarjeta.save()
                     id_t = Tarjeta.objects.last()
-                return render (request, "comprar_pasaje_tarjeta3.html", {"usuario":usuario,"cant":len(pasajes), "viaje": viaje, "nombre":nombre, "tarjeta":id_t, "ok":"ok", "carrito":carrito, "compro": len(carrito), "precio_total":precio_total})
+                if request.user.is_premium:
+                    premium = Premium.objects.get(id=1)
+                    precio_p = precio_total * float(premium.descuento) / float(100)
+                    precio_p = precio_total - precio_p
+                    return render (request, "comprar_pasaje_tarjeta3.html", {"cantidad":len(pasajes),"precio_pasajes":precio_total_pasajes,"precio_p":precio_p,"premium":premium,"base":"premium_base.html", "usuario":usuario, "viaje": viaje, "nombre":nombre, "tarjeta":id_t, "ok":"ok", "carrito":carrito, "compro": len(carrito), "precio_total":precio_total})
+                else:
+                    return render (request, "comprar_pasaje_tarjeta3.html", {"cantidad":len(pasajes),"precio_pasajes":precio_total_pasajes, "base":"usuario_base.html", "usuario":usuario, "viaje": viaje, "nombre":nombre, "tarjeta":id_t, "ok":"ok", "carrito":carrito, "compro": len(carrito), "precio_total":precio_total})
             else:
-                return render (request, "comprar_pasaje_tarjeta3.html", {"errores": confirmacion,"cant":len(pasajes), "usuario":usuario,"viaje": viaje, "nombre":nombre, "ok": "not_ok","carrito":carrito, "compro": len(carrito), "precio_total":precio_total})
+                if request.user.is_premium:
+                    premium = Premium.objects.get(id=1)
+                    precio_p = precio_total * float(premium.descuento) / float(100)
+                    precio_p = precio_total - precio_p
+                    return render (request, "comprar_pasaje_tarjeta3.html", {"cantidad":len(pasajes),"precio_pasajes":precio_total_pasajes,"precio_p":precio_p,"premium":premium,"base":"premium_base.html", "errores": confirmacion, "usuario":usuario,"viaje": viaje, "nombre":nombre, "ok": "not_ok","carrito":carrito, "compro": len(carrito), "precio_total":precio_total})
+                else:
+                    return render (request, "comprar_pasaje_tarjeta3.html", {"cantidad":len(pasajes),"precio_pasajes":precio_total_pasajes,"base":"usuario_base.html", "errores": confirmacion, "usuario":usuario,"viaje": viaje, "nombre":nombre, "ok": "not_ok","carrito":carrito, "compro": len(carrito), "precio_total":precio_total})
 
     @login_required
     def procesar_pasaje(request, id_viaje):
@@ -1524,9 +1609,12 @@ class ComprarPasaje(HttpRequest):
         form = Registro_viaje(request.POST, instance = viaje)
         if form.is_valid():
             ruta = Ruta.objects.get(id=(viaje.ruta).id)
-            form.save_viaje3(ruta)
+            form.save_viaje3(ruta, len(pasaje))
             verificar=Pasaje.objects.filter(id_user=request.user.id, nro_viaje_id = id_viaje, estado= 'activo')
-            return render (request, "comprar_pasaje_pagar.html", {"aceptado":"si", "pasaje":verificar, "viaje":viaje})
+            if request.user.is_premium:
+                return render (request, "comprar_pasaje_pagar.html", {"base":"premium_base.html", "aceptado":"si", "pasaje":verificar, "viaje":viaje})
+            else:
+                return render (request, "comprar_pasaje_pagar.html", {"base":"usuario_base.html", "aceptado":"si", "pasaje":verificar, "viaje":viaje})
 
     @login_required
     def ver_tienda(request, id_viaje):
@@ -1536,7 +1624,10 @@ class ComprarPasaje(HttpRequest):
             stocks[i.id] = range(1,i.stock+1)
         viaje = Viaje.objects.get(id= id_viaje)
         usuario = request.user.id
-        return render (request, "comprar_pasaje_tienda.html", {"insumos":insumos, "stocks":stocks,"tienda":len(insumos), "viaje":viaje, "usuario":usuario, "vendido":"no"})
+        if request.user.is_premium:
+            return render (request, "comprar_pasaje_tienda.html", {"base":"premium_base.html", "insumos":insumos, "stocks":stocks,"tienda":len(insumos), "viaje":viaje, "usuario":usuario, "vendido":"no"})
+        else:
+            return render (request, "comprar_pasaje_tienda.html", {"base":"usuario_base.html", "insumos":insumos, "stocks":stocks,"tienda":len(insumos), "viaje":viaje, "usuario":usuario, "vendido":"no"})
 
     @login_required
     def procesar_ver_tienda(request, id_viaje, id_insumo):
@@ -1549,7 +1640,10 @@ class ComprarPasaje(HttpRequest):
         stocks={}
         for i in insumos:
             stocks[i.id] = range(1,i.stock+1)
-        return render (request, "comprar_pasaje_seleccionar_cantidad.html", {"insumos":insumos,"insumo":insumo, "stocks":stocks, "usuario":usuario, "viaje":viaje})
+        if request.user.is_premium:
+            return render (request, "comprar_pasaje_seleccionar_cantidad.html", {"base":"premium_base.html", "insumos":insumos,"insumo":insumo, "stocks":stocks, "usuario":usuario, "viaje":viaje})
+        else:
+            return render (request, "comprar_pasaje_seleccionar_cantidad.html", {"base":"usuario_base.html", "insumos":insumos,"insumo":insumo, "stocks":stocks, "usuario":usuario, "viaje":viaje})
 
     @login_required
     def procesar_confirmacion_insumo(request, id_viaje, id_insumo):
@@ -1580,7 +1674,10 @@ class ComprarPasaje(HttpRequest):
                 stocks={}
                 for i in insumos:
                     stocks[i.id] = range(1,i.stock+1)
-                return render (request, "comprar_pasaje_tienda.html", {"insumos":insumos, "stocks":stocks,"tienda":len(insumos), "viaje":viaje, "usuario":usuario, "vendido":"si"})
+                if request.user.is_premium:
+                    return render (request, "comprar_pasaje_tienda.html", {"base":"premium_base.html", "insumos":insumos, "stocks":stocks,"tienda":len(insumos), "viaje":viaje, "usuario":usuario, "vendido":"si"})
+                else:
+                    return render (request, "comprar_pasaje_tienda.html", {"base":"usuario_base.html", "insumos":insumos, "stocks":stocks,"tienda":len(insumos), "viaje":viaje, "usuario":usuario, "vendido":"si"})
 
     @login_required
     def cancelar_pasaje(request, id_viaje):
@@ -1593,7 +1690,6 @@ class ComprarPasaje(HttpRequest):
         viaje = Viaje.objects.get(id=id_viaje)
         viaje.asientos_disponibles = viaje.asientos_disponibles + 1
         viaje.save()
-
         return ListarViajes.listar_viajes_por_realizar(request)
 
     @login_required
@@ -1611,4 +1707,378 @@ class ComprarPasaje(HttpRequest):
             for i in carrito:
                 precio_total = precio_total + i.precio_ticket
         precio_total = precio_total + viaje.precio
-        return render (request, "ver_detalle_pasaje.html", {"viaje":viaje, "tarjeta":tarjeta, "usuario":usuario, "chofer":chofer, "precio_total":precio_total, "insumos":carrito, "inumo":len(carrito), "pasaje":pasaje})
+        if request.user.is_premium:
+            return render (request, "ver_detalle_pasaje.html", {"base":"premium_base.html", "viaje":viaje, "tarjeta":tarjeta, "usuario":usuario, "chofer":chofer, "precio_total":precio_total, "insumos":carrito, "inumo":len(carrito), "pasaje":pasaje})
+        else:
+            return render (request, "ver_detalle_pasaje.html", {"base":"usuario_base.html", "viaje":viaje, "tarjeta":tarjeta, "usuario":usuario, "chofer":chofer, "precio_total":precio_total, "insumos":carrito, "inumo":len(carrito), "pasaje":pasaje})
+
+class Testeo(HttpRequest):
+
+    @login_required
+    def ver_pasajeros(request, id_viaje):
+        pasajeros = Pasaje.objects.filter(nro_viaje_id = id_viaje)
+        viaje = Viaje.objects.get(id = id_viaje)
+        if request.user.tipo_usuario == 1:
+            return render (request, "ver_pasajeros.html", {"pasajeros":pasajeros, "viaje":viaje, "base":"admin_base.html"})
+        else:
+            return render (request, "ver_pasajeros.html", {"pasajeros":pasajeros, "viaje":viaje, "base":"chofer_base.html"})
+
+    @login_required
+    def test(request, id_pasaje):
+        test = Registro_test()
+        pasaje= Pasaje.objects.get(id=id_pasaje)
+        pasaje_nuevo = Registro_pasaje(instance=pasaje)
+        viaje = Viaje.objects.get(id = pasaje.nro_viaje_id)
+        temp = []
+        temp.append("menos de 35.0°C")
+        for i in range(35,41):
+            for x in range(0,10):
+                temp.append(str(i)+"."+str(x)+"°C")
+        temp.append("más de 40.9°C")
+
+        return render (request, "testeo.html", {"temp":temp, "pasaje":pasaje, "id_pasaje":pasaje.id, "viaje":viaje})
+
+    @login_required
+    def procesar_formulario_test(request, id_viaje, id_pasaje):
+        test = Registro_test(request.POST)
+        pasaje = Pasaje.objects.get(id = id_pasaje)
+        pasaje_nuevo = Registro_pasaje(request.POST, instance = pasaje)
+        if test.is_valid():
+            test.save()
+            if pasaje_nuevo.is_valid():
+                test_correspondiente = Test.objects.last()
+                temperatura = test_correspondiente.temperatura.split('.')
+                if test_correspondiente.olfato or test_correspondiente.gusto or test_correspondiente.contacto or int(temperatura[0]) >= 38:
+                    pasaje_nuevo.save_no_sube()
+                else:
+                    pasaje_nuevo.save_sube()
+                pasajeros = Pasaje.objects.filter(nro_viaje_id = id_viaje)
+                viaje = Viaje.objects.get(id = id_viaje)
+                return render (request, "ver_pasajeros.html", {"pasajeros":pasajeros, "viaje":viaje, "base":"chofer_base.html"})
+
+
+    @login_required
+    def editar_test(request, id_pasaje):
+        test = Test.objects.get(pasaje = id_pasaje)
+        test_nuevo = Registro_test(instance = test)
+        pasaje= Pasaje.objects.get(id=id_pasaje)
+        pasaje_nuevo = Registro_pasaje(instance=pasaje)
+        viaje = Viaje.objects.get(id = pasaje.nro_viaje_id)
+        temp = []
+        temp.append("menos de 35.0°C")
+        for i in range(35,41):
+            for x in range(0,10):
+                temp.append(str(i)+"."+str(x)+"°C")
+        temp.append("más de 40.9°C")
+
+        return render (request, "modificar_testeo.html", {"temp":temp, "pasaje":pasaje, "id_pasaje":pasaje.id, "viaje":viaje, "test":test})
+
+
+    @login_required
+    def actualizar_test(request, id_viaje, id_pasaje):
+        test = Test.objects.get(pasaje = id_pasaje)
+        test_nuevo = Registro_test(request.POST, instance = test)
+        pasaje = Pasaje.objects.get(id = id_pasaje)
+        pasaje_nuevo = Registro_pasaje(request.POST, instance = pasaje)
+        if test_nuevo.is_valid():
+            test_nuevo.save()
+            if pasaje_nuevo.is_valid():
+                temperatura = test.temperatura.split('.')
+                if test.olfato or test.gusto or test.contacto or int(temperatura[0]) >= 38:
+                    pasaje_nuevo.save_no_sube()
+                else:
+                    pasaje_nuevo.save_sube()
+                pasajeros = Pasaje.objects.filter(nro_viaje_id = id_viaje)
+                viaje = Viaje.objects.get(id = id_viaje)
+                return render (request, "ver_pasajeros.html", {"editado":"si", "pasajeros":pasajeros, "viaje":viaje, "base":"chofer_base.html"})
+
+
+    @login_required
+    def ver_test(request, id_pasaje):
+        test = Test.objects.get(pasaje= id_pasaje)
+        pasaje= Pasaje.objects.get(id=id_pasaje)
+        viaje = Viaje.objects.get(id = pasaje.nro_viaje_id)
+        temp = []
+        temp.append("menos de 35.0°C")
+        for i in range(35,41):
+            for x in range(0,10):
+                temp.append(str(i)+"."+str(x)+"°C")
+        temp.append("más de 40.9°C")
+        if request.user.tipo_usuario == 1:
+            return render (request, "ver_test.html", {"base":"admin_base.html","temp":temp, "pasaje":pasaje, "test":test, "viaje":viaje})
+        else:
+            return render (request, "ver_test.html", {"base":"chofer_base.html", "temp":temp, "pasaje":pasaje, "test":test, "viaje":viaje})
+
+    @login_required
+    def confirmar_ausente(request, id_pasaje):
+        pasaje = Pasaje.objects.get(id = id_pasaje)
+        pasaje_nuevo = Registro_pasaje(instance=pasaje)
+        viaje = Viaje.objects.get(id = pasaje.nro_viaje_id)
+        return render (request, "confirmar_ausente.html", {"pasaje":pasaje, "viaje":viaje, "id_pasaje":pasaje.id})
+
+    @login_required
+    def actualizar_pasaje_ausente(request, id_pasaje, id_viaje):
+        pasaje = Pasaje.objects.get(id = id_pasaje)
+        pasaje_nuevo = Registro_pasaje(request.POST,instance=pasaje)
+        viaje = Viaje.objects.get(id = pasaje.nro_viaje_id)
+        if pasaje_nuevo.is_valid():
+            pasaje_nuevo.save()
+            pasajeros = Pasaje.objects.filter(nro_viaje_id = id_viaje)
+            return render (request, "ver_pasajeros.html", {"ausente":"si","pasajeros":pasajeros, "viaje":viaje, "base":"chofer_base.html"})
+
+
+class Suscripcion(HttpRequest):
+
+    @login_required
+    def ver_info_suscripcion(request):
+        info = Premium.objects.get(id=1)
+        contexto = {'premium':info, "editado":"not"}
+        return render (request, "ver_info_suscripcion.html", contexto)
+
+    @login_required
+    def editar_info_suscripcion(request, id_premium):
+        descuentos=[]
+        numero = 5
+        for i in range(1,20):
+            descuentos.append(numero)
+            numero = numero + 5
+        info = Premium.objects.get(id=id_premium)
+        form = Registro_premium(instance=info)
+        return render (request, "modificar_info_suscripcion.html", {"form":form, "premium":info, "descuentos":descuentos})
+
+    @login_required
+    def actualizar_info_suscripcion(request, id_premium):
+        info = Premium.objects.get(id=id_premium)
+        form = Registro_premium(request.POST, instance = info)
+        if form.is_valid():
+            form.save()
+            return render (request, "ver_info_suscripcion.html", {"premium":info, "editado":"ok"})
+        else:
+            return render (request, "ver_info_suscripcion.html", {"premium":info, "editado":"error"})
+
+    @login_required
+    def solicitar_suscripcion(request):
+        info = Premium.objects.get(id=1)
+        return render (request, "solicitar_suscripcion.html", {"premium":info})
+
+    @login_required
+    def registrar_tarjeta(request):
+        tarjeta = Registro_tarjeta()
+        return render (request, "registrar_tarjeta_suscripcion.html", {"usuario":request.user.id, "devuelta":"not", "base":"usuario_base.html"})
+
+    @login_required
+    def procesar_formulario_tarjeta(request):
+        tarjeta = Registro_tarjeta(request.POST)
+        if tarjeta.is_valid():
+            confirmacion=errores_tarjeta(tarjeta)
+            if len(confirmacion) == 0:
+                numero = tarjeta.cleaned_data.get('numero')
+                hay_tarjeta = Tarjeta.objects.filter(id_user_id = request.user.id, numero = numero)
+                if len(hay_tarjeta) == 0:
+                    tarjeta.save()
+                if request.user.is_premium:
+                    ticket = Registro_premium_pago()
+                    user = Usuario.objects.get(id = request.user.id)
+                    al_dia = Premium_pago.objects.filter(id_user= request.user.id)
+                    al_dia_fecha = str(al_dia[len(al_dia)-1]).replace('Premium_pago object (', '').replace(')','')
+                    al_dia_fecha = Premium_pago.objects.get(id = int(al_dia_fecha))
+                    tarjeta = Tarjeta.objects.get(numero = numero, id_user = request.user.id)
+                    al_dia_fecha=str(al_dia_fecha.fecha).replace('00:00:00+00:00','').split('-')
+                    if al_dia_fecha[1] == "07":
+                        ok=True
+                    else:
+                        ok=False
+                    debe = 7 - int(al_dia_fecha[1])
+                    meses = []
+                    for i in range(int(al_dia_fecha[1])+1,8):
+                        if i == 1:
+                            meses.append('Enero')
+                        else:
+                            if i == 2:
+                                meses.append('Febrero')
+                            else:
+                                if i == 3:
+                                    meses.append('Marzo')
+                                else:
+                                    if i == 4:
+                                        meses.append('Abril')
+                                    else:
+                                        if i == 5:
+                                            meses.append('Mayo')
+                                        else:
+                                            if i == 6:
+                                                meses.append('Junio')
+                                            else:
+                                                if i == 7:
+                                                    meses.append('Julio')
+                                                else:
+                                                    if i == 8:
+                                                        meses.append('Agosto')
+                                                    else:
+                                                        if i == 9:
+                                                            meses.append('Septiembre')
+                                                        else:
+                                                            if i == 10:
+                                                                meses.append('Octubre')
+                                                            else:
+                                                                if i == 11:
+                                                                    meses.append('Noviembre')
+                                                                else:
+                                                                    if i == 12:
+                                                                        meses.append('Diciembre')
+                    info = Premium.objects.get(id=1)
+                    pagar = info.cuota * debe
+                    return render (request, "pagar_deuda.html", {"premium":info, "meses":meses, "tarjeta":tarjeta, "user":user, "pagar":pagar, "id":request.user.id})
+                else:
+                    info = Premium.objects.get(id=1)
+                    user = Usuario.objects.get(id=request.user.id)
+                    registro = Registro_usuario_premium(instance=user)
+                    tarjeta_guardada = Tarjeta.objects.get(id_user_id = request.user.id , numero = numero)
+                    ticket = Registro_premium_pago()
+                    print(request.user.id)
+                    return render (request, "pagar_primer_cuota_suscripcion.html", {"premium":info,"user": user, "id":request.user.id, "dato": registro,"ticket":ticket, "tarjeta":tarjeta_guardada, "ok":"ok"})
+            else:
+                if request.user.is_premium:
+                    return render (request, "pagar_deuda.html", {"ok":"not", "errores":confirmacion, "nueva":"si"})
+                else:
+                    return render (request, "pagar_primer_cuota_suscripcion.html", {"ok":"not", "errores": confirmacion})
+
+
+    @login_required
+    def actualizar_usuario(request):
+        user = Usuario.objects.get(id=request.user.id)
+        registro = Registro_usuario_premium(request.POST, instance=user)
+        ticket = Registro_premium_pago(request.POST)
+        if registro.is_valid():
+            registro.save()
+            if ticket.is_valid():
+                ticket.save()
+                return render (request, "bienvenida_suscripcion.html")
+
+    @login_required
+    def ver_suscripcion(request):
+        info = Premium.objects.get(id=1)
+        al_dia = Premium_pago.objects.filter(id_user= request.user.id)
+        al_dia = str(al_dia[len(al_dia)-1]).replace('Premium_pago object (', '').replace(')','')
+        al_dia = Premium_pago.objects.get(id = int(al_dia))
+        al_dia_fecha=str(al_dia.fecha).replace('00:00:00+00:00','').split('-')
+        if al_dia_fecha[1] == "07":
+            ok=True
+        else:
+            ok=False
+        debe = 7 - int(al_dia_fecha[1])
+        tarjeta = Tarjeta.objects.get(id_user = request.user.id, numero =al_dia.nro_tarjeta)
+        return render (request,"ver_suscripcion.html", {"premium":info, "ok":ok, "debe":debe, "tarjeta":tarjeta})
+
+    @login_required
+    def confirmar_desuscripcion(request):
+        user = Usuario.objects.get(id=request.user.id)
+        registro = Registro_usuario_premium(request.POST, instance=user)
+        return render (request,"confirmar_desuscripcion.html", {"user":user, "registro":registro})
+
+    @login_required
+    def actualizar_usuario2(request):
+        user = Usuario.objects.get(id=request.user.id)
+        registro = Registro_usuario_premium(request.POST, instance=user)
+        if registro.is_valid():
+            registro.save()
+            ticket_eliminar = Premium_pago.objects.filter(id_user = request.user.id)
+            for i in range(0,len(ticket_eliminar)):
+                ticket_i = str(ticket_eliminar[i]).replace('Premium_pago object (', '').replace(')','')
+                ticket_e = Premium_pago.objects.get(id = int(ticket_i))
+                ticket_e.delete()
+
+            pasajes = Pasaje.objects.filter(id_user=request.user.id)
+            viajes = []
+            for p in pasajes:
+                if p.estado == "activo":
+                    viaje = Viaje.objects.get(id=p.nro_viaje_id)
+                    current_time = datetime.now()
+                    hora = str((current_time.hour - 3))+":"+str(current_time.minute)+":"+str(current_time.second)
+                    if viaje.fecha_salida.date() > current_time.date():
+                        viajes.append(viaje)
+                    else:
+                        if viaje.fecha_salida.date() == current_time.date():
+                            if str(viaje.fecha_salida.time()) > hora:
+                                viajes.append(viaje)
+            return render (request, "homePasajeros.html", {"nombre":request.user.nombre, "viajes": len(viajes)})
+
+    @login_required
+    def registrar_tarjeta_devuelta(request):
+        tarjeta = Registro_tarjeta()
+        return render (request, "registrar_tarjeta_suscripcion.html", {"usuario":request.user.id, "devuelta":"ok", "base":"premium_base.html"})
+
+    def ponerse_al_dia(request):
+        ticket = Registro_premium_pago()
+        user = Usuario.objects.get(id = request.user.id)
+        al_dia = Premium_pago.objects.filter(id_user= request.user.id)
+        al_dia_fecha = str(al_dia[len(al_dia)-1]).replace('Premium_pago object (', '').replace(')','')
+        al_dia_fecha = Premium_pago.objects.get(id = int(al_dia_fecha))
+        tarjeta = Tarjeta.objects.get(numero = int(al_dia_fecha.nro_tarjeta), id_user = request.user.id)
+        confirmacion = errores_ven(tarjeta)
+        if len(confirmacion) == 0:
+                al_dia_fecha=str(al_dia_fecha.fecha).replace('00:00:00+00:00','').split('-')
+                if al_dia_fecha[1] == "07":
+                    ok=True
+                else:
+                    ok=False
+                debe = 7 - int(al_dia_fecha[1])
+                meses = []
+                for i in range(int(al_dia_fecha[1])+1,8):
+                    if i == 1:
+                        meses.append('Enero')
+                    else:
+                        if i == 2:
+                            meses.append('Febrero')
+                        else:
+                            if i == 3:
+                                meses.append('Marzo')
+                            else:
+                                if i == 4:
+                                    meses.append('Abril')
+                                else:
+                                    if i == 5:
+                                        meses.append('Mayo')
+                                    else:
+                                        if i == 6:
+                                            meses.append('Junio')
+                                        else:
+                                            if i == 7:
+                                                meses.append('Julio')
+                                            else:
+                                                if i == 8:
+                                                    meses.append('Agosto')
+                                                else:
+                                                    if i == 9:
+                                                        meses.append('Septiembre')
+                                                    else:
+                                                        if i == 10:
+                                                            meses.append('Octubre')
+                                                        else:
+                                                            if i == 11:
+                                                                meses.append('Noviembre')
+                                                            else:
+                                                                if i == 12:
+                                                                    meses.append('Diciembre')
+                info = Premium.objects.get(id=1)
+                pagar = info.cuota * debe
+                return render (request, "pagar_deuda.html", {"premium":info,"meses":meses, "tarjeta":tarjeta, "user":user, "pagar":pagar, "id":request.user.id})
+        return render (request, "pagar_deuda.html", {"ok":"not" ,"errores":confirmacion})
+
+    @login_required
+    def ver_suscripcion_sin_deudas(request):
+        info = Premium.objects.get(id=1)
+        ticket = Registro_premium_pago(request.POST)
+        if ticket.is_valid():
+            ticket.save()
+            al_dia = Premium_pago.objects.filter(id_user= request.user.id)
+            al_dia = str(al_dia[len(al_dia)-1]).replace('Premium_pago object (', '').replace(')','')
+            al_dia = Premium_pago.objects.get(id = int(al_dia))
+            al_dia_fecha=str(al_dia.fecha).replace('00:00:00+00:00','').split('-')
+            if al_dia_fecha[1] == "07":
+                ok=True
+            else:
+                ok=False
+            debe = 7 - int(al_dia_fecha[1])
+            tarjeta = Tarjeta.objects.get(id_user = request.user.id, numero =al_dia.nro_tarjeta)
+            return render (request,"ver_suscripcion.html", {"premium":info,"ok":ok, "debe":debe, "tarjeta":tarjeta, "pago":"ok"})

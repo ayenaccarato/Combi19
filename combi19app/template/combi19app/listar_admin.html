@@ -5,6 +5,27 @@
 {% endblock %}
 {% block content %}
     {% csrf_token %}
+    <style type="text/css">
+      table,th,td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        background-color: #adb5b8;
+      }
+
+      th, td {
+        padding: 10px;
+      }
+
+      table{
+        width: 100%;
+      }
+
+      tr:hover td{
+        background-color: #f2f3f3;
+      }
+
+    </style>
+
     <p style= "float: right;">
         <a id="agregar" style="display:block; padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/registrar_admin" type="submit" class="btn btn-success" name=nombre >Agregar administrador</a>
     </p>
@@ -23,15 +44,15 @@
       <br>
       <br>
       <br>
-    <table class="table table-bordered">
+    <table>
       <thead>
         <tr>
-          <td>Nombre</td>
-          <td>Apellido</td>
-          <td>Dni</td>
-          <td>Email</td>
-          <td>Teléfono</td>
-          <td>Dirección</td>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Dni</th>
+          <th>Email</th>
+          <th>Teléfono</th>
+          <th>Dirección</th>
       </tr>
     </thead>
     <tbody>
@@ -68,16 +89,16 @@
         <br>
         <br>
         <br>
-        <table class="table table-bordered">
+        <table>
           <thead>
             <tr>
-              <td>Nombre</td>
-              <td>Apellido</td>
-              <td>Dni</td>
-              <td>Email</td>
-              <td>Teléfono</td>
-              <td>Dirección</td>
-              <td></td>
+              <th>Nombre</th>
+              <th>Apellido</th>
+              <th>Dni</th>
+              <th>Email</th>
+              <th>Teléfono</th>
+              <th>Dirección</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>

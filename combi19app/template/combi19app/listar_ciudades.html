@@ -4,6 +4,28 @@
 
 {% block content %}
     {% csrf_token %}
+    <style type="text/css">
+      table,th,td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        background-color: #adb5b8;
+      }
+
+      th, td {
+        padding: 10px;
+      }
+
+      table{
+        width: 100%;
+      }
+
+      tr:hover td{
+        background-color: #f2f3f3;
+      }
+
+    </style>
+
+
     <p style="float: right;">
       <a id="agregar" style="display: block; padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_ciudad" type="submit" class="btn btn-success" name=nombre >Agregar ciudad</a>
     </p>
@@ -22,13 +44,13 @@
       <br>
       <br>
       <br>
-    <table class="table table-bordered">
+    <table>
       <thead>
         <tr>
-          <td>Codigo postal</td>
-          <td>Nombre</td>
-          <td>Provincia</td>
-          <td>Pais</td>
+          <th>Codigo postal</th>
+          <th>Nombre</th>
+          <th>Provincia</th>
+          <th>Pais</th>
       </tr>
     </thead>
     <tbody>
@@ -53,13 +75,13 @@
         <br>
         <br>
         <br>
-      <table class="table table-bordered">
+      <table>
         <thead>
           <tr>
-            <td>Codigo postal</td>
-            <td>Nombre</td>
-            <td>Provincia</td>
-            <td>Pais</td>
+            <th>Codigo postal</th>
+            <th>Nombre</th>
+            <th>Provincia</th>
+            <th>Pais</th>
         </tr>
       </thead>
       <tbody>
@@ -106,14 +128,14 @@
         <br>
         <br>
         <br>
-        <table class="table table-bordered">
+        <table>
           <thead>
             <tr>
-              <td>Nombre</td>
-              <td>Provincia</td>
-              <td></td>
-              <td></td>
-              <td></td>
+              <th>Nombre</th>
+              <th>Provincia</th>
+              <th></th>
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>

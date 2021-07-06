@@ -1,0 +1,30 @@
+{% extends "usuario_base.html" %}
+{% load static %}
+{% block title %}Suscripcion{% endblock %}
+{% block h1 %}<center>Solicitar Suscripcion</center>{% endblock %}
+{% block content %}
+
+{% csrf_token %}
+
+<div class = "conteiner">
+<div align="center">
+  <img class="d-flex rounded avatar z-depth-1-half mr-2" src={% static 'spot.png' %}  width="1100" height="650" alt="Avatar">
+</div>
+<br>
+<div style="padding-left:400px; padding-right:400px">
+<div class="alert alert-success" role="alert">
+  <h4>
+    <p> INFORMACIÓN IMPORTANTE:</p>
+    <p> EL DESCUENTO ES DEL {{premium.descuento}} % QUE ES APLICADO AL TOTAL DE TU COMPRA </p>
+    <br>
+    <p> EL VALOR DE LA CUOTA ES DE $ {{premium.cuota}} (PUEDE AUMENTAR EN EL TRANSCURSO DEL TIEMPO)</p>
+    <br>
+      <p> SUSCRIBITE YA! 😉</p>
+  </h4>
+</div>
+</div>
+<center>
+  <a href="/registrar_tarjeta_suscripcion/" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Suscribirse</a>
+</center>
+</div>
+{% endblock %}

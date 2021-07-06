@@ -1,5 +1,5 @@
 from django import forms
-from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje, Insumo, InformacionDeContacto, Comentario, Anuncio, Pasaje, Tarjeta, Ticket
+from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje, Insumo, InformacionDeContacto, Comentario, Anuncio, Pasaje, Tarjeta, Ticket, Test, Premium_pago, Premium
 from datetime import datetime, timedelta
 
 class Registro (forms.ModelForm):
@@ -75,6 +75,20 @@ class Registro_usuario (forms.ModelForm):
                    'email',
                    'telefono',
                    'direccion',
+                   )
+
+class Registro_usuario_premium (forms.ModelForm):
+
+    class Meta:
+        model = Usuario
+        fields = ( 'dni',
+                   'nombre',
+                   'apellido',
+                   'email',
+                   'telefono',
+                   'direccion',
+                   'is_premium',
+                   'fecha_premium'
                    )
 
 class Registro_vehiculo (forms.ModelForm):
@@ -178,9 +192,9 @@ class Registro_viaje (forms.ModelForm):
             viaje.save()
         return viaje
 
-    def save_viaje3(self, ruta, commit=True):
+    def save_viaje3(self, ruta, cantidad, commit=True):
         viaje= super().save(commit = True)
-        viaje.vendidos = viaje.vendidos +1
+        viaje.vendidos = viaje.vendidos + cantidad
         hora = viaje.hora_salida.split(':')
         if hora[2] == "AM":
             viaje.fecha_salida = viaje.fecha_salida.replace(hour = int(hora[0]), minute=int(hora[1]))
@@ -299,6 +313,20 @@ class Registro_pasaje(forms.ModelForm):
             pasaje.save()
         return pasaje
 
+    def save_sube(self, commit=True):
+        pasaje= super().save(commit = True)
+        pasaje.estado = "Presente: ACEPTADO"
+        if commit:
+            pasaje.save()
+        return pasaje
+
+    def save_no_sube(self, commit=True):
+        pasaje= super().save(commit = True)
+        pasaje.estado = "Presente: RECHAZADO"
+        if commit:
+            pasaje.save()
+        return pasaje
+
 class Registro_tarjeta(forms.ModelForm):
 
     class Meta:
@@ -335,3 +363,32 @@ class Registro_ticket(forms.ModelForm):
         if commit:
             ticket.save()
         return ticket
+
+class Registro_test(forms.ModelForm):
+
+    class Meta:
+        model = Test
+        fields = ('pasaje',
+                  'temperatura',
+                  'olfato',
+                  'gusto',
+                  'contacto'
+                  )
+
+class Registro_premium_pago(forms.ModelForm):
+
+    class Meta:
+        model = Premium_pago
+        fields = ('id_user',
+                  'fecha',
+                  'nro_tarjeta'
+                  )
+
+
+class Registro_premium(forms.ModelForm):
+
+    class Meta:
+        model = Premium
+        fields = ('descuento',
+                  'cuota',
+                  )

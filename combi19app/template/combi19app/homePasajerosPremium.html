@@ -1,0 +1,67 @@
+{% extends "premium_base.html" %}
+{% block title %}Inicio{% endblock %}
+{% block h1 %}<center>Inicio</center>{% endblock %}
+{% block content %}
+
+<div class = "container">
+  <div class="alert alert-success animate__animated animate__zoomIn" role="alert">
+    <h2 class="alert-heading">Hola {{nombre}} !</h2>
+    <br>
+    <br>
+    <h4>
+      <p> Actualmente tiene: </p>
+      <br>
+    </h4>
+    <h5>
+      <p>  - {{viajes}} viaje/s por realizar </p>
+      <br>
+      <br>
+      <br>
+    </h5>
+  </div>
+{% if ok %}
+    <div class="alert alert-success animate__animated animate__zoomIn" role="alert">
+      <h4>
+        <p> ATENCIÓN: USTED ESTA AL DIA CON LAS CUOTAS DE USUARIO PREMIUM</p>
+      </h4>
+    </div>
+    <br><br><br><br><br><br><br>
+{% else %}
+    <div class="alert alert-warning animate__animated animate__zoomIn" role="alert">
+      <h4>
+        <p> ATENCIÓN: USTED NO ESTA AL DIA CON LAS CUOTAS DE USUARIO PREMIUM. POR FAVOR REGULARICE SU SITUACION CUANTO ANTES.</p>
+        <p> PARA PAGAR TIENE QUE IR A LA SECCIÓN "SUSCRIPCIÓN".</p>
+        <p> ACTUALMENTE DEBE {{debe}} MES/ES.</p>
+      </h4>
+    </div>
+    <br><br>
+{% endif %}
+</div>
+
+
+  <script type="text/javascript">
+    var f = new Date();
+    var mes = f.getMonth() + 1;
+    var hora = f.getHours();
+    var minutos = f.getMinutes();
+    var dia = f.getDate();
+    if (hora < 10){
+      hora = '0' + f.getHours()
+    }
+    if (minutos < 10){
+      minutos = '0' + f.getMinutes()
+    }
+    if (dia < 10){
+      dia = '0' + f.getDate()
+    }
+    if (mes < 10){
+      mes = '0' + (f.getMonth() + 1)
+    }
+    if (hora < 12){
+      document.write('ÚLTIMA ACTUALIZACIÓN: '+ dia + '/' + mes + '/' + f.getFullYear()+ '    '+ hora + ':'+ minutos + ' a.m')
+    }
+    else{
+      document.write('ÚLTIMA ACTUALIZACIÓN: '+ dia + '/' + mes + '/' + f.getFullYear()+ '    '+ hora + ':'+ minutos + ' p.m')
+    }
+  </script>
+{% endblock %}

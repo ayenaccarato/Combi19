@@ -1,0 +1,105 @@
+{% extends "premium_base.html" %}
+{% block title %}Suscripcion{% endblock %}
+{% block h1 %}<center>Confirmar Pago de Deudas</center>{% endblock %}
+{% block content %}
+
+<form action="/ver_suscripcion/deu/" method="POST">
+
+{% csrf_token %}
+
+  {% if ok == "not" %}
+<div class="container">
+    <br><br>
+      {% for i in errores %}
+        {% if i == 1 %}
+          {% if nueva == "si" %}
+              <div class= 'alert alert-danger' role='alert'>
+                  ATENCION: la tarjeta ingresada esta vencida. Por favor ingrese otra tarjeta
+              </div>
+              <a class="btn btn-dark" style="float:left" href="/registrar_tarjeta_suscripcion/rep/">Atras</a>
+            {% else %}
+                <div class= 'alert alert-danger' role='alert'>
+                    ATENCION: la tarjeta registrada esta vencida. Por favor ingrese otra tarjeta
+                </div>
+                <center>
+                <a class="btn btn-dark" style="float:left" href="/ver_suscripcion/">Atras</a>
+                <p style="padding-right:470px">
+                <a class="btn btn-success" href="/registrar_tarjeta_suscripcion/rep/">Registrar otra tarjeta</a>
+              </p>
+              </center>
+            </div>
+              {% endif %}
+            {% endif %}
+            {% endfor %}
+
+  {% else %}
+  <div class="container" style="padding-left:230px">
+    <br>
+      <div class="card text-black bg-susses mb-3" style="max-width: 40rem;">
+        <h4>
+        <div class="card-header">TICKET</div>
+      </h4>
+        <div class="card-body">
+        <h5>
+          <p class="card-text">       USUARIO PREMIUM CON DEUDAS: </p>
+              <br>
+          <p class="card-text">  NOMBRE: {{user.nombre}} </p>
+          <p class="card.text">  APELLIDO: {{user.apellido}} </p>
+          <p class="card.text">  DNI: {{user.dni}} </p>
+          <br>
+          <p class="card-text">  DATOS DE LA TARJETA: </p>
+          <br>
+          <p class="card.text">  NUMERO: {{tarjeta.numero}} - {{tarjeta.emisor}}</p>
+          <p class="card.text">  TITULAR: {{tarjeta.titular}} </p>
+          <br>
+          <p class="card-text">  MESES SIN PAGAR: </p>
+          <br>
+          {% for i in meses %}
+            <p class="card.text">  {{i}} </p>
+          {% endfor %}
+        <br>
+        <br>
+        <p class="card-text">CUOTA (EQUIVALENTE A 1 MES): ${{premium.cuota}}</p>
+        </h5>
+        <h3 class="card-title">PRECIO TOTAL: ${{pagar}}</h3>
+        <br>
+          <button class="btn btn-success" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:right">Pagar</button>
+        </div>
+      </div>
+
+        <input hidden class="col-sm col-form-label" type="text" name="id_user" placeholder="user" id="id_user">
+
+        <input hidden class="col-sm col-form-label" type="text" name="nro_tarjeta" placeholder="nro_tarjeta" id="nro_tarjeta">
+
+        <div hidden class="dates">
+          <div class="input-group">
+            <div class="input-group-prepend">
+                <label class="input-group-text" type="text" name="fecha_salida_label" for="inputGroupSelect01">Fecha  </label>
+            </div>
+              <input type="text" autocomplete="off" class="form-control" name="fecha" id="fecha" placeholder="dd-mm-aaaa"/>
+            </div>
+          </div>
+</div>
+  {% endif %}
+
+  <script>
+
+  document.getElementById("id_user").value = "{{id}}"
+  document.getElementById("nro_tarjeta").value = "{{tarjeta.numero}}"
+  var date = new Date();
+
+  function formatDate(date) {
+    var day = date.getDate();
+    if (day < 10) {
+        day = "0" + day;
+    }
+    var month = date.getMonth() + 1;
+    if (month < 10) {
+        month = "0" + month;
+    }
+    var year = date.getFullYear();
+    return day + "/" + month + "/" + year;
+  }
+  document.getElementById('fecha').value = formatDate(date)
+  </script>
+{% endblock %}

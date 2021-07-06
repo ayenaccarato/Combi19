@@ -4,6 +4,28 @@
 
 {% block content %}
     {% csrf_token %}
+
+    <style type="text/css">
+      table,th,td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        background-color: #adb5b8;
+      }
+
+      th, td {
+        padding: 10px;
+      }
+
+      table{
+        width: 100%;
+      }
+
+      tr:hover td{
+        background-color: #f2f3f3;
+      }
+
+    </style>
+
     <p style= "float: right;">
       <a id="agregar" style="display: block; padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_insumo" type="submit" class="btn btn-success" name=nombre>Agregar insumo</a>
     </p>
@@ -22,14 +44,14 @@
     <br>
     <br>
     <br>
-  <table class="table table-bordered">
+  <table>
     <thead>
       <tr>
-        <td>Nombre</td>
-        <td>Precio</td>
-        <td>Stock</td>
-        <td>Categoría</td>
-        <td>Sabor</td>
+        <th>Nombre</th>
+        <th>Precio</th>
+        <th>Stock</th>
+        <th>Categoría</th>
+        <th>Sabor</th>
 
     </tr>
   </thead>
@@ -66,14 +88,14 @@
         <br>
         <br>
         <br>
-        <table class="table table-bordered">
+        <table>
           <thead>
             <tr>
-              <td>Nombre</td>
-              <td>Precio</td>
-              <td></td>
-              <td></td>
-              <td></td>
+              <th>Nombre</th>
+              <th>Precio</th>
+              <th></th>
+              <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>

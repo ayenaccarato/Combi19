@@ -1,4 +1,4 @@
-{% extends "usuario_base.html" %}
+{% extends base %}
 {% block title %}DatosCompra{% endblock %}
 {% block h1 %}<center>Datos de la compra</center>{% endblock %}
 {% block content %}
@@ -19,7 +19,7 @@
         <h5>
           <p class="card-text">    FACTURA:</p>
               <br>
-          <p class="card-text">  VIAJE A {{nombre}} X{{cant}}       ${{viaje.precio}}</p>
+          <p class="card-text">  VIAJE A {{nombre}} X{{cantidad}}       ${{precio_pasajes}}</p>
           <p class="card-text">  SALIDA: {{viaje.fecha_salida}} </p>
           <p class="card.text">  LLEGADA: {{viaje.fecha_llegada}} </p>
               <br>
@@ -32,7 +32,13 @@
         </h5>
         <br>
         <br>
-        <h3 class="card-title">PRECIO TOTAL: ${{precio_total}}</h3>
+        {% if base == "premium_base.html"%}
+              <h3 class="card-title">PRECIO: ${{precio_total}}</h3>
+              <h3 class="card-title">DESCUENTO POR USUARIO PREMIUM: {{premium.descuento}}%</h3>
+              <h3 class="card-title">PRECIO TOTAL: ${{precio_p}}</h3>
+        {% else %}
+          <h3 class="card-title">PRECIO TOTAL: ${{precio_total}}</h3>
+        {% endif %}
         </div>
       </div>
     </div>
@@ -49,8 +55,8 @@
                 <h5>
                 <div class="col-sm">
                 <div class="input-group-prepend">
-                  <label class="input-group-text" style="width:35%;"type="text" name="numero" pattern="^([0-9]){16}" for="inputGroupSelect01">Número</label>
-                    <input class="list-group-item" style="width: 50%;" type="text" name="numero" placeholder="XXXXXXXXXXXXXXXX" required>
+                  <label class="input-group-text" style="width:35%;"type="text" name="numero" for="inputGroupSelect01">Número</label>
+                    <input class="list-group-item" style="width: 50%;" type="text" name="numero" pattern="^([0-9]+){16}" placeholder="XXXXXXXXXXXXXXXX" required>
                   </div>
                   <br>
                   <div class="input-group-prepend">
@@ -82,8 +88,9 @@
                   </div>
                     <br>
                     <br>
-
+                  <p style="padding-right:80px">
                   <button class="btn btn-success" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:right">Verificar tarjeta</button>
+                </p>
               </h5>
               </div>
             </div>
