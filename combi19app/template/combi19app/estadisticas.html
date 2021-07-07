@@ -1,0 +1,17 @@
+{% extends 'admin_base.html' %}
+{% block title %}Estadisticas{% endblock %}
+
+
+{% block content %}
+  <div class="progress">
+    <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="{{promedio}}" aria-valuemin="0" aria-valuemax="100" style="width: {{promedio}}%">{{promedio}}%</div>
+  </div>
+
+  <br>
+  <br>
+  <br>
+  <!--li>
+    <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="#" type="submit" class="btn btn-info">Ver estadisticas de devolucion de pasaje</a>
+  </li-->
+
+{% endblock %}

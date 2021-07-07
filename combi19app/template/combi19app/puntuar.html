@@ -1,0 +1,79 @@
+{% extends base %}
+{% load static %}
+{% block title %}PuntuarViaje{% endblock %}
+{% block h1 %}<center>Puntuar viaje</center>{% endblock %}
+{% block content %}
+
+<form action="/guardar_puntos/{{viaje.id}}/" method="POST">
+
+{% csrf_token %}
+
+<h5>
+  <br><br>
+<div class='alert alert-warning' role='alert'>
+  Seleccione un puntaje
+  <div class="card" style="width: 40rem">
+    <label for="customRange3" class="form-label" id="labelPuntuar">Puntuar viaje (0 a 10)</label>
+    <input type="range" class="form-range" min="0" max="10" step="1" value="0" name='puntaje' id="puntuar">
+    <output>0--------1--------2-------3--------4--------5-------6--------7--------8--------9-----10</output>
+
+    <input hidden type="text" name="estado"  id="estado">
+    <input hidden type="text" name="fecha_llegada" id="fecha2">
+    <input hidden type="text" name="fecha_salida" id="fecha">
+    <input hidden type="text" name="hora_salida"  id="hora_salida">
+    <input hidden type="text" name="precio"  id="precio">
+    <input hidden type="text" name="vendidos"  id="vendidos">
+    <input hidden type="text" name="asientos_total"  id="asientos_total">
+    <input hidden type="text" name="asientos_disponibles"  id="asientos_disponibles">
+    <input hidden type="text" name="chofer"  id="chofer">
+    <input hidden type="text" name="vehiculo"  id="vehiculo">
+    <input hidden type="text" name="ruta"  id="ruta">
+
+    <input hidden type="text" name="id_viaje" id="id_viaje">
+    <input hidden type="text" name="id_user" id="id_user">
+  </div>
+  <br><br><br>
+  <p>
+    <button style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Confirmar</button>
+  </p>
+  <br><br>
+  <p>
+    <a class="btn btn-dark" href= "#" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:50px;">Cancelar</a>
+  </p>
+</div>
+</h5>
+</center>
+</form>
+<script>
+var date = new Date("{{viaje.fecha_salida}}");
+var date2 = new Date("{{viaje.fecha_llegada}}");
+
+function formatDate(date) {
+  var day = date.getDate();
+  if (day < 10) {
+      day = "0" + day;
+  }
+  var month = date.getMonth() + 1;
+  if (month < 10) {
+      month = "0" + month;
+  }
+  var year = date.getFullYear();
+  return day + "/" + month + "/" + year;
+}
+document.getElementById("estado").value = '{{viaje.estado}}';
+
+document.getElementById('fecha').value = formatDate(date);
+document.getElementById('fecha2').value = formatDate(date2);
+document.getElementById("hora_salida").value = "{{viaje.hora_salida}}";
+document.getElementById("precio").value = "{{viaje.precio}}".replace(',','.')
+document.getElementById("vendidos").value = "{{viaje.vendidos}}";
+document.getElementById("asientos_total").value = "{{viaje.asientos_total}}";
+document.getElementById("asientos_disponibles").value = "{{viaje.asientos_disponibles}}";
+document.getElementById("chofer").value = "{{viaje.chofer.id}}";
+document.getElementById("ruta").value = "{{viaje.ruta.id}}";
+document.getElementById("vehiculo").value = "{{viaje.vehiculo.id}}";
+
+document.getElementById("id_viaje").value = "{{viaje.id}}";
+document.getElementById("id_user").value = "{{usuario}}";
+</script>
+{% endblock %}

@@ -1,5 +1,5 @@
 from django import forms
-from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje, Insumo, InformacionDeContacto, Comentario, Anuncio, Pasaje, Tarjeta, Ticket, Test, Premium_pago, Premium
+from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje, Insumo, InformacionDeContacto, Comentario, Anuncio, Pasaje, Tarjeta, Ticket, Test, Premium_pago, Premium, Puntuar
 from datetime import datetime, timedelta
 
 class Registro (forms.ModelForm):
@@ -19,6 +19,7 @@ class Registro (forms.ModelForm):
         usuario = super().save(commit= False)
         usuario.long_contra = len(usuario.password)
         usuario.set_password(self.cleaned_data['password'])
+        usuario.puntos = 0
         if commit:
             usuario.save()
         return usuario
@@ -28,6 +29,7 @@ class Registro (forms.ModelForm):
         usuario.long_contra = len(usuario.password)
         usuario.set_password(self.cleaned_data['password'])
         usuario.tipo_usuario=2
+        usuario.puntos = 0
         if commit:
             usuario.save()
         return usuario
@@ -37,6 +39,7 @@ class Registro (forms.ModelForm):
         usuario.long_contra = len(usuario.password)
         usuario.set_password(self.cleaned_data['password'])
         usuario.tipo_usuario=1
+        usuario.puntos = 0
         if commit:
             usuario.save()
         return usuario
@@ -169,6 +172,7 @@ class Registro_viaje (forms.ModelForm):
         viaje.asientos_total = vehiculo.capacidad
         viaje.asientos_disponibles = vehiculo.capacidad - viaje.vendidos
         hora = viaje.hora_salida.split(':')
+        viaje.puntaje = 0
         if hora[2] == "AM":
             viaje.fecha_salida = viaje.fecha_salida.replace(hour = int(hora[0]), minute=int(hora[1]))
         else:
@@ -188,6 +192,7 @@ class Registro_viaje (forms.ModelForm):
         viaje = super().save(commit= False)
         viaje.fecha_salida = fechas.fecha_salida
         viaje.fecha_llegada = fechas.fecha_llegada
+        viaje.puntaje = 0
         if commit:
             viaje.save()
         return viaje
@@ -196,6 +201,7 @@ class Registro_viaje (forms.ModelForm):
         viaje= super().save(commit = True)
         viaje.vendidos = viaje.vendidos + cantidad
         hora = viaje.hora_salida.split(':')
+        viaje.puntaje = 0
         if hora[2] == "AM":
             viaje.fecha_salida = viaje.fecha_salida.replace(hour = int(hora[0]), minute=int(hora[1]))
         else:
@@ -214,6 +220,30 @@ class Registro_viaje (forms.ModelForm):
     def save_viaje4(self, commit=True):
         viaje = super().save(commit=False)
         viaje.estado = 'cancelado'
+        viaje.puntaje = 0
+        if commit:
+            viaje.save()
+        return viaje
+
+class Registro_viaje_puntos (forms.ModelForm):
+    class Meta:
+        model = Viaje
+        fields = ('fecha_salida',
+                  'fecha_llegada',
+                  'hora_salida',
+                  'ruta',
+                  'chofer',
+                  'vehiculo',
+                  'asientos_total',
+                  'asientos_disponibles',
+                  'vendidos',
+                  'precio',
+                  'estado',
+                  'puntaje'
+                  )
+    def save_puntos(self, puntos, commit=True):
+        viaje = super().save(commit=False)
+        viaje.puntaje += puntos
         if commit:
             viaje.save()
         return viaje
@@ -391,4 +421,12 @@ class Registro_premium(forms.ModelForm):
         model = Premium
         fields = ('descuento',
                   'cuota',
+                  )
+
+class Registro_puntuar(forms.ModelForm):
+
+    class Meta:
+        model = Puntuar
+        fields = ('id_viaje',
+                  'id_user',
                   )

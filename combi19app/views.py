@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.template.loader import get_template
 from django.http import HttpResponse, HttpRequest
-from combi19app.forms import Registro, Registro_admin, Registro_vehiculo, Registro_ruta, Registro_ciudad, Registro_viaje, Registro_chofer, Registro_insumo, Registro_info_de_contacto, Registro_comentario, Registro_anuncio, Registro_usuario, Registro_contra, Registro_pasaje, Registro_tarjeta, Registro_ticket, Registro_premium, Registro_premium_pago, Registro_test, Registro_usuario_premium
-from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje, Insumo, InformacionDeContacto, Comentario, Anuncio, Pasaje, Tarjeta, Ticket, Premium, Test, Premium_pago
+from combi19app.forms import Registro, Registro_admin, Registro_vehiculo, Registro_ruta, Registro_ciudad, Registro_viaje, Registro_chofer, Registro_insumo, Registro_info_de_contacto, Registro_comentario, Registro_anuncio, Registro_usuario, Registro_contra, Registro_pasaje, Registro_tarjeta, Registro_ticket, Registro_premium, Registro_premium_pago, Registro_test, Registro_usuario_premium, Registro_puntuar, Registro_viaje_puntos
+from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje, Insumo, InformacionDeContacto, Comentario, Anuncio, Pasaje, Tarjeta, Ticket, Premium, Test, Premium_pago, Puntuar
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.decorators import login_required
@@ -889,9 +889,11 @@ class ListarViajes(HttpRequest):
             if v.estado == 'activo':
                 hoy = datetime.today()
                 if v.fecha_salida.date() >= hoy.date():
+                    print('agrego')
                     viajes.append(v)
                 else:
                     if v.fecha_salida.date() < hoy.date():
+                        print('fecha salida', fecha_salida.date(), 'hoy', hoy.date())
                         v.estado = 'realizado'
                         v.save()
             r = Ruta.objects.get(id = v.ruta_id)
@@ -1211,30 +1213,98 @@ class FormularioComentario(HttpRequest):
         viajes = Viaje.objects.all()
         viajes_hechos=[]
         nombre_chofer={}
+        viajes_usuario=[]
         usuario = request.user.id
+        pasajes = Pasaje.objects.filter(id_user=request.user.id, estado='activo')
+        habilita = []
+
         #faltaria agregar que el viaje sea realizado
         hoy = datetime.today()
         hora = str((hoy.hour - 3)) +":"+ str(hoy.minute) +":"+ str(hoy.second)
         for i in viajes:
+            hab_votar = Puntuar.objects.filter(id_user=request.user.id, id_viaje=i.id)
+            if len(hab_votar) == 0:
+                habilita+=[i.id]
             if i.fecha_llegada.date() < hoy.date():
                 viajes_hechos+=[i]
             else:
                 if i.fecha_llegada.date() == hoy.date():
                     if str(i.fecha_llegada.time()) < hora:
                         viajes_hechos+=[i]
+            if len(pasajes) != 0:
+                pasaje = Pasaje.objects.filter(id_user=request.user.id, nro_viaje_id=i.id)
+                if len(pasaje) != 0:
+                    for p in pasaje:
+                        viajes_usuario+=[p.nro_viaje_id]
             chofer = Usuario.objects.get (id = i.chofer_id)
             nombre_chofer[i.chofer]= chofer.nombre +' '+ chofer.apellido
+
         if (request.user.tipo_usuario == 1):
-             return render (request, "carteleraPasajero.html",{"base": "admin_base.html", "tipo": request.user.tipo_usuario,"viajes": viajes_hechos, "anuncios":anuncios, "is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer})
+             return render (request, "carteleraPasajero.html",{"base": "admin_base.html", "tipo": request.user.tipo_usuario,"viajes": viajes_hechos,'viajes_usuario': set(viajes_usuario), "anuncios":anuncios, "is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer})
         else:
              if (request.user.tipo_usuario == 2):
-                 return render (request, "carteleraPasajero.html",{"base": "chofer_base.html","tipo": request.user.tipo_usuario,"anuncios":anuncios ,"viajes":viajes_hechos,"is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer})
+                 return render (request, "carteleraPasajero.html",{"base": "chofer_base.html","tipo": request.user.tipo_usuario,"anuncios":anuncios ,"viajes":viajes_hechos,'viajes_usuario': set(viajes_usuario),"is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer})
              else:
                  if request.user.is_premium:
-                      return render (request, "carteleraPasajero.html",{"base": "premium_base.html","tipo": request.user.tipo_usuario,"anuncios":anuncios ,"viajes":viajes_hechos, "is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer})
+                      return render (request, "carteleraPasajero.html",{"base": "premium_base.html","tipo": request.user.tipo_usuario,"anuncios":anuncios ,"viajes_usuario": set(viajes_usuario), "viajes":viajes_hechos, "is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer, "habilitados": set(habilita)})
                  else:
-                     return render (request, "carteleraPasajero.html",{"base": "usuario_base.html","tipo": request.user.tipo_usuario,"anuncios":anuncios ,"viajes":viajes_hechos, "is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer})
+                     return render (request, "carteleraPasajero.html",{"base": "usuario_base.html","tipo": request.user.tipo_usuario,"anuncios":anuncios ,"viajes_usuario": set(viajes_usuario), "viajes":viajes_hechos, "is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer, "habilitados": set(habilita)})
 
+
+    def puntuar(request, id_viaje):
+        viaje = Viaje.objects.get(id=id_viaje)
+        v_puntuar = Registro_viaje_puntos(instance=viaje)
+        puntuado = Registro_puntuar()
+        if request.user.is_premium:
+            return render (request, "puntuar.html", {'base':"premium_base.html", 'viaje': viaje, 'v_puntuar': v_puntuar, 'usuario':request.user.id})
+        else:
+            return render (request, "puntuar.html", {'base':"usuario_base.html", 'viaje': viaje, 'v_puntuar': v_puntuar, 'usuario':request.user.id})
+
+    def guardar_puntos(request, id_viaje):
+        viaje = Viaje.objects.get(id=id_viaje)
+        puntos = viaje.puntaje
+        v_puntuar = Registro_viaje_puntos(request.POST, instance=viaje)
+
+        if v_puntuar.is_valid():
+            print('holaa')
+            v_puntuar.save_puntos(puntos)
+            puntuado = Registro_puntuar(request.POST)
+            if puntuado.is_valid():
+                puntuado.save()
+        anuncio = Registro_anuncio()
+        anuncios = Anuncio.objects.all().order_by('-id')
+        viajes = Viaje.objects.all()
+        viajes_hechos=[]
+        nombre_chofer={}
+        viajes_usuario=[]
+        usuario = request.user.id
+        pasajes = Pasaje.objects.filter(id_user=request.user.id, estado='activo')
+        habilita = []
+        #faltaria agregar que el viaje sea realizado
+        hoy = datetime.today()
+        hora = str((hoy.hour - 3)) +":"+ str(hoy.minute) +":"+ str(hoy.second)
+        for i in viajes:
+            hab_votar = Puntuar.objects.filter(id_user=request.user.id, id_viaje=i.id)
+            if len(hab_votar) == 0:
+                habilita+=[i.id]
+            if i.fecha_llegada.date() < hoy.date():
+                viajes_hechos+=[i]
+            else:
+                if i.fecha_llegada.date() == hoy.date():
+                    if str(i.fecha_llegada.time()) < hora:
+                        viajes_hechos+=[i]
+            if len(pasajes) != 0:
+                pasaje = Pasaje.objects.filter(id_user=request.user.id, nro_viaje_id=i.id)
+                if len(pasaje) != 0:
+                    for p in pasaje:
+                        viajes_usuario+=[p.nro_viaje_id]
+            chofer = Usuario.objects.get (id = i.chofer_id)
+            nombre_chofer[i.chofer]= chofer.nombre +' '+ chofer.apellido
+
+        if request.user.is_premium:
+            return render (request, "carteleraPasajero.html",{"base": "premium_base.html","tipo": request.user.tipo_usuario,"anuncios":anuncios ,"viajes_usuario": set(viajes_usuario), "viajes":viajes_hechos, "is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer, "habilitados": set(habilita)})
+        else:
+            return render (request, "carteleraPasajero.html",{"base": "usuario_base.html","tipo": request.user.tipo_usuario,"anuncios":anuncios ,"viajes_usuario": set(viajes_usuario), "viajes":viajes_hechos, "is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer, "habilitados": set(habilita)})
 
     @login_required
     def ver_comentarios(request,id_viaje,tipo, id_user):

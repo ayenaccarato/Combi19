@@ -15,6 +15,7 @@ class Usuario_Manager(BaseUserManager):
         )
         us.long_contra = len(password)
         us.set_password(password)
+        us.puntos = 0
         us.save(using=self._db)
         return us
 
@@ -34,6 +35,7 @@ class Usuario_Manager(BaseUserManager):
         us.is_superuser = True
         us.is_active= True
         us.tipo_usuario= 1
+        us.puntos = 0
         us.save(using=self._db)
         return us
 
@@ -47,6 +49,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     telefono = models.IntegerField()
     long_contra = models.IntegerField()
     date_joined = models.DateTimeField(('date joined'), auto_now_add=True)
+    puntos = models.IntegerField()
     #is_active = models.BooleanField(default= True)
     #staff = models.BooleanField(default= False)
     is_active = models.BooleanField(default=True, verbose_name='account is activated')
@@ -125,6 +128,7 @@ class Viaje (models.Model):
     vendidos = models.IntegerField()
     precio = models.FloatField()
     estado = models.CharField(max_length=20)
+    puntaje = models.IntegerField()
     def publish(self):
         self.save()
 
@@ -195,3 +199,7 @@ class Premium_pago(models.Model):
 class Premium(models.Model):
     descuento = models.IntegerField()
     cuota = models.FloatField()
+
+class Puntuar(models.Model):
+    id_viaje = models.IntegerField()
+    id_user = models.IntegerField()

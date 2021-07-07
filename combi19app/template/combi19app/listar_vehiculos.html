@@ -141,7 +141,7 @@
           <tbody>
             {% for vehiculo in vehiculos %}
             <tr>
-              <th scope="row">{{vehiculo.patente}}</th>
+              <td scope="row">{{vehiculo.patente}}</td>
               <td>{{vehiculo.marca}}</td>
               <td> <a class="btn btn-primary" href= "ver_detalle_vehiculo/{{vehiculo.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver detalle</a>
                 <td> <a class="btn btn-warning" href= "editar_vehiculo/{{vehiculo.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Editar</a>  </td>

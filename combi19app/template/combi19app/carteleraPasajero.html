@@ -4,6 +4,7 @@
 {% block h1 %}<center>Cartelera</center>{% endblock %}
 {% block content %}
 
+<form action="/puntuar//?actual={{actual}}-{{cant}} " method="POST">
 <div class = "container">
   <div class= "row row-cols-2">
 
@@ -63,7 +64,9 @@
        {% endif %}
 
       {% for i in viajes %}
+
                 <div class="card" style="width: 40rem">
+
                   <h4>
                     <div class="card-header">VIAJE A : {{i.ruta}}
                     </div>
@@ -79,14 +82,23 @@
                       {% endfor %}
                       <p class="card-text">PATENTE COMBI: {{i.vehiculo}}</p>
                       <br>
-                      <p class="card-text"><a class="btn btn-success" href= "/ver_comentario/{{i.id}}/{{tipo}}/{{usuario}}/" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;">Ver comentarios</a></p>
+                      <p class="card-text"><a class="btn btn-success" href= "/ver_comentario/{{i.id}}/{{tipo}}/{{usuario}}/" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;">Ver comentarios</a>
+                      {% if i.id in habilitados %}
+                        <a id="puntuar" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;" href="/puntuar/{{i.id}}" type="submit" class="btn btn-info" name="puntuar" >Puntuar</a>
+                      {% else %}
+                        <button disabled style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;" href="/puntuar/{{i.id}}" type="button" title='Ya puntuó este viaje' class="btn btn-info" name="puntuar" >Puntuar</button>
+                        <!--p style="background-color:grey; color:white">Este viaje ya fue puntuado por usted</p-->
+                      {% endif %}
+                    </p>
+
                     </h5>
                   </div>
                   </div>
                   <br>
         {% endfor %}
+
+
       </div>
       </div>
     </div>
-
 {% endblock %}
