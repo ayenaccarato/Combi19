@@ -1,8 +1,26 @@
 {% extends base %}
-{% block title %}Pasajeos{% endblock %}
+{% block title %}Pasajeros{% endblock %}
 {% block h1 %}<center>Listado de pasajeros</center>{% endblock %}
 {% block content %}
+<form action="/ver_pasajeros/iniciar_viaje/{{viaje.id}}/" method="POST">
     {% csrf_token %}
+    {% if editado == "si" %}
+      <div class='alert alert-success' role='alert'>
+        El test del pasajero fue editado exitosamente!
+      </div>
+    {% endif %}
+    {% if mensaje == "no_puede" %}
+      <div class='alert alert-danger' role='alert'>
+        El pasajero no puede ser eliminado
+      </div>
+    {% else %}
+      {% if mensaje == 'eliminado' %}
+        <div class='alert alert-success' role='alert'>
+          El pasajero fue eliminado exitosamente!
+        </div>
+      {% endif %}
+    {% endif %}
+    <a class="btn btn-dark" href= "/listar_proximos_viajes" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:left;">Atrás</a>
     <br>
     <div class="container">
       <h4>
@@ -10,18 +28,22 @@
         VIAJE: {{viaje.ruta}} <br>
         SALIDA: {{viaje.fecha_salida}}<br>
         LLEGADA: {{viaje.fecha_llegada}}<br>
-        CHOFER: {{viaje.chofer}}<br>
+        CHOFER: {{viaje.chofer.nombre}} {{viaje.chofer.apellido}}
+        {% if base == "chofer_base.html" and viaje.estado == 'activo' %}
+          {% if iniciar and cant_p > 0 %}
+            <button onclick = 'boton_inicio()' id='iniciar' class="btn btn-success" style="display:block; padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float: right;" type='submit'>Iniciar</button>
+          {% endif %}
+        {% else %}
+          {% if base == "chofer_base.html" and viaje.estado == 'iniciado' %}
+          <button onclick = 'boton_terminar()' id='terminar' class="btn btn-danger" style="display:block; padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float: right;" type='submit'>Terminar</button>
+          {% endif %}
+        {% endif %}<br>
         VEHICULO: {{viaje.vehiculo}}<br>
         PASAJES VENDIDOS: {{viaje.vendidos}}<br>
         ASIENTOS DISPONIBLES: {{viaje.asientos_disponibles}}<br>
         PRECIO: $ {{viaje.precio}}<br>
 
       </div>
-      {% if editado == "si" %}
-      <div class='alert alert-success' role='alert'>
-        El test del pasajero fue editado exitosamente!
-      </div>
-      {% endif %}
     </div>
     </h4>
     <style type="text/css">
@@ -44,7 +66,13 @@
       }
 
     </style>
-<h4>
+  {% if cant_p != 0 %}
+  <h5>
+    <div class='alert alert-warning' role='alert'>
+      El viaje no puede ser iniciado hasta que todos los pasajeros sean testeados o marcados como ausente
+    </div>
+  </h5>
+  <h4>
     <table>
       <thead>
         <tr>
@@ -53,7 +81,6 @@
           <th>Apellido</th>
           <th>Estado del pasaje</th>
           {% if base == "admin_base.html" %}
-            <th></th>
             <th></th>
           {% else %}
             <th></th>
@@ -64,6 +91,7 @@
       </tr>
     </thead>
     <tbody>
+
       {% for i in pasajeros %}
       <tr>
         <td>{{i.dni}}</td>
@@ -82,7 +110,11 @@
               {% else %}
               <td> <a class="btn btn-primary" href= "/ver_test/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver test</a>  </td>
               {% if base == "chofer_base.html"%}
+                {% if viaje.estado == 'activo' %}
                 <td> <a class="btn btn-warning" href= "/editar_test/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Editar test</a>  </td>
+                {% else %}
+                <td> NO PUEDE EDITAR EL TEST PORQUE EL VIAJE YA INICIÓ </td>
+                {% endif %}
               {% endif %}
 
               {% endif %}
@@ -93,14 +125,43 @@
                 <td> EL PASAJERO AUN NO FUE TESTEADO </td>
             {% endif %}
             {% if base == "chofer_base.html"%}
+              {% if testear %}
               <td> <a class="btn btn-success" href= "/testeo/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Testear</a>  </td>
                 <td> <a class="btn btn-dark" href= "/confirmar_ausente/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ausente</a>  </td>
+              {% else %}
+                <td> NO PUEDE TESTEAR HASTA EL DÍA DEL VIAJE </td>
+                <td> NO PUEDE MARCAR AUSENTE HASTA EL DÍA DEL VIAJE </td>
+              {% endif %}
+
+                <td> <a class="btn btn-danger" href= "/eliminar_pasajero/{{i.id_user}}/{{i.nro_viaje_id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Eliminar</a>  </td>
             {% endif %}
-            <td> <a class="btn btn-danger" href= "#" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Eliminar</a>  </td>
+
         {% endif %}
       </tr>
       {% endfor %}
     </table>
+    {% else %}
+    <br>
+    <br>
+    <div class="jumbotron jumbotron-fluid">
+      <div class="container">
+        <h1 class="display-4">Ups!</h1>
+        <p class="lead">No hay pasajeros para este viaje.</p>
+      </div>
+    </div>
+    {% endif %}
   </h4>
     <br><br><br>
+</form>
+<script>
+  function boton_inicio(){
+    document.getElementById('iniciar').style.display = 'none'
+    document.getElementById('terminar').style.display = 'block'
+  }
+
+  function boton_terminar(){
+    document.getElementById('iniciar').style.display = 'none'
+    document.getElementById('terminar').style.display = 'none'
+  }
+</script>
 {% endblock %}

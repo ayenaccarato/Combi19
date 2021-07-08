@@ -86,7 +86,7 @@
                       {% if i.id in habilitados %}
                         <a id="puntuar" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;" href="/puntuar/{{i.id}}" type="submit" class="btn btn-info" name="puntuar" >Puntuar</a>
                       {% else %}
-                        <button disabled style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;" href="/puntuar/{{i.id}}" type="button" title='Ya puntuó este viaje' class="btn btn-info" name="puntuar" >Puntuar</button>
+                        <button disabled style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;" href="/puntuar/{{i.id}}" type="button" title='Ya puntuó este viaje o no viajó' class="btn btn-info" name="puntuar" >Puntuar</button>
                         <!--p style="background-color:grey; color:white">Este viaje ya fue puntuado por usted</p-->
                       {% endif %}
                     </p>

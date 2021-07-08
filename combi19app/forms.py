@@ -226,6 +226,7 @@ class Registro_viaje (forms.ModelForm):
         return viaje
 
 class Registro_viaje_puntos (forms.ModelForm):
+    
     class Meta:
         model = Viaje
         fields = ('fecha_salida',
