@@ -47,9 +47,17 @@
           <li class="nav-item">
             <a class="nav-link" href="/ver_info_suscripcion">Suscripcion</a>
           </li>
-          <li class="nav-item">
-             <a class="nav-link" href="/estadisticas">Estadisticas</a>
-         </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Estadisticas
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="/estadisticas_registro_usuario">Registro de usuarios</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/estadisticas">puntajes</a></li>
+              <li><hr class="dropdown-divider"></li>
+            </ul>
+        </li>
           <li class="nav-item">
             <a class="nav-link" href="/menu_info_de_contacto">Contacto</a>
           </li>
@@ -146,6 +154,32 @@
                   endDate: "31/12/2021"
 
               });
+
+              $('#fecha3').datepicker({
+                  language: "es",
+                  todayBtn: "linked",
+                  clearBtn: true,
+                  format: "dd/mm/yyyy",
+                  multidate: false,
+                  todayHighlight: true,
+                  autoclose: true,
+                  endDate: "31/12/2021"
+
+              });
+
+              $('#fecha4').datepicker({
+                  language: "es",
+                  todayBtn: "linked",
+                  clearBtn: true,
+                  format: "dd/mm/yyyy",
+                  multidate: false,
+                  todayHighlight: true,
+                  autoclose: true,
+                  endDate: "31/12/2021"
+
+              });
+
+
 
           })
   </script>

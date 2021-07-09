@@ -1528,10 +1528,15 @@ class ComprarPasaje(HttpRequest):
             return render (request, "comprar_pasaje_cantidad.html", {"viaje": viaje,"dato":pasaje,"usuario":usuario, "base":"premium_base.html"})
         else:
             return render (request, "comprar_pasaje_cantidad.html", {"viaje": viaje,"dato":pasaje,"usuario":usuario, "base": "usuario_base.html"})
+    @login_required
+    def cancelar(request):
+        return home(request)
 
     @login_required
     def comprar_pasaje_completar_datos(request,id_viaje):
         if (request.GET.get('post') =="false"):
+            print("borrando pasajes sin abonar")
+            Pasaje.objects.filter(estado='no abonado', id_user=request.user.id).delete()
             actual = int(request.GET.get('actual')) + 1
             usuario = request.user.id
             viaje = Viaje.objects.get(id = id_viaje)
@@ -2293,6 +2298,25 @@ class Suscripcion(HttpRequest):
             return render (request,"ver_suscripcion.html", {"premium":info,"ok":ok, "debe":debe, "tarjeta":tarjeta, "pago":"ok"})
 
 class Estadisticas (HttpRequest):
+
+    @login_required
+    def registro_usuarios(request):
+        return render (request, "estadisticas_registro.html")
+
+    @login_required
+    def registro_usuarios_ver(request):
+        date = dateutil.parser.parse(request.GET.get('fecha'),dayfirst=True)
+        date2 = dateutil.parser.parse(request.GET.get('fecha2'),dayfirst=True)+timedelta(days=+1)
+        usuarios = Usuario.objects.filter(date_joined__gte=date,date_joined__lte=date2)
+        usuarios_total = Usuario.objects.all()
+        cant_usuarios = len(usuarios)
+        cant_usuarios_total = len(usuarios_total)
+        porcentaje=(cant_usuarios * 100/ cant_usuarios_total)
+
+        print(porcentaje)
+        print(request.GET.get('fecha'))
+        print(request.GET.get('fecha2'))
+        return render (request, "estadisticas_registro_ver.html",{"usuarios":len(usuarios), "fecha":request.GET.get('fecha'), "fecha2":request.GET.get('fecha2'), "total":len(usuarios_total), "porcentaje":int(porcentaje)})
 
     @login_required
     def puntos_viaje(request):
