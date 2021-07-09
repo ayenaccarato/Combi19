@@ -1,0 +1,70 @@
+{% extends "chofer_base.html" %}
+{% load static %}
+{% block title %}cancelarViaje{% endblock %}
+{% block h1 %}<center>Confirmación para cancelar viaje</center>{% endblock %}
+{% block content %}
+
+<form action="/listar_proximos_viajes/cancelar_viaje_chofer/{{viaje.id}}/" method="POST">
+
+{% csrf_token %}
+<input hidden type="text" name="fecha_llegada" id="fecha2">
+<input hidden type="text" name="fecha_salida" id="fecha">
+<input hidden type="text" name="hora_salida"  id="hora_salida">
+<input hidden type="text" name="precio"  id="precio">
+<input hidden type="text" name="vendidos"  id="vendidos">
+<input hidden type="text" name="asientos_total"  id="asientos_total">
+<input hidden type="text" name="asientos_disponibles"  id="asientos_disponibles">
+<input hidden type="text" name="chofer"  id="chofer">
+<input hidden type="text" name="vehiculo"  id="vehiculo">
+<input hidden type="text" name="ruta"  id="ruta">
+
+<center>
+<h5>
+  <br><br>
+<div class='alert alert-warning' role='alert'>
+  ¿ Seguro que quiere cancelar el viaje {{viaje.ruta}} ?
+  <br><br><br>
+  <p>
+    <button style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Confirmar</button>
+  </p>
+  <br><br>
+  <p>
+    <a class="btn btn-dark" href= "/listar_proximos_viajes" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:50px;">Cancelar</a>
+  </p>
+</div>
+</h5>
+</center>
+
+<script>
+
+var date = new Date("{{viaje.fecha_salida}}");
+var date2 = new Date("{{viaje.fecha_llegada}}");
+
+function formatDate(date) {
+  var day = date.getDate();
+  if (day < 10) {
+      day = "0" + day;
+  }
+  var month = date.getMonth() + 1;
+  if (month < 10) {
+      month = "0" + month;
+  }
+  var year = date.getFullYear();
+  return day + "/" + month + "/" + year;
+}
+
+document.getElementById('fecha').value = formatDate(date);
+document.getElementById('fecha2').value = formatDate(date2);
+
+document.getElementById("hora_salida").value = "{{viaje.hora_salida}}";
+document.getElementById("asientos_total").value = "{{viaje.asientos_total}}";
+document.getElementById("asientos_disponibles").value = "{{viaje.asientos_disponibles}}"-"{{cantidad}}";
+document.getElementById("vendidos").value = "{{viaje.vendidos}}";
+document.getElementById("precio").value = "{{viaje.precio}}".replace(',','.')
+document.getElementById("chofer").value = "{{viaje.chofer.id}}";
+document.getElementById("ruta").value = "{{viaje.ruta.id}}";
+document.getElementById("vehiculo").value = "{{viaje.vehiculo.id}}";
+
+
+</script>
+{% endblock %}

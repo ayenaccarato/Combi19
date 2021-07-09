@@ -133,7 +133,7 @@
                 <td> NO PUEDE MARCAR AUSENTE HASTA EL DÍA DEL VIAJE </td>
               {% endif %}
 
-                <td> <a class="btn btn-danger" href= "/eliminar_pasajero/{{i.id_user}}/{{i.nro_viaje_id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Eliminar</a>  </td>
+                <td> <a class="btn btn-danger" href= "/listar_pasajeros/eliminar/{{i.id_user}}/{{viaje.id}}/confirmar_eliminado_pasajero/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Eliminar</a>  </td>
             {% endif %}
 
         {% endif %}
