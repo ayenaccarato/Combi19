@@ -2309,11 +2309,11 @@ class Estadisticas (HttpRequest):
         date2 = dateutil.parser.parse(request.GET.get('fecha2'),dayfirst=True)+timedelta(days=+1)
         usuarios = Usuario.objects.filter(date_joined__gte=date,date_joined__lte=date2)
         usuarios_total = Usuario.objects.all()
-        cant_usuarios = len(usuarios)
-        cant_usuarios_total = len(usuarios_total)
+        cant_usuarios = len(set(usuarios))
+        cant_usuarios_total = len(set(usuarios_total))
         porcentaje=(cant_usuarios * 100/ cant_usuarios_total)
 
-        print(porcentaje)
+        print(usuarios_total)
         print(request.GET.get('fecha'))
         print(request.GET.get('fecha2'))
         return render (request, "estadisticas_registro_ver.html",{"usuarios":len(usuarios), "fecha":request.GET.get('fecha'), "fecha2":request.GET.get('fecha2'), "total":len(usuarios_total), "porcentaje":int(porcentaje)})
@@ -2326,3 +2326,44 @@ class Estadisticas (HttpRequest):
             puntos += v.puntaje
         promedio = puntos / len(viajes)
         return render (request, "estadisticas.html", {"promedio": promedio})
+
+    @login_required
+    def viajes(request):
+        return render (request, "estadisticas_viajes.html")
+
+    @login_required
+    def viajes_ver(request):
+        date = dateutil.parser.parse(request.GET.get('fecha'),dayfirst=True)
+        date2 = dateutil.parser.parse(request.GET.get('fecha2'),dayfirst=True)+timedelta(days=+1)
+        viajes = Viaje.objects.filter(fecha_salida__gte=date,fecha_salida__lte=date2)
+        viajes_total = Viaje.objects.all()
+        cant_viajes = len(set(viajes))
+        cant_viajes_total = len(set(viajes_total))
+        porcentaje=(cant_viajes * 100/ cant_viajes_total)
+        print(request.GET.get('fecha'))
+        print(request.GET.get('fecha2'))
+        return render (request, "estadisticas_viaje_ver.html",{"viajes":cant_viajes, "fecha":request.GET.get('fecha'), "fecha2":request.GET.get('fecha2'), "total":cant_viajes_total, "porcentaje":int(porcentaje)})
+
+
+    @login_required
+    def pasajeros(request):
+        return render (request, "estadisticas_pasajeros.html")
+
+    @login_required
+    def pasajeros_ver(request):
+        date = dateutil.parser.parse(request.GET.get('fecha'),dayfirst=True)
+        date2 = dateutil.parser.parse(request.GET.get('fecha2'),dayfirst=True)+timedelta(days=+1)
+        viajes = Viaje.objects.filter(fecha_salida__gte=date,fecha_salida__lte=date2)
+        pasajeros = []
+        pasajeros_total = Pasaje.objects.all()
+        for v in viajes:
+            pasajeros_viaje = Pasaje.objects.filter(nro_viaje_id= v.id)
+            for p in pasajeros_viaje:
+                pasajeros.append(p)
+        cant_pasajeros = len(set(pasajeros))
+        print(pasajeros)
+        cant_pasajeros_total = len(set(pasajeros_total))
+        porcentaje=(cant_pasajeros * 100/ cant_pasajeros_total)
+        print(request.GET.get('fecha'))
+        print(request.GET.get('fecha2'))
+        return render (request, "estadisticas_pasajeros_ver.html",{"pasajeros":cant_pasajeros, "fecha":request.GET.get('fecha'), "fecha2":request.GET.get('fecha2'), "total":cant_pasajeros_total, "porcentaje":int(porcentaje)})

@@ -1,0 +1,39 @@
+{% extends "admin_base.html" %}
+{% load static %}
+{% block title %}Buscar viaje por ciudad{% endblock %}
+{% block h1 %}<center>Estadisticas de viajes</center>{% endblock %}
+{% block content %}
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+crossorigin="anonymous"></script>
+<div class="container">
+  <center>
+    <div class="row">
+      <div class="col-sm">
+          <form action="buscar" method="GET">
+          <h5>
+            <br>
+              <p>
+                <div class="card-body">
+                  <h5>
+                      <p class="card-text">Entre las fechas {{fecha}} y {{fecha2}} existen {{viajes}} viajes, que equivalen al {{porcentaje}}% del total</p>
+                      <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{viajes}}" aria-valuemin="0" aria-valuemax="{{total}}" style="width: {{porcentaje}}%"></div>
+
+                      </div>
+                        total de viajes: {{total}}
+                </div>
+
+              </p>
+
+          </h5>
+      </div>
+    </div>
+  </center>
+</div>
+</div>
+<script>
+
+
+</script>
+{% endblock %}
