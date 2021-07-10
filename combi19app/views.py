@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.template.loader import get_template
 from django.http import HttpResponse, HttpRequest
-from combi19app.forms import Registro, Registro_admin, Registro_vehiculo, Registro_ruta, Registro_ciudad, Registro_viaje, Registro_chofer, Registro_insumo, Registro_info_de_contacto, Registro_comentario, Registro_anuncio, Registro_usuario, Registro_contra, Registro_pasaje, Registro_tarjeta, Registro_ticket, Registro_premium, Registro_premium_pago, Registro_test, Registro_usuario_premium, Registro_puntuar, Registro_viaje_puntos
+from combi19app.forms import Registro, Registro_admin, Registro_vehiculo, Registro_ruta, Registro_ciudad, Registro_viaje, Registro_viaje_sin_estado, Registro_chofer, Registro_insumo, Registro_info_de_contacto, Registro_comentario, Registro_anuncio, Registro_usuario, Registro_contra, Registro_pasaje, Registro_tarjeta, Registro_ticket, Registro_premium, Registro_premium_pago, Registro_test, Registro_usuario_premium, Registro_puntuar, Registro_viaje_puntos
 from combi19app.models import Usuario, Vehiculo, Ruta, Ciudad, Viaje, Insumo, InformacionDeContacto, Comentario, Anuncio, Pasaje, Tarjeta, Ticket, Premium, Test, Premium_pago, Puntuar
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import UpdateView
@@ -9,7 +9,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django import db
 from datetime import datetime, timedelta, date
-import dateutil.parser
 
 db.connections.close_all()
 # Create your views here.
@@ -25,18 +24,6 @@ def home (request):
         return render (request, "home.html", {"ciudades":len(ciudades), "rutas":len(rutas), "choferes":len(choferes), "vehiculos":len(vehiculos), "viajes":len(viajes), "usuarios":len(usuarios), "nombre": request.user.nombre})
     elif request.user.tipo_usuario == 2:
         viajes = Viaje.objects.filter(chofer_id=request.user.id, estado='activo')
-        if len(viajes) != 0:
-            for v in viajes:
-                current_time = datetime.now()
-                hora = str((current_time.hour - 3))+":"+str(current_time.minute)+":"+str(current_time.second)
-                if v.fecha_salida.date() < current_time.date():
-                    v.estado = 'realizado'
-                    v.save()
-                else:
-                    if v.fecha_salida.date() == current_time.date():
-                        if str(v.fecha_salida.time()) < hora:
-                            v.estado = 'realizado'
-                            v.save()
         return render(request, "homeChofer.html", {"nombre": request.user.nombre, "viajes": len(viajes)})
     else:
         pasajes = Pasaje.objects.filter(id_user=request.user.id, estado='activo')
@@ -723,12 +710,7 @@ class BuscarCiudad(HttpRequest):
                 hoy = datetime.today()
                 hora = str((hoy.hour - 3)) +":"+ str(hoy.minute) +":"+ str(hoy.second)
                 for v in viaje:
-                    if v.fecha_salida.date() > hoy.date():
-                        viajes.append(v)
-                    else:
-                        if v.fecha_salida.date() == hoy.date():
-                            if str(v.fecha_salida.time()) > hora:
-                                viajes.append(v)
+                    viajes.append(v)
         if request.user.is_premium:
             return render (request, "buscar_viaje_result.html",{"viajes": viajes, "rutas":ruta, "base":"premium_base.html"})
         else:
@@ -893,22 +875,12 @@ class ListarViajes(HttpRequest):
     def crear_listado(request):
         viajes = Viaje.objects.filter(estado='activo')
         # viajes = []
-        # rutas = []
-        # for v in viaje:
-        #     if v.estado == 'activo':
-        #         hoy = datetime.today()
-        #         if v.fecha_salida.date() >= hoy.date():
-        #             print('agrego')
-        #             viajes.append(v)
-        #         else:
-        #             if v.fecha_salida.date() < hoy.date():
-        #                 print('fecha salida', fecha_salida.date(), 'hoy', hoy.date())
-        #                 v.estado = 'realizado'
-        #                 v.save()
-        #     r = Ruta.objects.get(id = v.ruta_id)
-        #     if r not in rutas:
-        #         rutas.append(r)
-        contexto = {'viajes': viajes, 'cantidad':len(viajes)}
+        rutas = []
+        for i in viajes:
+            ruta= Ruta.objects.get(id = i.ruta_id)
+            if ruta not in rutas:
+                rutas.append(ruta)
+        contexto = {'viajes': viajes, 'rutas':rutas, 'cantidad':len(viajes)}
         return render (request, "listar_viajes.html", contexto)
 
     @login_required
@@ -928,21 +900,6 @@ class ListarViajes(HttpRequest):
             if ruta not in rutas:
                 rutas.append(ruta)
             viajes.append(viaje)
-
-            # if p.estado == 'activo':
-            #     viaje = Viaje.objects.get(id=p.nro_viaje_id)
-            #     ruta = Ruta.objects.get(id=viaje.ruta_id)
-            #     if ruta not in rutas:
-            #         rutas.append(ruta)
-            #     current_time = datetime.today()
-            #     hora = str((current_time.hour - 3)) +":"+ str(current_time.minute) +":"+ str(current_time.second)
-            #     if(viaje.fecha_salida.date() > current_time.date()):
-            #         viajes.append(viaje)
-            #     else:
-            #         if(viaje.fecha_salida.date() == current_time.date()):
-            #             if(str(viaje.fecha_salida.time()) > hora):
-            #                 viajes.append(viaje)
-
         if request.user.is_premium:
             return render (request, "ver_viajes_por_realizar.html", {'viajes': set(viajes), 'rutas': rutas, "base":"premium_base.html"})
         else:
@@ -961,21 +918,6 @@ class ListarViajes(HttpRequest):
                 rutas.append(ruta)
             if viaje.estado == 'realizado':
                 viajes.append(viaje)
-            # if p.estado == 'activo':
-            #     print('hola')
-            #     viaje = Viaje.objects.get(id=p.nro_viaje_id)
-            #     ruta = Ruta.objects.get(id=viaje.ruta_id)
-            #     if ruta not in rutas:
-            #         rutas.append(ruta)
-            #     current_time = datetime.today()
-            #     hora = str((current_time.hour - 3)) +":"+ str(current_time.minute) +":"+ str(current_time.second)
-            #     if(viaje.fecha_salida.date() < current_time.date()):
-            #         viajes.append(viaje)
-            #     else:
-            #         if(viaje.fecha_salida.date() == current_time.date()):
-            #             if(str(viaje.fecha_salida.time()) < hora):
-            #                 viajes.append(viaje)
-
         if request.user.is_premium:
             return render (request, "ver_viajes_realizados.html", {'viajes': set(viajes), 'rutas': rutas, "base":"premium_base.html"})
         else:
@@ -992,19 +934,6 @@ class ListarViajes(HttpRequest):
             if ruta not in rutas:
                 rutas.append(ruta)
             viajes_por_hacer.append(viaje)
-            # if v.estado == 'activo':
-            #     viaje = Viaje.objects.get(id=v.id)
-            #     ruta = Ruta.objects.get(id=viaje.ruta_id)
-            #     if ruta not in rutas:
-            #         rutas.append(ruta)
-            #     current_time = datetime.today()
-            #     hora = str((current_time.hour - 3)) +":"+ str(current_time.minute) +":"+ str(current_time.second)
-            #     if(viaje.fecha_salida.date() > current_time.date()):
-            #         viajes_por_hacer.append(viaje)
-            #     else:
-            #         if(viaje.fecha_salida.date() == current_time.date()):
-            #             if(str(viaje.fecha_salida.time()) > hora):
-            #                 viajes_por_hacer.append(viaje)
         contexto ={'viajes': viajes_por_hacer, 'rutas': rutas, 'cantidad': len(viajes_por_hacer)}
         return render (request, "listar_proximos_viajes.html", contexto)
 
@@ -1020,22 +949,42 @@ class ListarViajes(HttpRequest):
                 rutas.append(ruta)
             if v.estado == 'iniciado':
                 viajes_iniciados.append(viaje)
-        #         current_time = datetime.today()
-        #         hora = str((current_time.hour - 3)) +":"+ str(current_time.minute) +":"+ str(current_time.second)
-        #         if(viaje.fecha_salida.date() > current_time.date()):
-        #             viajes_iniciados.append(viaje)
-        #         else:
-        #             if(viaje.fecha_salida.date() == current_time.date()):
-        #                 if(str(viaje.fecha_salida.time()) > hora):
-        #                     viajes_iniciados.append(viaje)
         contexto ={'viajes': viajes_iniciados, 'rutas': rutas, 'cantidad': len(viajes_iniciados)}
         return render (request, "listar_viajes_iniciados.html", contexto)
+
+    @login_required
+    def listar_viajes_realizados(request):
+        viajes = Viaje.objects.filter(chofer_id=request.user.id)
+        viajes_realizados = []
+        rutas = []
+        for v in viajes:
+            viaje = Viaje.objects.get(id=v.id)
+            ruta = Ruta.objects.get(id=viaje.ruta_id)
+            if ruta not in rutas:
+                rutas.append(ruta)
+            if v.estado == 'realizado':
+                viajes_realizados.append(viaje)
+        contexto ={'viajes': viajes_realizados, 'rutas': rutas, 'cantidad': len(viajes_realizados)}
+        return render (request, "listar_viajes_realizados.html", contexto)
+
 
     @login_required
     def mostrar_detalle_chofer(request, id_viaje):
         detalle= Viaje.objects.get(id=id_viaje)
         ruta= Ruta.objects.get(id=detalle.ruta_id)
         return render (request, "listar_proximos_viajes.html", {"dato":detalle,"ruta":ruta, "mensaje":"detalle"})
+
+    @login_required
+    def mostrar_detalle_chofer_realizados(request, id_viaje):
+        detalle= Viaje.objects.get(id=id_viaje)
+        ruta= Ruta.objects.get(id=detalle.ruta_id)
+        return render (request, "listar_viajes_realizados.html", {"dato":detalle,"ruta":ruta, "mensaje":"detalle"})
+
+    @login_required
+    def mostrar_detalle_chofer_iniciados(request, id_viaje):
+        detalle= Viaje.objects.get(id=id_viaje)
+        ruta= Ruta.objects.get(id=detalle.ruta_id)
+        return render (request, "listar_viajes_iniciados.html", {"dato":detalle,"ruta":ruta, "mensaje":"detalle"})
 
     @login_required
     def cancelar_viaje_chofer(request, id_viaje):
@@ -1122,31 +1071,47 @@ class ListarPasajeros(HttpRequest):
 
     @login_required
     def eliminar_pasajero(request, id_usuario, id_viaje):
-        pasajero_el = Pasaje.objects.get(id_user=id_usuario, nro_viaje_id=id_viaje)
+        pasajero = Pasaje.objects.get(id=id_usuario, nro_viaje_id=id_viaje)
         viaje = Viaje.objects.get(id=id_viaje)
+        viaje_modificar = Registro_viaje(request.POST, instance=viaje)
+        pasajeros = Pasaje.objects.filter(nro_viaje_id = id_viaje)
+        hoy = datetime.today()
+        ok=False
+        if viaje.fecha_salida.date() == hoy.date():
+            inicia = True
+            ok = True
+            for p in pasajeros:
+                if p.estado == 'activo':
+                    ok = False
+                    break
+        else:
+            inicia = False
         if viaje.estado == 'activo':
             testeado = False
             test = Test.objects.all()
             for t in test:
-                if t.pasaje == pasajero_el.id:
-                    if pasajero_el.id == 'Presente: aceptado' or  pasajero_el.id == 'Presente: rechazado':
+                if t.pasaje == pasajero.id:
+                    if pasajero.estado == 'Presente: aceptado' or  pasajero.estado == 'Presente: rechazado':
                         testeado = True
                         break
             if not testeado:
-                pasajero_el.delete()
+                if viaje_modificar.is_valid():
+                    viaje_modificar.save_viaje5()
+                pasajero.estado = 'ELIMINADO'
+                pasajero.save()
                 pasajeros = Pasaje.objects.filter(nro_viaje_id = id_viaje)
                 viaje = Viaje.objects.get(id = id_viaje)
-                return render (request, "ver_pasajeros.html", {"pasajeros":pasajeros, "viaje":viaje, "base":"chofer_base.html", 'mensaje':'eliminado'})
+                return render (request, "ver_pasajeros.html", {"pasajeros":pasajeros, "viaje":viaje, "base":"chofer_base.html", 'mensaje':'eliminado', "testear":inicia, "iniciar":ok, "cant_p":len(pasajeros)})
         pasajeros = Pasaje.objects.filter(nro_viaje_id = id_viaje)
         viaje = Viaje.objects.get(id = id_viaje)
-        return render (request, "ver_pasajeros.html", {"pasajeros":pasajeros, "viaje":viaje, "base":"chofer_base.html"})
+        return render (request, "ver_pasajeros.html", {"pasajeros":pasajeros, "viaje":viaje, "base":"chofer_base.html", "testear":inicia, "iniciar":ok, "cant_p":len(pasajeros)})
 
     @login_required
     def confirmar_eliminado_pasajero(request,id_viaje, id_usuario):
-        pasajero = Pasaje.objects.get(id_user = id_usuario, nro_viaje_id=id_viaje)
-        usuario = Usuario.objects.get(id=id_usuario)
+        pasajero = Pasaje.objects.get(id = id_usuario, nro_viaje_id=id_viaje)
         viaje = Viaje.objects.get(id= id_viaje)
-        return render (request, "eliminar_pasajero.html", {"base":"chofer_base.html", "viaje": viaje, "pasajero": pasajero, "usuario": usuario})
+        viaje_modificar = Registro_viaje(instance = viaje)
+        return render (request, "eliminar_pasajero.html", {"base":"chofer_base.html", "viaje": viaje, "pasajero": pasajero})
 
 
 def errores_insumo(insumo):
@@ -1548,7 +1513,7 @@ class ComprarPasaje(HttpRequest):
         else:
             pasaje = Registro_pasaje(request.POST)
             if(pasaje.is_valid()):
-                pasaje.save_pasaje()
+                pasaje.save()
                 print("se guardo")
             actual = int(request.GET.get('actual').split('-')[0])
             cant = int(request.GET.get('actual').split('-')[1])
@@ -1579,7 +1544,8 @@ class ComprarPasaje(HttpRequest):
 
     @login_required
     def mi_carrito(request,id_viaje):
-        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
+        ultimo = Pasaje.objects.last()
+        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje, id_pasaje = ultimo.id)
         viaje = Viaje.objects.get(id = id_viaje)
         precio_total =0
         for i in carrito:
@@ -1607,7 +1573,8 @@ class ComprarPasaje(HttpRequest):
         cantidad = ticket_eliminado.cantidad
         form = Registro_insumo(request.POST, instance = insumo)
         ticket_eliminado.delete()
-        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
+        ultimo = Pasaje.objects.last()
+        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje, id_pasaje = ultimo.id)
         viaje = Viaje.objects.get(id = id_viaje)
         precio_total =0
         for i in carrito:
@@ -1625,7 +1592,8 @@ class ComprarPasaje(HttpRequest):
         tarjetas_registradas = Tarjeta.objects.filter(id_user_id=request.user.id)
         viaje = Viaje.objects.get(id =id_viaje)
         nombre = Ruta.objects.get(id = viaje.ruta_id)
-        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
+        ultimo = Pasaje.objects.last()
+        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje , id_pasaje = ultimo.id)
         pasaje = Pasaje.objects.filter(id_user=request.user.id, nro_viaje_id = id_viaje, estado= 'no abonado')
         precio_total_pasajes =len(pasaje)*viaje.precio
         precio_total = 0
@@ -1657,9 +1625,9 @@ class ComprarPasaje(HttpRequest):
         tarjetas_registradas= Tarjeta.objects.filter(id_user_id=request.user.id)
         viaje = Viaje.objects.get(id =id_viaje)
         nombre = Ruta.objects.get(id = viaje.ruta_id)
-        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
+        ultimo = Pasaje.objects.last()
+        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje , id_pasaje = ultimo.id)
         usuario = request.user.id
-        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
         pasaje = Pasaje.objects.filter(id_user=request.user.id, nro_viaje_id = id_viaje, estado= 'no abonado')
         precio_total_pasajes =len(pasaje)*viaje.precio
         precio_total = 0
@@ -1690,7 +1658,8 @@ class ComprarPasaje(HttpRequest):
         ruta_id = Ruta.objects.get(id=(viaje.ruta).id)
         nombre = Ruta.objects.get(id = viaje.ruta_id)
         usuario = request.user.id
-        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
+        ultimo = Pasaje.objects.last()
+        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje , id_pasaje = ultimo.id)
         pasaje = Pasaje.objects.filter(id_user=request.user.id, nro_viaje_id = id_viaje, estado= 'no abonado')
         precio_total_pasajes =len(pasaje)*viaje.precio
         precio_total = 0
@@ -1712,7 +1681,8 @@ class ComprarPasaje(HttpRequest):
         tarjetas_registradas= Tarjeta.objects.filter(id_user_id=request.user.id)
         viaje = Viaje.objects.get(id =id_viaje)
         nombre = Ruta.objects.get(id = viaje.ruta_id)
-        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
+        ultimo = Pasaje.objects.last()
+        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje , id_pasaje = ultimo.id)
         pasajes = Pasaje.objects.filter(id_user=request.user.id, nro_viaje_id = id_viaje, estado= 'no abonado')
         precio_total_pasajes =len(pasajes)*viaje.precio
         precio_total = 0
@@ -1795,6 +1765,7 @@ class ComprarPasaje(HttpRequest):
     @login_required
     def procesar_ver_tienda(request, id_viaje, id_insumo):
         carrito = Registro_ticket()
+        ultimo = Pasaje.objects.last()
         insumo_comprado = Registro_insumo()
         viaje = Viaje.objects.get(id= id_viaje)
         insumo = Insumo.objects.get(id=id_insumo)
@@ -1804,13 +1775,14 @@ class ComprarPasaje(HttpRequest):
         for i in insumos:
             stocks[i.id] = range(1,i.stock+1)
         if request.user.is_premium:
-            return render (request, "comprar_pasaje_seleccionar_cantidad.html", {"base":"premium_base.html", "insumos":insumos,"insumo":insumo, "stocks":stocks, "usuario":usuario, "viaje":viaje})
+            return render (request, "comprar_pasaje_seleccionar_cantidad.html", {"base":"premium_base.html","ultimo":ultimo.id ,"insumos":insumos,"insumo":insumo, "stocks":stocks, "usuario":usuario, "viaje":viaje})
         else:
-            return render (request, "comprar_pasaje_seleccionar_cantidad.html", {"base":"usuario_base.html", "insumos":insumos,"insumo":insumo, "stocks":stocks, "usuario":usuario, "viaje":viaje})
+            return render (request, "comprar_pasaje_seleccionar_cantidad.html", {"base":"usuario_base.html", "ultimo":ultimo.id, "insumos":insumos,"insumo":insumo, "stocks":stocks, "usuario":usuario, "viaje":viaje})
 
     @login_required
     def procesar_confirmacion_insumo(request, id_viaje, id_insumo):
-        ya_esta = Ticket.objects.filter(id_user = request.user.id, viaje_id = id_viaje, insumo_id = id_insumo)
+        ultimo = Pasaje.objects.last()
+        ya_esta = Ticket.objects.filter(id_user = request.user.id, viaje_id = id_viaje, insumo_id = id_insumo , id_pasaje= ultimo.id)
         if len(ya_esta) != 0:
             ins = str(ya_esta).replace('<QuerySet [<Ticket: Ticket object (','').replace(')>]>','')
             ins = Ticket.objects.get(id = ins)
@@ -1859,21 +1831,22 @@ class ComprarPasaje(HttpRequest):
     def ver_detalle_pasaje(request, id_viaje):
         viaje = Viaje.objects.get(id = id_viaje)
         chofer = Usuario.objects.get (id = viaje.chofer_id)
-        pasaje = Pasaje.objects.filter(id_user=request.user.id, nro_viaje_id = id_viaje, estado= 'activo')
-        if len(pasaje) != 0:
-            pasaje = Pasaje.objects.get(id_user=request.user.id, nro_viaje_id = id_viaje, estado= 'activo')
-        usuario = Usuario.objects.get(id = pasaje.id_user)
-        tarjeta = Tarjeta.objects.get(id = pasaje.tarjeta_id)
+        pasajes = Pasaje.objects.filter(id_user=request.user.id, nro_viaje_id = id_viaje)
+        ver_tarjeta = str(pasajes).replace('<QuerySet [<Pasaje: Pasaje object (','').replace(')>','').split(',')
+        ver_tarjeta = Pasaje.objects.get(id = int(ver_tarjeta[0]))
+        tarjeta = Tarjeta.objects.get(id = ver_tarjeta.tarjeta_id)
         carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
         precio_total = 0
         if len(carrito) != 0:
             for i in carrito:
                 precio_total = precio_total + i.precio_ticket
-        precio_total = precio_total + viaje.precio
+        precio_total = precio_total + (viaje.precio * len(pasajes))
         if request.user.is_premium:
-            return render (request, "ver_detalle_pasaje.html", {"base":"premium_base.html", "viaje":viaje, "tarjeta":tarjeta, "usuario":usuario, "chofer":chofer, "precio_total":precio_total, "insumos":carrito, "inumo":len(carrito), "pasaje":pasaje})
+            premium = Premium.objects.get(id=1)
+            precio_total = float(precio_total) * premium.descuento / float(100)
+            return render (request, "ver_detalle_pasaje.html", {"base":"premium_base.html", "comprobante": ver_tarjeta.id, "cantidad": len(pasajes), "total": precio_total,"viaje":viaje, "tarjeta":tarjeta, "chofer":chofer, "precio_total":precio_total, "insumos":carrito, "insumo":len(carrito), "pasajes":pasajes})
         else:
-            return render (request, "ver_detalle_pasaje.html", {"base":"usuario_base.html", "viaje":viaje, "tarjeta":tarjeta, "usuario":usuario, "chofer":chofer, "precio_total":precio_total, "insumos":carrito, "inumo":len(carrito), "pasaje":pasaje})
+            return render (request, "ver_detalle_pasaje.html", {"base":"usuario_base.html", "comprobante": ver_tarjeta.id, "cantidad": len(pasajes), "total": precio_total,"viaje":viaje, "tarjeta":tarjeta, "chofer":chofer, "precio_total":precio_total, "insumos":carrito, "insumo":len(carrito), "pasajes":pasajes})
 
 class Testeo(HttpRequest):
 
@@ -1893,7 +1866,6 @@ class Testeo(HttpRequest):
             for p in pasajeros_:
                 if p.estado == 'activo':
                     ok = False
-                    print('holaaa')
                     break
         else:
             inicia = False
@@ -1911,11 +1883,13 @@ class Testeo(HttpRequest):
         if viaje.estado == 'activo':
             viaje.estado = 'iniciado'
             viaje.save()
+            return render (request, "ver_pasajeros.html", {"pasajeros":pasajeros, "viaje":viaje, "base":"chofer_base.html"})
         else:
             viaje.estado = 'realizado'
             viaje.save()
-        print('estado de viaje', viaje.estado)
-        return render (request, "ver_pasajeros.html", {"pasajeros":pasajeros, "viaje":viaje, "base":"chofer_base.html"})
+            pasajeros_confirmados = Pasaje.objects.filter(nro_viaje_id = id_viaje, estado= "Presente: ACEPTADO")
+            return render (request, "viaje_realizado_confirmado.html", { "cant": len(pasajeros_confirmados)})
+
 
     @login_required
     def test(request, id_pasaje):
@@ -1923,6 +1897,7 @@ class Testeo(HttpRequest):
         pasaje= Pasaje.objects.get(id=id_pasaje)
         pasaje_nuevo = Registro_pasaje(instance=pasaje)
         viaje = Viaje.objects.get(id = pasaje.nro_viaje_id)
+        viaje_modificar = Registro_viaje(instance = viaje)
         temp = []
         temp.append("menos de 35.0°C")
         for i in range(35,41):
@@ -1937,6 +1912,7 @@ class Testeo(HttpRequest):
         test = Registro_test(request.POST)
         pasaje = Pasaje.objects.get(id = id_pasaje)
         pasaje_nuevo = Registro_pasaje(request.POST, instance = pasaje)
+        viaje = Viaje.objects.get(id = id_viaje)
         if test.is_valid():
             test.save()
             if pasaje_nuevo.is_valid():
@@ -1944,21 +1920,29 @@ class Testeo(HttpRequest):
                 temperatura = test_correspondiente.temperatura.split('.')
                 if test_correspondiente.olfato or test_correspondiente.gusto or test_correspondiente.contacto or int(temperatura[0]) >= 38:
                     pasaje_nuevo.save_no_sube()
+                    viaje_modificar = Registro_viaje(request.POST, instance=viaje)
+                    if viaje_modificar.is_valid():
+                        viaje_modificar.save_viaje5()
                 else:
                     pasaje_nuevo.save_sube()
                 pasajeros = Pasaje.objects.filter(nro_viaje_id = id_viaje)
-                viaje = Viaje.objects.get(id = id_viaje)
                 pasajeros_ = []
                 ok = True
                 for p in pasajeros:
                     if p.estado != 'cancelado':
                         pasajeros_.append(p)
-                for p in pasajeros_:
-                    if p.estado == 'activo':
-                        ok = False
-                        print('holaaa')
-                        break
-                return render (request, "ver_pasajeros.html", {"pasajeros":pasajeros_, 'cant_p': len(pasajeros_), "viaje":viaje, "base":"chofer_base.html", 'iniciar': ok})
+                hoy = datetime.today()
+                if viaje.fecha_salida.date() == hoy.date():
+                    inicia = True
+                    ok = True
+                    for p in pasajeros_:
+                        if p.estado == 'activo':
+                            ok = False
+                            break
+                else:
+                    inicia = False
+
+                return render (request, "ver_pasajeros.html", {"pasajeros":pasajeros_, 'cant_p': len(pasajeros_), "viaje":viaje, "base":"chofer_base.html", "testear":inicia, 'iniciar': ok})
 
 
     @login_required
@@ -1999,19 +1983,24 @@ class Testeo(HttpRequest):
                 for p in pasajeros:
                     if p.estado != 'cancelado':
                         pasajeros_.append(p)
-                for p in pasajeros_:
-                    if p.estado == 'activo':
-                        ok = False
-                        print('holaaa')
-                        break
-                return render (request, "ver_pasajeros.html", {"editado":"si", "pasajeros":pasajeros_, 'cant_p': len(pasajeros_), 'iniciar': ok, "viaje":viaje, "base":"chofer_base.html"})
+                hoy = datetime.today()
+                if viaje.fecha_salida.date() == hoy.date():
+                    inicia = True
+                    ok = True
+                    for p in pasajeros_:
+                        if p.estado == 'activo':
+                            ok = False
+                            break
+                else:
+                    inicia = False
+                return render (request, "ver_pasajeros.html", {"editado":"si", "pasajeros":pasajeros_, 'cant_p': len(pasajeros_), 'iniciar': ok, "viaje":viaje, "base":"chofer_base.html", "testear":inicia})
 
 
     @login_required
     def ver_test(request, id_pasaje):
-        test = Test.objects.get(pasaje= id_pasaje)
         pasaje= Pasaje.objects.get(id=id_pasaje)
         viaje = Viaje.objects.get(id = pasaje.nro_viaje_id)
+        test = Test.objects.get(pasaje= id_pasaje, viaje= viaje.id)
         temp = []
         temp.append("menos de 35.0°C")
         for i in range(35,41):
@@ -2028,6 +2017,7 @@ class Testeo(HttpRequest):
         pasaje = Pasaje.objects.get(id = id_pasaje)
         pasaje_nuevo = Registro_pasaje(instance=pasaje)
         viaje = Viaje.objects.get(id = pasaje.nro_viaje_id)
+        viaje_modificar = Registro_viaje_sin_estado(instance = viaje)
         return render (request, "confirmar_ausente.html", {"pasaje":pasaje, "viaje":viaje, "id_pasaje":pasaje.id})
 
     @login_required
@@ -2037,8 +2027,21 @@ class Testeo(HttpRequest):
         viaje = Viaje.objects.get(id = pasaje.nro_viaje_id)
         if pasaje_nuevo.is_valid():
             pasaje_nuevo.save()
+            viaje_modificar = Registro_viaje_sin_estado(request.POST, instance= viaje)
+            if viaje_modificar.is_valid():
+                viaje_modificar.save_viaje5()
             pasajeros = Pasaje.objects.filter(nro_viaje_id = id_viaje)
-            return render (request, "ver_pasajeros.html", {"ausente":"si","pasajeros":pasajeros, "viaje":viaje, "base":"chofer_base.html"})
+            hoy = datetime.today()
+            if viaje.fecha_salida.date() == hoy.date():
+                inicia = True
+                ok = True
+                for p in pasajeros:
+                    if p.estado == 'activo':
+                        ok = False
+                        break
+            else:
+                inicia = False
+            return render (request, "ver_pasajeros.html", {"inicia":ok, "testear":inicia, "ausente":"si","pasajeros":pasajeros, "viaje":viaje, "base":"chofer_base.html"})
 
 
 class Suscripcion(HttpRequest):

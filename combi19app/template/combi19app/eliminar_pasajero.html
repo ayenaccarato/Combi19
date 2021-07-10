@@ -4,41 +4,66 @@
 {% block h1 %}<center>Confirmar eliminado de pasajero</center>{% endblock %}
 {% block content %}
 
-<form action="/eliminar_pasajero/{{usuario.id}}/{{viaje.id}}/" method="POST">
+<form action="/eliminar_pasajero/{{pasajero.id}}/{{viaje.id}}/" method="POST">
 
 {% csrf_token %}
-  <input hidden class="col-sm col-form-label" type="text" name="dni" placeholder="DNI" id="dni">
-  <input hidden class="col-sm col-form-label" type="email" pattern= "[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{1,5}" title= "Ingrese un mail valido" name="email" placeholder="Email" id="email">
-  <input hidden class="col-sm col-form-label" type="text" name="nombre" placeholder="Nombre" id="nombre">
-  <input hidden class="col-sm col-form-label" type="text" name="apellido" placeholder="Apellido" id="apellido">
-  <input hidden class="col-sm col-form-label" type="text" pattern= "^([0-9]+)" name="telefono" placeholder="Telefono" id="telefono">
-  <input hidden class="col-sm col-form-label" type="text" name="direccion" placeholder="Direccion" id="direccion">
+<br><br><br>
+<div class = "container">
+    <div class="alert alert-warning" role="alert">
+      <h4>
+        ¿ Seguro que quiere eliminar al pasajero {{pasajero.nombre}} {{pasajero.apellido}} ?
+        <br><br>
+        <p>
+        <button class="btn btn-success" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:right;">Aceptar</button>
+        <a href="/ver_pasajeros/{{viaje.id}}" class="btn btn-dark" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:left">Cancelar</a>
+        </p>
+        <br><br><br>
 
-<center>
-<h5>
-  <br><br>
-<div class='alert alert-warning' role='alert'>
-  ¿ Seguro que quiere eliminar al pasajero {{usuario.nombre}} {{usuario.apellido}} ? <!-- no imprime los datos -->
-  <br><br><br>
-  <p>
-    <button style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Confirmar</button>
-  </p>
-  <br><br>
-  <p>
-    <a class="btn btn-dark" href= "/ver_pasajeros/{{viaje.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:50px;">Cancelar</a>
-  </p>
-</div>
-</h5>
-</center>
+
+      </h4>
+    </div>
+  </div>
+<input hidden type="text" name="fecha_salida"  id="fecha">
+<input hidden type="text" name="fecha_llegada"  id="fecha2">
+<input hidden type="text" name="hora_salida"  id="hora_salida">
+<input hidden type="text" name="asientos_total"  id="asientos_total">
+<input hidden type="text" name="asientos_disponibles"  id="asientos_disponibles">
+<input hidden type="text" name="vendidos"  id="vendidos">
+<input hidden type="text" name="precio"  id="precio">
+<input hidden type="text" name="estado"  id="estado">
+<input hidden type="text" name="vehiculo"  id="vehiculo">
+<input hidden type="text" name="chofer"  id="chofer">
+<input hidden type="text" name="ruta"  id="ruta">
+
 
 <script>
+  var date = new Date("{{viaje.fecha_salida}}");
+  var date2 = new Date("{{viaje.fecha_llegada}}");
 
-  document.getElementById('nombre').value = "{{usuario.nombre}}"
-  document.getElementById('apellido').value = "{{usuario.apellido}}"
-  document.getElementById('dni').value = "{{usuario.dni}}"
-  document.getElementById('email').value = "{{usuario.email}}"
-  document.getElementById('telefono').value = "{{usuario.telefono}}"
-  document.getElementById('direccion').value = "{{usuario.direccion}}"
+  function formatDate(date) {
+    var day = date.getDate();
+    if (day < 10) {
+        day = "0" + day;
+    }
+    var month = date.getMonth() + 1;
+    if (month < 10) {
+        month = "0" + month;
+    }
+    var year = date.getFullYear();
+    return day + "/" + month + "/" + year;
+  }
+  document.getElementById("estado").value = '{{viaje.estado}}';
+
+  document.getElementById('fecha').value = formatDate(date);
+  document.getElementById('fecha2').value = formatDate(date2);
+  document.getElementById("hora_salida").value = "{{viaje.hora_salida}}";
+  document.getElementById("precio").value = "{{viaje.precio}}".replace(',','.')
+  document.getElementById("vendidos").value = "{{viaje.vendidos}}"-1;
+  document.getElementById("asientos_total").value = "{{viaje.asientos_total}}";
+  document.getElementById("asientos_disponibles").value = "{{viaje.asientos_disponibles}}";
+  document.getElementById("chofer").value = "{{viaje.chofer.id}}";
+  document.getElementById("ruta").value = "{{viaje.ruta.id}}";
+  document.getElementById("vehiculo").value = "{{viaje.vehiculo.id}}";
 
 
 </script>

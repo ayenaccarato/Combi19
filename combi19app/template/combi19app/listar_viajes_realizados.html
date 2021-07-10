@@ -1,6 +1,6 @@
-{% extends "admin_base.html" %}
+{% extends "chofer_base.html" %}
 {% block title %}Listar_viajes{% endblock %}
-{% block h1 %}<center>Listado de viajes</center>{% endblock %}
+{% block h1 %}<center>Listado de viajes realizados</center>{% endblock %}
 [html] <link id="nombre_que_quieras" href="listar_ciudades.html" rel="import" />  [/html]
 
 {% block content %}
@@ -26,17 +26,9 @@
 
     </style>
 
-    <p style= "float: right;">
-      <a id="agregar" style="display: block; padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/agregar_viaje" type="submit" class="btn btn-success" name=nombre>Agregar viaje</a>
-    </p>
-    <br>
-    <br>
     {% if mensaje == "detalle" %}
-    <script>
-      document.getElementById("agregar").style.display = 'none'
-    </script>
     <p style="float: right;">
-      <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_viajes" type="submit" class="btn btn-success" name=nombre >Volver a los listados</a>
+      <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_viajes_realizados" type="submit" class="btn btn-success" name="nombre" >Volver a los listados</a>
     </p>
     <br>
     <br>
@@ -44,7 +36,6 @@
     <thead>
       <tr>
         <th>Viaje</th>
-        <th>Estado</th>
         <th>Fecha de salida</th>
         <th>Ciudad de origen</th>
         <th>Fecha de llegada</th>
@@ -57,7 +48,6 @@
   <tbody>
     <tr>
       <td>{{dato.id}}</td>
-      <td>{{dato.estado}}</td>
       <td>{{dato.fecha_salida}}</td>
       <td>{{ruta.origen}}
 
@@ -68,7 +58,7 @@
       <td>{{dato.chofer.nombre}} {{dato.chofer.apellido}}
         <BR>  DNI {{dato.chofer}}
       </td>
-      <td>{{dato.vehiculo.marca}} {{dato.vehiculo.modelo}}<BR> {{dato.vehiculo}}
+      <td>{{dato.vehiculo.marca}} {{dato.vehiculo.modelo}}<br> {{dato.vehiculo}}
       </td>
       <td>${{dato.precio}}</td>
 
@@ -76,19 +66,6 @@
   </table>
 
     {% else %}
-
-      {% if mensaje == "eliminado" %}
-        <div class='alert alert-success' role='alert'>
-          El viaje se eliminó exitosamente!
-        </div>
-      {% else %}
-        {% if mensaje == "no_puede" %}
-        <div class='alert alert-danger' role='alert'>
-          El viaje no puede ser eliminado, porque tiene pasajes vendidos
-        </div>
-        {% endif %}
-      {% endif %}
-
     {% if viajes %}
         <br>
         <br>
@@ -99,8 +76,7 @@
               <th>Fecha de salida</th>
               <th>Ciudad de origen</th>
               <th>Ciudad de destino</th>
-              <th></th>
-              <th></th>
+              <th>Cantidad de pasajeros</th>
               <th></th>
               <th></th>
             </tr>
@@ -116,21 +92,18 @@
               <td>{{r.origen}}</td>
               <td>{{r.destino}}</td>
               {% endif %}
-
             {% endfor %}
-
+              <td>{{viaje.vendidos}}</td>
               <td> <a class="btn btn-dark" href="/ver_pasajeros/{{viaje.id}}/" style="color:white;padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Pasajeros</a> </td>
-              <td> <a class="btn btn-primary" href= "ver_detalle_viaje/{{viaje.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver detalle</a>
-              <td> <a class="btn btn-warning" href= "modificar_viaje/{{viaje.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Editar</a>  </td>
-              <td> <a class="btn btn-danger" href= "eliminar_viaje/{{viaje.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Eliminar</a>  </td>
-            </td>
+              <td> <a class="btn btn-primary" href= "ver_detalle_viaje_chofer/{{viaje.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver detalle</a>
+              </td>
 
             </tr>
             {% endfor %}
               <br>
               <br>
               <div class="alert alert-success" role="alert">
-                Actualmente hay {{cantidad}} viajes cargados.
+                Actualmente hay {{cantidad}} viajes realizados.
               </div>
       {% else %}
         <br>
@@ -140,7 +113,7 @@
         <div class="jumbotron jumbotron-fluid">
           <div class="container">
             <h1 class="display-4">Ups!</h1>
-            <p class="lead">No hay viajes cargados.</p>
+            <p class="lead">No tenes viajes realizados.</p>
           </div>
         </div>
       </tbody>
@@ -156,6 +129,16 @@
     document.getElementById('detalle_ciudad').value = 'Atras'
     document.getElementById('detalle_ciudad').href = '/listar_viajes/ver_detalle_viaje/{{dato.id}}'
     console.log(document.getElementById('detalle_ciudad').href)
+  }
+  function iniciar(){
+    if (document.getElementById('iniciar').style.display == 'block'){
+      document.getElementById('iniciar').style.display = 'none'
+      document.getElementById('terminar').style.display = 'block'
+    }
+    else{
+      document.getElementById('terminar').style.display = 'none'
+      document.getElementById('iniciar').style.display = 'block'
+    }
   }
 </script>
 {% endblock %}

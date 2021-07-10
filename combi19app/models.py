@@ -175,7 +175,6 @@ class Pasaje(models.Model):
     nro_viaje = models.ForeignKey(Viaje, related_name='+', on_delete=models.PROTECT)
     estado = models.CharField(max_length=20)
     tarjeta = models.ForeignKey(Tarjeta, related_name='+', on_delete=models.PROTECT, null = True, blank=True)
-    nro_asiento = models.IntegerField()
 
 class Ticket(models.Model):
     viaje = models.ForeignKey(Viaje, related_name='+', on_delete=models.PROTECT)
@@ -183,9 +182,11 @@ class Ticket(models.Model):
     cantidad= models.IntegerField(null=True)
     precio_ticket = models.FloatField(null=True)
     id_user = models.IntegerField()
+    id_pasaje = models.IntegerField()
 
 class Test(models.Model):
     pasaje = models.IntegerField()
+    viaje = models.IntegerField()
     temperatura = models.CharField(max_length=20)
     olfato = models.BooleanField()
     gusto = models.BooleanField()

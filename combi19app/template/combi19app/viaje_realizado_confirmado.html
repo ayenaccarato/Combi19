@@ -1,0 +1,26 @@
+{% extends "chofer_base.html" %}
+{% load static %}
+{% block title %}Viaje_realizado{% endblock %}
+{% block h1 %}<center>Viaje realizado</center>{% endblock %}
+{% block content %}
+
+{% csrf_token %}
+<br>
+<div class = "conteiner">
+<div align="center">
+  <img class="d-flex rounded avatar z-depth-1-half mr-2" src={% static 'viaje_realizado.png' %}  width="1110" height="400" alt="Avatar">
+</div>
+<br>
+<div style="padding-left:400px; padding-right:400px">
+<div class="alert alert-success" role="alert">
+  <h4>
+    <p> CANTIDAD DE PASAJEROS: {{cant}} </p>
+  </h4>
+</div>
+</div>
+<center>
+  <a href="/home" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Volver al Menú</a>
+</center>
+</div>
+
+{% endblock %}

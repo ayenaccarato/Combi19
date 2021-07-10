@@ -18,7 +18,7 @@
             <p> Apellido: {{pasaje.apellido}}</p>
             <p> DNI: {{pasaje.dni}}</p>
             <p> Estado del pasaje: {{pasaje.estado}}</p>
-            <p> N° de asiento: {{pasaje.nro_asiento}}</p>
+
 
           </h4>
         </div>
@@ -88,7 +88,8 @@
         <input hidden class="col-sm col-form-label" type="text" name="nro_viaje" placeholder="p" id="nro_viaje">
         <input hidden class="col-sm col-form-label" type="text" name="estado" placeholder="p" id="estado">
         <input hidden class="col-sm col-form-label" type="text" name="tarjeta" placeholder="p" id="tarjeta">
-        <input hidden class="col-sm col-form-label" type="text" name="nro_asiento" placeholder="p" id="nro_asiento">
+
+        <input hidden class="col-sm col-form-label" type="text" name="viaje" placeholder="p" id="viaje">
 
 
       </div>
@@ -107,8 +108,8 @@
     document.getElementById("nro_viaje").value = "{{pasaje.nro_viaje_id}}"
     document.getElementById("estado").value = "{{pasaje.estado}}"
     document.getElementById("tarjeta").value = "{{pasaje.tarjeta_id}}"
-    document.getElementById("nro_asiento").value = "{{pasaje.nro_asiento}}"
 
+    document.getElementById("viaje").value = "{{viaje.id}}"
     document.getElementById("pasaje").value = "{{test.pasaje}}"
     document.getElementById("temperatura").value = "{{test.temperatura}}"
     if("{{test.olfato}}" === "True" ){

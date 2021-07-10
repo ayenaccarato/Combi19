@@ -28,7 +28,7 @@
 
     {% if mensaje == "detalle" %}
     <p style="float: right;">
-      <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_proximos_viajes" type="submit" class="btn btn-success" name="nombre" >Volver a los listados</a>
+      <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="/listar_viajes_iniciados" type="submit" class="btn btn-success" name="nombre" >Volver a los listados</a>
     </p>
     <br>
     <br>
@@ -91,7 +91,6 @@
               <th>Ciudad de destino</th>
               <th></th>
               <th></th>
-              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -110,7 +109,6 @@
 
               <td> <a class="btn btn-dark" href="/ver_pasajeros/{{viaje.id}}/" style="color:white;padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Pasajeros</a> </td>
               <td> <a class="btn btn-primary" href= "ver_detalle_viaje_chofer/{{viaje.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver detalle</a>
-                <!-- <td> <a class="btn btn-danger" href= "cancelar_viaje_chofer/{{viaje.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Cancelar</a> </td> -->
             </td>
 
             </tr>

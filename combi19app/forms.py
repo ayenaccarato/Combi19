@@ -150,6 +150,27 @@ class Registro_ciudad (forms.ModelForm):
             ciudad.save()
         return ciudad
 
+class Registro_viaje_sin_estado (forms.ModelForm):
+    class Meta:
+        model = Viaje
+        fields = ('fecha_salida',
+                  'fecha_llegada',
+                  'hora_salida',
+                  'ruta',
+                  'chofer',
+                  'vehiculo',
+                  'asientos_total',
+                  'asientos_disponibles',
+                  'vendidos',
+                  'precio',
+                  )
+
+    def save_viaje5(self, commit=True):
+        viaje = super().save(commit=False)
+        viaje.asientos_disponibles = viaje.asientos_disponibles + 1
+        if commit:
+            viaje.save()
+        return viaje
 
 class Registro_viaje (forms.ModelForm):
     class Meta:
@@ -225,8 +246,15 @@ class Registro_viaje (forms.ModelForm):
             viaje.save()
         return viaje
 
+    def save_viaje5(self, commit=True):
+        viaje = super().save(commit=False)
+        viaje.asientos_disponibles = viaje.asientos_disponibles + 1
+        if commit:
+            viaje.save()
+        return viaje
+
 class Registro_viaje_puntos (forms.ModelForm):
-    
+
     class Meta:
         model = Viaje
         fields = ('fecha_salida',
@@ -334,15 +362,7 @@ class Registro_pasaje(forms.ModelForm):
                   'nro_viaje',
                   'estado',
                   'tarjeta',
-                  'nro_asiento'
                   )
-
-    def save_pasaje(self, commit=True):
-        pasaje= super().save(commit = True)
-        pasaje.nro_asiento = pasaje.nro_asiento+1
-        if commit:
-            pasaje.save()
-        return pasaje
 
     def save_sube(self, commit=True):
         pasaje= super().save(commit = True)
@@ -376,6 +396,7 @@ class Registro_ticket(forms.ModelForm):
         model = Ticket
         fields = ('viaje',
                   'id_user',
+                  'id_pasaje',
                   'insumo',
                   'cantidad',
                   )
@@ -400,6 +421,7 @@ class Registro_test(forms.ModelForm):
     class Meta:
         model = Test
         fields = ('pasaje',
+                  'viaje',
                   'temperatura',
                   'olfato',
                   'gusto',

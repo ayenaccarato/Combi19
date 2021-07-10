@@ -36,7 +36,6 @@ crossorigin="anonymous"></script>
     <input hidden type="text" name="id_user"  id="id_user">
     <input hidden type="text" name="nro_viaje"  id="nro_viaje">
     <input hidden type="text" name="estado"  id="estado">
-    <input hidden type="text" name="nro_asiento"  id="nro_asiento">
     <input hidden type="text" name="tarjeta"  id="tarjeta">
 
   <form action="buscar_viaje" method="POST">
@@ -58,7 +57,6 @@ crossorigin="anonymous"></script>
     document.getElementById('nro_viaje').value = "{{viaje.id}}"
     document.getElementById('estado').value =  "no abonado"
     document.getElementById('id_user').value="{{usuario}}"
-    document.getElementById('nro_asiento').value = "{{viaje.vendidos}}"
     document.getElementById('tarjeta').value = ""
 
 

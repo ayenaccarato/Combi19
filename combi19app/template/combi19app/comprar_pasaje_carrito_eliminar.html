@@ -12,23 +12,23 @@
 <input hidden type="text" name="stock"  id="stock">
 <input hidden type="text" name="sabor"  id="sabor">
 <input hidden type="text" name="categoria"  id="categoria">
-<center>
-<h5>
-  <br><br>
-<div class='alert alert-warning' role='alert'>
-  ¿ Seguro que quiere eliminar del carrito {{ticket.insumo.nombre}} X{{ticket.cantidad}} PRECIO: ${{ticket.precio_ticket}} ?
-  <br><br><br>
-  <p>
-    <button style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" type="submit" class="btn btn-success">Confirmar</button>
-  </p>
-  <br><br>
-  <p>
-    <a class="btn btn-dark" href= "/comprar_pasaje/carrito/{{viaje.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:50px;">Cancelar</a>
-  </p>
-</div>
-</h5>
-</center>
 
+<br><br><br>
+<div class = "container">
+    <div class="alert alert-warning" role="alert">
+      <h4>
+        ¿ Seguro que quiere eliminar del carrito {{ticket.insumo.nombre}} X{{ticket.cantidad}} PRECIO: ${{ticket.precio_ticket}} ?
+        <br><br>
+        <p>
+        <button class="btn btn-success" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:right;">Aceptar</button>
+<a class="btn btn-dark" href= "/comprar_pasaje/carrito/{{viaje.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:50px;">Cancelar</a>
+        </p>
+        <br><br><br>
+
+
+      </h4>
+    </div>
+  </div>
 <script>
 
   document.getElementById('nombre').value = "{{insumo.nombre}}"

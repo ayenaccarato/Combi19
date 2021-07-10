@@ -36,6 +36,7 @@
   </h3>
   <input hidden type="text" name="id_user"  id="id_user">
   <input hidden type="text" name="viaje"  id="viaje">
+    <input hidden type="text" name="id_pasaje"  id="id_pasaje">
   <input hidden type="text" name="insumo"  id="insumo">
   <input hidden type="text" name="cantidad"  id="cantidad">
 
@@ -91,6 +92,7 @@
 <a class="btn btn-dark" href="/comprar_pasaje/tienda/{{viaje.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:left">Volver</a>
   <script>
       document.getElementById('id_user').value = "{{usuario}}"
+      document.getElementById('id_pasaje').value = "{{ultimo}}"
       document.getElementById('viaje').value = "{{viaje.id}}"
       document.getElementById('insumo').value= "{{insumo.id}}"
       document.getElementById('cantidad').value = "{{cantidad}}"

@@ -5,40 +5,47 @@
 
 <div class = "container">
   <h4>
+    <div class='alert alert-success' role='alert' style="float:center;padding-right:200px;">
+      <br>
+      TICKET:
+      <br>
+      <br>
+      CANTIDAD DE PASAJES: {{cantidad}}<br>
+    {% if insumo != 0 %}
+      <br>
+      INSUMOS:<br>
+      {% for i in insumos %}
+            {{i.insumo.nombre}} X{{i.cantidad}}<br>
+      {% endfor %}
+         {% endif %}
+         <br>
+      TARJETA NUMERO: {{tarjeta.numero}}   -      TITULAR:  {{tarjeta.titular}}<br>
+      <br>
+      PRECIO TOTAL: $ {{precio_total}} <br>
+      ESTADO DE LA COMPRA: PAGO EXITOSO<br>
+      <br><br>
+      *** COMPROBANTE DE PAGO N° {{comprobante}} ***
+  </div>
+
+    {% for i in pasajes%}
     <div class='alert alert-primary' role='alert' style="float:center;padding-right:200px;">
       <br>
-        PASAJE A NOMBRE DE: {{usuario.nombre}} {{usuario.apellido}}<br>
+        PASAJE A NOMBRE DE: {{i.nombre}} {{i.apellido}}<br>
         VIAJE A: {{viaje.ruta}}<br>
         SALIDA: {{viaje.fecha_salida}}<br>
         LLEGADA:{{viaje.fecha_llegada}}<br>
         CHOFER: {{chofer.nombre}} {{chofer.apellido}}<br>
         COMBI:  {{viaje.vehiculo}}<br>
-        NUMERO DE ASIENTO: {{pasaje.nro_asiento}}<br>
         {% if viaje.premium %}
           TIPO DE ASIENTO: CAMA<br>
         {% else %}
           TIPO DE ASIENTO: SEMI CAMA<br>
         {% endif %}
-        <br><br>
-
-        {% if insumo != 0 %}
-          INSUMOS:<br>
-          {% for i in insumos %}
-                {{i.insumo.nombre}} X{{i.cantidad}}<br>
-          {% endfor %}
-          <br><br>
-        {% endif %}
-
-        PRECIO: ${{precio_total}}<br>
-        TARJETA NUMERO: {{tarjeta.numero}}         TITULAR:  {{tarjeta.titular}}<br>
-        ESTADO DE LA COMPRA: PAGO EXITOSO<br>
-
-        <br><br><br>
-        *** COMPROBANTE DE PAGO N° {{pasaje.id}} ***
         <br>
     </div>
-  </h4>
-  <br><br>
+    <br>
+  {% endfor %}
+    </h4>
   <a class="btn btn-dark" href="/ver_viajes_por_realizar/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:left">Atras</a>
 </div>
 {% endblock %}

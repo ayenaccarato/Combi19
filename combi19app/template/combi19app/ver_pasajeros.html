@@ -20,7 +20,19 @@
         </div>
       {% endif %}
     {% endif %}
-    <a class="btn btn-dark" href= "/listar_proximos_viajes" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:left;">Atrás</a>
+    {% if base == "admin_base.html" %}
+      <a class="btn btn-dark" href= "/listar_viajes" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:left;">Atrás</a>
+    {% else %}
+      {% if viaje.estado == "iniciado" %}
+          <a class="btn btn-dark" href= "/listar_viajes_iniciados" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:left;">Atrás</a>
+      {% endif %}
+      {% if viaje.estado == "realizado" %}
+        <a class="btn btn-dark" href= "/listar_viajes_realizados" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:left;">Atrás</a>
+      {% endif %}
+      {% if viaje.estado == "activo" %}
+      <a class="btn btn-dark" href= "/listar_proximos_viajes" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:left;">Atrás</a>
+      {% endif %}
+    {% endif %}
     <br>
     <div class="container">
       <h4>
@@ -72,75 +84,187 @@
       El viaje no puede ser iniciado hasta que todos los pasajeros sean testeados o marcados como ausente
     </div>
   </h5>
-  <h4>
-    <table>
-      <thead>
-        <tr>
-          <th>DNI</th>
-          <th>Nombre</th>
-          <th>Apellido</th>
-          <th>Estado del pasaje</th>
-          {% if base == "admin_base.html" %}
-            <th></th>
-          {% else %}
-            <th></th>
-            <th></th>
-            <th></th>
-          {% endif %}
-
-      </tr>
-    </thead>
-    <tbody>
-
-      {% for i in pasajeros %}
-      <tr>
-        <td>{{i.dni}}</td>
-        <td>{{i.nombre}}</td>
-        <td>{{i.apellido}}</td>
-        <td>{{i.estado}}</td>
-        {% if i.estado == "Presente: ACEPTADO" or i.estado == "Presente: RECHAZADO" or i.estado == "Ausente: RECHAZADO" %}
+  <h5>
+    <div class='alert alert-warning' role='alert'>
+      Todos los pasajeros que no pasen el testeo o sean eliminados, tienen un 100% del reembolso de su pasaje
+    </div>
+  </h5>
+  {% if base == "admin_base.html" %}
+      <h5>
+        <div class='alert alert-warning' role='alert'>
+          ATENCIÓN: COMO ADMINISTRADOR SOLO PUEDE VER LOS TEST (TESTEAR, MARCAR COMO AUSENTE O ELIMINAR A UN PASAJERO SON ACCIONES DEL CHOFER)
+        </div>
+      </h5>
+        <h4>
+          <table>
+            <thead>
+              <tr>
+                <th>DNI</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Estado del pasaje</th>
+                <th>reembolso</th>
+                <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in pasajeros %}
+            <tr>
+              <td>{{i.dni}}</td>
+              <td>{{i.nombre}}</td>
+              <td>{{i.apellido}}</td>
+              <td>{{i.estado}}</td>
+              {% if i.estado == "Presente: RECHAZADO" %}
+                  <td>SI</td>
+              {% endif %}
+              {% if i.estado == "Presente: ACEPTADO" %}
+                  <td>NO AMERITA</td>
+              {% endif %}
               {% if i.estado == "Ausente: RECHAZADO" %}
-                {% if base == "admin_base.html"%}
-                  <td></td>
-                {% else %}
-                  <td></td>
-                  <td></td>
-                {% endif %}
-
+                  <td>NO</td>
+              {% endif %}
+              {% if i.estado == "ELIMINADO" %}
+                  <td>SI</td>
+              {% endif %}
+              {% if i.estado == 'activo' %}
+                  <td>-</td>
+                  <td> EL PASAJERO AUN NO FUE TESTEADO </td>
               {% else %}
-              <td> <a class="btn btn-primary" href= "/ver_test/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver test</a>  </td>
-              {% if base == "chofer_base.html"%}
-                {% if viaje.estado == 'activo' %}
-                <td> <a class="btn btn-warning" href= "/editar_test/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Editar test</a>  </td>
-                {% else %}
-                <td> NO PUEDE EDITAR EL TEST PORQUE EL VIAJE YA INICIÓ </td>
+                {% if i.estado != "ELIMINADO" %}
+                  <td> <a class="btn btn-primary" href= "/ver_test/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver test</a>  </td>
                 {% endif %}
               {% endif %}
+            </tr>
+            {% endfor %}
+          </table>
+        </h4>
+          <br><br><br>
+          {% endif %}
+          {% if base == "chofer_base.html" and viaje.estado == "activo" %}
+                <h4>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>DNI</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Estado del pasaje</th>
+                        <th>reembolso</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for i in pasajeros %}
+                    <tr>
+                      <td>{{i.dni}}</td>
+                      <td>{{i.nombre}}</td>
+                      <td>{{i.apellido}}</td>
+                      <td>{{i.estado}}</td>
+                      {% if iniciar %}
+                          {% if i.estado == "Presente: RECHAZADO" %}
+                              <td>SI</td>
+                          {% endif %}
+                          {% if i.estado == "Presente: ACEPTADO" %}
+                              <td>NO AMERITA</td>
+                          {% endif %}
+                          {% if i.estado == "Ausente: RECHAZADO" %}
+                              <td>NO</td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                          {% endif %}
+                          {% if i.estado == "ELIMINADO" %}
+                              <td>SI</td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                          {% endif %}
+                          {% if i.estado == 'activo' %}
+                              <td>-</td>
+                              <td> <a class="btn btn-success" href= "/testeo/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Testear</a>  </td>
+                              <td> <a class="btn btn-dark" href= "/confirmar_ausente/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ausente</a>  </td>
+                          {% else %}
+                            {% if i.estado != "ELIMINADO" and i.estado != "Ausente: RECHAZADO" %}
+                                <td> <a class="btn btn-primary" href= "/ver_test/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver test</a>  </td>
+                            {% endif %}
+                          {% endif %}
+                            {% if i.estado != "activo" and i.estado != "ELIMINADO" and i.estado != "Ausente: RECHAZADO" %}
+                              <td> <a class="btn btn-warning" href= "/editar_test/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Editar test</a>  </td>
+                              <td> NO SE PUEDE ELIMINAR (el pasajero ya fue testeado o esta ausente) </td>
+                            {% else %}
+                              {% if i.estado != "ELIMINADO" and i.estado != "Ausente: RECHAZADO" %}
+                                <td> <a class="btn btn-danger" href= "/listar_pasajeros/eliminar/{{i.id}}/{{viaje.id}}/confirmar_eliminado_pasajero/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Eliminar</a>  </td>
+                              {% endif %}
+                            {% endif %}
+                      {% else %}
+                        {% if i.estado == "ELIMINADO" %}
+                          <td>SI</td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                        {% else %}
+                          <td>-</td>
+                          <td> NO PUEDE TESTEAR HASTA EL DÍA DEL VIAJE </td>
+                          <td> NO PUEDE MARCAR AUSENTE HASTA EL DÍA DEL VIAJE </td>
+                          <td> <a class="btn btn-danger" href= "/listar_pasajeros/eliminar/{{i.id}}/{{viaje.id}}/confirmar_eliminado_pasajero/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Eliminar</a>  </td>
+                          {% endif %}
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                  </table>
+                </h4>
+                  <br><br><br>
+                  {% endif %}
+{% endif %}
 
-              {% endif %}
-          <td> NO SE PUEDE ELIMINAR (el pasajero ya fue testeado o esta ausente) </td>
+{% if base == "chofer_base.html" and viaje.estado == "iniciado" or viaje.estado == "realizado" %}
+    <h4>
+      <table>
+        <thead>
+          <tr>
+            <th>DNI</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Estado del pasaje</th>
+            <th>reembolso</th>
+            <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in pasajeros %}
+        <tr>
+          <td>{{i.dni}}</td>
+          <td>{{i.nombre}}</td>
+          <td>{{i.apellido}}</td>
+          <td>{{i.estado}}</td>
+          {% if i.estado == "Presente: RECHAZADO" %}
+              <td>SI</td>
+          {% endif %}
+          {% if i.estado == "Presente: ACEPTADO" %}
+              <td>NO AMERITA</td>
+          {% endif %}
+          {% if i.estado == "Ausente: RECHAZADO" %}
+              <td>NO</td>
+          {% endif %}
+          {% if i.estado == "ELIMINADO" %}
+              <td>SI</td>
+          {% endif %}
+          {% if i.estado == "Presente: ACEPTADO" or i.estado == "Presente: RECHAZADO" %}
+                <td> <a class="btn btn-primary" href= "/ver_test/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver test</a>  </td>
+          {% else %}
+            <td></td>
+          {% endif %}
+        </tr>
+        {% endfor %}
+      </table>
+    </h4>
+      <br><br><br>
+{% endif %}
 
-        {% else %}
-            {% if base == "admin_base.html"%}
-                <td> EL PASAJERO AUN NO FUE TESTEADO </td>
-            {% endif %}
-            {% if base == "chofer_base.html"%}
-              {% if testear %}
-              <td> <a class="btn btn-success" href= "/testeo/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Testear</a>  </td>
-                <td> <a class="btn btn-dark" href= "/confirmar_ausente/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ausente</a>  </td>
-              {% else %}
-                <td> NO PUEDE TESTEAR HASTA EL DÍA DEL VIAJE </td>
-                <td> NO PUEDE MARCAR AUSENTE HASTA EL DÍA DEL VIAJE </td>
-              {% endif %}
 
-                <td> <a class="btn btn-danger" href= "/listar_pasajeros/eliminar/{{i.id_user}}/{{viaje.id}}/confirmar_eliminado_pasajero/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Eliminar</a>  </td>
-            {% endif %}
-
-        {% endif %}
-      </tr>
-      {% endfor %}
-    </table>
-    {% else %}
+  {% if cant_p == 0 %}
     <br>
     <br>
     <div class="jumbotron jumbotron-fluid">
@@ -149,9 +273,7 @@
         <p class="lead">No hay pasajeros para este viaje.</p>
       </div>
     </div>
-    {% endif %}
-  </h4>
-    <br><br><br>
+  {% endif %}
 </form>
 <script>
   function boton_inicio(){
