@@ -1,17 +1,36 @@
 {% extends 'admin_base.html' %}
 {% block title %}Estadisticas{% endblock %}
-
+{% block h1 %}<center>Estadisticas de puntos de viajes</center>{% endblock %}
 
 {% block content %}
-  <div class="progress">
-    <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="{{promedio}}" aria-valuemin="0" aria-valuemax="100" style="width: {{promedio}}%">{{promedio}}%</div>
-  </div>
+<div class="container">
+  <center>
+    <div class="row">
+      <div class="col-sm">
 
-  <br>
-  <br>
-  <br>
-  <!--li>
-    <a style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:40px;" href="#" type="submit" class="btn btn-info">Ver estadisticas de devolucion de pasaje</a>
-  </li-->
+            <br>
+              <p>
+                <div class="card-body">
+                  <h5>
+                      <p class="card-text"> {{porcentaje}}% de puntos entre {{viajes}} viajes </p>
+                      <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{porcentaje}}" aria-valuemin="0" aria-valuemax="{{viajes}}" style="width: {{porcentaje}}%">{{porcentaje}}%</div>
 
+                      </div>
+                      <br>
+                        Total de viajes: {{viajes}}
+                </div>
+
+              </p>
+
+          </h5>
+      </div>
+    </div>
+  </center>
+</div>
+
+<script>
+
+
+</script>
 {% endblock %}

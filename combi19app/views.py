@@ -18,7 +18,7 @@ def home (request):
         ciudades = Ciudad.objects.all()
         rutas = Ruta.objects.all()
         vehiculos = Vehiculo.objects.all()
-        viajes = Viaje.objects.filter(estado='activo')
+        viajes = Viaje.objects.all()
         choferes = Usuario.objects.filter(tipo_usuario=2)
         usuarios = Usuario.objects.filter(tipo_usuario=3)
         return render (request, "home.html", {"ciudades":len(ciudades), "rutas":len(rutas), "choferes":len(choferes), "vehiculos":len(vehiculos), "viajes":len(viajes), "usuarios":len(usuarios), "nombre": request.user.nombre})
@@ -26,10 +26,12 @@ def home (request):
         viajes = Viaje.objects.filter(chofer_id=request.user.id, estado='activo')
         return render(request, "homeChofer.html", {"nombre": request.user.nombre, "viajes": len(viajes)})
     else:
-        pasajes = Pasaje.objects.filter(id_user=request.user.id, estado='activo')
+        pasajes = Pasaje.objects.filter(id_user=request.user.id)
         viajes = []
         for p in pasajes:
-            viajes.append(p.nro_viaje_id)
+            viaje = Viaje.objects.get(id=p.nro_viaje_id)
+            if viaje.estado == 'activo':
+                viajes.append(p.nro_viaje_id)
 
         if request.user.is_premium:
             al_dia = Premium_pago.objects.filter(id_user= request.user.id)
@@ -2490,9 +2492,12 @@ class Estadisticas (HttpRequest):
         viajes = Viaje.objects.all()
         puntos = 0
         for v in viajes:
-            puntos += v.puntaje
-        promedio = puntos / len(viajes)
-        return render (request, "estadisticas.html", {"promedio": promedio})
+            puntuaron = Puntuar.objects.filter(id_viaje=v.id)
+            if len(puntuaron) != 0:
+                promedio = v.puntaje / len(puntuaron)
+                puntos += promedio
+        total= puntos / len(viajes)
+        return render (request, "estadisticas.html", {"porcentaje": int(total), "viajes": len(viajes)})
 
     @login_required
     def viajes(request):
