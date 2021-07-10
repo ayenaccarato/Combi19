@@ -1,0 +1,26 @@
+{% extends base %}
+{% block title %}cancelar{% endblock %}
+{% block h1 %}<center>Confirmar cancelar pasaje</center>{% endblock %}
+{% block content %}
+
+{% csrf_token %}
+<br><br><br>
+<div class = "container">
+    <div class="alert alert-warning" role="alert">
+      <h4>
+        <p> ¿ SEGURO QUE QUIERE CANCELAR EL PASAJE A NOMBRE DE {{pasaje.nombre}} {{pasaje.apellido}}? </p>
+        <p> VIAJE A {{viaje.ruta}}</p>
+        <br>
+        <p>ATENCIÓN: EL REEMBOLSO DEL PASAJE SERA DEL 100% </p>
+        <br><br>
+        <p>
+        <a href="/ver_pasaje/detalle/{{viaje.id}}" class="btn btn-dark" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:left">Cancelar</a>
+        <a href="/ver_pasaje/detalle/{{viaje.id}}/{{pasaje.id}}/cancelar" class="btn btn-success" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:right">Aceptar</a>
+        </p>
+        <br><br><br>
+
+
+      </h4>
+    </div>
+  </div>
+  {% endblock %}

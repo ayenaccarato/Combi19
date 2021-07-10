@@ -906,7 +906,7 @@ class ListarViajes(HttpRequest):
             return render (request, "ver_viajes_por_realizar.html", {'viajes': set(viajes), 'rutas': rutas, "base":"usuario_base.html"})
 
     @login_required
-    def listar_viajes_realizados(request):
+    def listar_viajes_realizados_usuario(request):
         pasajes = Pasaje.objects.filter(id_user=request.user.id)
         print('pasajes', pasajes)
         viajes = []
@@ -1815,23 +1815,26 @@ class ComprarPasaje(HttpRequest):
                     return render (request, "comprar_pasaje_tienda.html", {"base":"usuario_base.html", "insumos":insumos, "stocks":stocks,"tienda":len(insumos), "viaje":viaje, "usuario":usuario, "vendido":"si"})
 
     @login_required
-    def cancelar_pasaje(request, id_viaje):
-        pasaje = Pasaje.objects.filter(id_user=request.user.id, nro_viaje_id= id_viaje, estado= 'activo')
-        print('pasaje', pasaje )
-        if len(pasaje) != 0:
-            pasaje = Pasaje.objects.get(id_user=request.user.id, nro_viaje_id= id_viaje, estado= 'activo')
+    def confirmar_cancelar_pasaje(request, id_viaje, id_pasaje):
+        pasaje = Pasaje.objects.get(id_user=request.user.id, nro_viaje_id= id_viaje, estado= 'activo', id= id_pasaje)
+        viaje = Viaje.objects.get(id=id_viaje)
+        if request.user.is_premium:
+            return render (request, "confirmar_cancelar_pasaje.html", {"viaje":viaje, "pasaje":pasaje, "base":"premium_base.html"})
+        else:
+            return render (request, "confirmar_cancelar_pasaje.html", {"viaje":viaje, "pasaje":pasaje, "base":"usuario_base.html"})
+
+    @login_required
+    def cancelar_pasaje(request, id_viaje, id_pasaje):
+        pasaje = Pasaje.objects.get(id_user=request.user.id, nro_viaje_id= id_viaje, estado= 'activo', id= id_pasaje)
         pasaje.estado ='cancelado'
         pasaje.save()
         viaje = Viaje.objects.get(id=id_viaje)
         viaje.asientos_disponibles = viaje.asientos_disponibles + 1
+        viaje.vendidos = viaje.vendidos - 1
         viaje.save()
-        return ListarViajes.listar_viajes_por_realizar(request)
-
-    @login_required
-    def ver_detalle_pasaje(request, id_viaje):
         viaje = Viaje.objects.get(id = id_viaje)
         chofer = Usuario.objects.get (id = viaje.chofer_id)
-        pasajes = Pasaje.objects.filter(id_user=request.user.id, nro_viaje_id = id_viaje)
+        pasajes = Pasaje.objects.filter(id_user=request.user.id, nro_viaje_id = id_viaje, estado = "activo")
         ver_tarjeta = str(pasajes).replace('<QuerySet [<Pasaje: Pasaje object (','').replace(')>','').split(',')
         ver_tarjeta = Pasaje.objects.get(id = int(ver_tarjeta[0]))
         tarjeta = Tarjeta.objects.get(id = ver_tarjeta.tarjeta_id)
@@ -1843,7 +1846,31 @@ class ComprarPasaje(HttpRequest):
         precio_total = precio_total + (viaje.precio * len(pasajes))
         if request.user.is_premium:
             premium = Premium.objects.get(id=1)
-            precio_total = float(precio_total) * premium.descuento / float(100)
+            precio = precio_total * premium.descuento / 100
+            precio_total = precio_total - precio
+            return render (request, "ver_detalle_pasaje.html", {"base":"premium_base.html", "reembolso":True, "comprobante": ver_tarjeta.id, "cantidad": len(pasajes), "total": precio_total,"viaje":viaje, "tarjeta":tarjeta, "chofer":chofer, "precio_total":precio_total, "insumos":carrito, "insumo":len(carrito), "pasajes":pasajes})
+        else:
+            return render (request, "ver_detalle_pasaje.html", {"base":"usuario_base.html","reembolso":True, "comprobante": ver_tarjeta.id, "cantidad": len(pasajes), "total": precio_total,"viaje":viaje, "tarjeta":tarjeta, "chofer":chofer, "precio_total":precio_total, "insumos":carrito, "insumo":len(carrito), "pasajes":pasajes})
+
+
+    @login_required
+    def ver_detalle_pasaje(request, id_viaje):
+        viaje = Viaje.objects.get(id = id_viaje)
+        chofer = Usuario.objects.get (id = viaje.chofer_id)
+        pasajes = Pasaje.objects.filter(id_user=request.user.id, nro_viaje_id = id_viaje, estado = "activo")
+        ver_tarjeta = str(pasajes).replace('<QuerySet [<Pasaje: Pasaje object (','').replace(')>','').split(',')
+        ver_tarjeta = Pasaje.objects.get(id = int(ver_tarjeta[0]))
+        tarjeta = Tarjeta.objects.get(id = ver_tarjeta.tarjeta_id)
+        carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje)
+        precio_total = 0
+        if len(carrito) != 0:
+            for i in carrito:
+                precio_total = precio_total + i.precio_ticket
+        precio_total = precio_total + (viaje.precio * len(pasajes))
+        if request.user.is_premium:
+            premium = Premium.objects.get(id=1)
+            precio = precio_total * premium.descuento / 100
+            precio_total = precio_total - precio
             return render (request, "ver_detalle_pasaje.html", {"base":"premium_base.html", "comprobante": ver_tarjeta.id, "cantidad": len(pasajes), "total": precio_total,"viaje":viaje, "tarjeta":tarjeta, "chofer":chofer, "precio_total":precio_total, "insumos":carrito, "insumo":len(carrito), "pasajes":pasajes})
         else:
             return render (request, "ver_detalle_pasaje.html", {"base":"usuario_base.html", "comprobante": ver_tarjeta.id, "cantidad": len(pasajes), "total": precio_total,"viaje":viaje, "tarjeta":tarjeta, "chofer":chofer, "precio_total":precio_total, "insumos":carrito, "insumo":len(carrito), "pasajes":pasajes})

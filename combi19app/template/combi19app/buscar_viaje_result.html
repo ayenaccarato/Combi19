@@ -26,7 +26,7 @@
                                   <p class="card-text">{{r.nombre}}</p>
                                   <p class="card-text">SALIDA: {{i.fecha_salida}}</p>
                                   <p class="card-text"> LLEGADA: {{i.fecha_llegada}}</p>
-                                  {% if i.premium %}
+                                  {% if i.vehiculo.premium %}
                                     <p class="card-text"> TIPO DE ASIENTO: CAMA</p>
                                   {% else %}
                                     <p class="card-text"> TIPO DE ASIENTO: SEMI CAMA</p>

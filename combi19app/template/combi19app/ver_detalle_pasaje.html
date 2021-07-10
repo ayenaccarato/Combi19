@@ -5,7 +5,13 @@
 
 <div class = "container">
   <h4>
-    <div class='alert alert-success' role='alert' style="float:center;padding-right:200px;">
+    {% if reembolso %}
+        <div class='alert alert-success' role='alert' style="float:center;padding-right:200px;">
+          *** PASAJE CANCELADO: REEMBOLSO DEL 100% DEL DINERO ***
+          <br>
+      </div>
+    {% endif %}
+    <div class='alert alert-warning' role='alert' style="float:center;padding-right:200px;">
       <br>
       TICKET:
       <br>
@@ -36,11 +42,13 @@
         LLEGADA:{{viaje.fecha_llegada}}<br>
         CHOFER: {{chofer.nombre}} {{chofer.apellido}}<br>
         COMBI:  {{viaje.vehiculo}}<br>
-        {% if viaje.premium %}
+        {% if viaje.vehiculo.premium %}
           TIPO DE ASIENTO: CAMA<br>
         {% else %}
           TIPO DE ASIENTO: SEMI CAMA<br>
         {% endif %}
+          <br>
+        <a class="btn btn-danger" href= "/ver_pasaje/detalle/cancelar/confirmar/{{viaje.id}}/{{i.id}}" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;">Cancelar pasaje</a>
         <br>
     </div>
     <br>
