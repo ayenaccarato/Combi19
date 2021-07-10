@@ -4,6 +4,7 @@
 {% block content %}
   {% csrf_token %}
     {% if aceptado == "si" %}
+      {% if base == "usuario_base.html"%}
       <div class='alert alert-success' role='alert'>
           <h4>
         El pago se realizo exitosamente!
@@ -25,7 +26,16 @@
                                ¡ Que tenga buen viaje !
         </h4>
         </div>
-
+      {% else %}
+        <div class='alert alert-success' role='alert'>
+            <h4>
+          El pago se realizo exitosamente!
+          <br>
+          <br>
+          Espere un momento... en unos segundos será redirigido
+          </h4>
+          </div>
+        {% endif %}
     {% else %}
     <br>
     <h5>
@@ -44,4 +54,21 @@
     {% endif %}
     <br>
       <a class="btn btn-dark" href="/home" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:center">Volver</a>
+
+  <script>
+  console.log("ok");
+  if("{{base}}" != "usuario_base.html"){
+    console.log("ok");
+
+    var count = 5;
+      setInterval(function(){
+          count--;
+          if (count == 0) {
+              window.location = "/listar_proximos_viajes/";
+          }
+      },1000);
+  }
+
+
+  </script>
 {% endblock %}

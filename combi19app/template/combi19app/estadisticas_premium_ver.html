@@ -1,7 +1,7 @@
 {% extends "admin_base.html" %}
 {% load static %}
 {% block title %}Buscar viaje por ciudad{% endblock %}
-{% block h1 %}<center>Estadisticas de pasajeros</center>{% endblock %}
+{% block h1 %}<center>Estadisticas de alta premium</center>{% endblock %}
 {% block content %}
 <script src="https://code.jquery.com/jquery-2.2.4.min.js"
 integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
@@ -16,12 +16,12 @@ crossorigin="anonymous"></script>
               <p>
                 <div class="card-body">
                   <h5>
-                      <p class="card-text">Entre las fechas {{fecha}} y {{fecha2}} existen {{pasajeros}} pasajeros, que equivalen al {{porcentaje}}% del total</p>
+                      <p class="card-text">Entre las fechas {{fecha}} y {{fecha2}} se dieron de alta {{usuarios}} usuarios premium, que equivalen al {{porcentaje}}% del total</p>
                       <div class="progress">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{viajes}}" aria-valuemin="0" aria-valuemax="{{total}}" style="width: {{porcentaje}}%"></div>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{usuarios}}" aria-valuemin="0" aria-valuemax="{{total}}" style="width: {{porcentaje}}%"></div>
 
                       </div>
-                        total de pasajeros: {{total}}
+                        Total de usuarios premium: {{total}}
                 </div>
 
               </p>
