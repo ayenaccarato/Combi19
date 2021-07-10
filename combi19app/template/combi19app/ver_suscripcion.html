@@ -5,6 +5,24 @@
 
 <div class = "container">
   <br>
+{% if cambiada == "si" %}
+    <div class="alert alert-success animate__animated animate__zoomIn" role="alert">
+      <h4>
+        <p> LA TARJETA REGISTRADA SE CAMBIO CON EXITO.</p>
+      </h4>
+    </div>
+{% endif %}
+{% if men == "not" %}
+  {% for i in errores %}
+    {% if i == 1 %}
+    <div class="alert alert-danger animate__animated animate__zoomIn" role="alert">
+      <h4>
+        <p> ERROR: TARJETA VENCIDA.</p>
+      </h4>
+    </div>
+    {% endif %}
+  {% endfor %}
+{% endif %}
 {% if ok %}
   {% if pago == "ok" %}
       <div class="alert alert-success animate__animated animate__zoomIn" role="alert">
@@ -22,6 +40,7 @@
         <p> NUMERO: {{tarjeta.numero}} - {{tarjeta.emisor}}</p>
         <p> TITULAR: {{tarjeta.titular}}</p>
         <p> VENCIMIENTO: {{tarjeta.vencimiento}}</p>
+        <p>  <a href="/nueva_tarjeta_suscripcion/" class="btn btn-primary" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px">Cambiar tarjeta</a></p>
         <br>
         <p> ATENCIÓN: USTED ESTA AL DIA CON LAS CUOTAS DE USUARIO PREMIUM.</p>
         <p> SI LO DESEA SE PUEDE DESUSCRIBIR.</p>
@@ -43,6 +62,7 @@
         <p> NUMERO: {{tarjeta.numero}} - {{tarjeta.emisor}}</p>
         <p> TITULAR: {{tarjeta.titular}}</p>
         <p> VENCIMIENTO: {{tarjeta.vencimiento}}</p>
+        <p>  <a href="/nueva_tarjeta_suscripcion/" class="btn btn-primary" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px">Cambiar tarjeta</a></p>
         <br>
       </h4>
     </div>

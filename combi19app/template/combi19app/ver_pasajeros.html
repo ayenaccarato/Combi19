@@ -51,7 +51,7 @@
           {% endif %}
         {% endif %}<br>
         VEHICULO: {{viaje.vehiculo}}<br>
-        PASAJES VENDIDOS: {{viaje.vendidos}}<br>
+        PASAJES VENDIDOS (INCLUYE AUSENTES): {{viaje.vendidos}}<br>
         ASIENTOS DISPONIBLES: {{viaje.asientos_disponibles}}<br>
         PRECIO: $ {{viaje.precio}}<br>
 
@@ -175,7 +175,7 @@
                               <td>NO</td>
                               <td></td>
                               <td></td>
-                              <td></td>
+                              <td>NO SE PUEDE ELIMINAR (el pasajero ya fue testeado o esta ausente) </td>
                           {% endif %}
                           {% if i.estado == "ELIMINADO" %}
                               <td>SI</td>

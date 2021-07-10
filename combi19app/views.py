@@ -2007,7 +2007,6 @@ class Testeo(HttpRequest):
         pasaje= Pasaje.objects.get(id=id_pasaje)
         pasaje_nuevo = Registro_pasaje(instance=pasaje)
         viaje = Viaje.objects.get(id = pasaje.nro_viaje_id)
-        viaje_modificar = Registro_viaje(instance = viaje)
         temp = []
         temp.append("menos de 35.0°C")
         for i in range(35,41):
@@ -2030,9 +2029,9 @@ class Testeo(HttpRequest):
                 temperatura = test_correspondiente.temperatura.split('.')
                 if test_correspondiente.olfato or test_correspondiente.gusto or test_correspondiente.contacto or int(temperatura[0]) >= 38:
                     pasaje_nuevo.save_no_sube()
-                    viaje_modificar = Registro_viaje(request.POST, instance=viaje)
-                    if viaje_modificar.is_valid():
-                        viaje_modificar.save_viaje5()
+                    viaje.vendidos = viaje.vendidos -1
+                    viaje.asientos_disponibles = viaje.asientos_disponibles + 1
+                    viaje.save()
                 else:
                     pasaje_nuevo.save_sube()
                 pasajeros = Pasaje.objects.filter(nro_viaje_id = id_viaje)
@@ -2077,17 +2076,26 @@ class Testeo(HttpRequest):
         test = Test.objects.get(pasaje = id_pasaje)
         test_nuevo = Registro_test(request.POST, instance = test)
         pasaje = Pasaje.objects.get(id = id_pasaje)
+        estado = pasaje.estado
         pasaje_nuevo = Registro_pasaje(request.POST, instance = pasaje)
+        viaje = Viaje.objects.get(id = id_viaje)
         if test_nuevo.is_valid():
             test_nuevo.save()
             if pasaje_nuevo.is_valid():
                 temperatura = test.temperatura.split('.')
                 if test.olfato or test.gusto or test.contacto or int(temperatura[0]) >= 38:
                     pasaje_nuevo.save_no_sube()
+                    if estado == "Presente: ACEPTADO":
+                        viaje.vendidos = viaje.vendidos -1
+                        viaje.asientos_disponibles = viaje.asientos_disponibles + 1
+                        viaje.save()
                 else:
                     pasaje_nuevo.save_sube()
+                    if estado == "Presente: RECHAZADO":
+                        viaje.vendidos = viaje.vendidos +1
+                        viaje.asientos_disponibles = viaje.asientos_disponibles - 1
+                        viaje.save()
                 pasajeros = Pasaje.objects.filter(nro_viaje_id = id_viaje)
-                viaje = Viaje.objects.get(id = id_viaje)
                 pasajeros_ = []
                 ok = True
                 for p in pasajeros:
@@ -2127,7 +2135,6 @@ class Testeo(HttpRequest):
         pasaje = Pasaje.objects.get(id = id_pasaje)
         pasaje_nuevo = Registro_pasaje(instance=pasaje)
         viaje = Viaje.objects.get(id = pasaje.nro_viaje_id)
-        viaje_modificar = Registro_viaje_sin_estado(instance = viaje)
         return render (request, "confirmar_ausente.html", {"pasaje":pasaje, "viaje":viaje, "id_pasaje":pasaje.id})
 
     @login_required
@@ -2137,9 +2144,8 @@ class Testeo(HttpRequest):
         viaje = Viaje.objects.get(id = pasaje.nro_viaje_id)
         if pasaje_nuevo.is_valid():
             pasaje_nuevo.save()
-            viaje_modificar = Registro_viaje_sin_estado(request.POST, instance= viaje)
-            if viaje_modificar.is_valid():
-                viaje_modificar.save_viaje5()
+            viaje.asientos_disponibles = viaje.asientos_disponibles +1
+            viaje.save()
             pasajeros = Pasaje.objects.filter(nro_viaje_id = id_viaje)
             hoy = datetime.today()
             if viaje.fecha_salida.date() == hoy.date():
@@ -2409,6 +2415,54 @@ class Suscripcion(HttpRequest):
             debe = 7 - int(al_dia_fecha[1])
             tarjeta = Tarjeta.objects.get(id_user = request.user.id, numero =al_dia.nro_tarjeta)
             return render (request,"ver_suscripcion.html", {"premium":info,"ok":ok, "debe":debe, "tarjeta":tarjeta, "pago":"ok"})
+
+    @login_required
+    def cambiar_de_tarjeta(request):
+        tarjeta = Registro_tarjeta()
+        return render (request, "registrar_tarjeta_suscripcion.html", {"usuario":request.user.id, "devuelta":"not_ok", "base":"premium_base.html", "otra": "si"})
+
+    @login_required
+    def procesar_formulario_tarjeta_nueva(request):
+        tarjeta = Registro_tarjeta(request.POST)
+        if tarjeta.is_valid():
+            confirmacion=errores_tarjeta(tarjeta)
+            if len(confirmacion) == 0:
+                numero = tarjeta.cleaned_data.get('numero')
+                hay_tarjeta = Tarjeta.objects.filter(id_user_id = request.user.id, numero = numero)
+                if len(hay_tarjeta) == 0:
+                    tarjeta.save()
+                    tarjeta = Tarjeta.objects.last()
+                else:
+                    tarjeta = Tarjeta.objects.get(numero = numero,id_user_id=request.user.id )
+                tickets = Premium_pago.objects.filter(id_user = request.user.id)
+                for i in tickets:
+                    i.nro_tarjeta = tarjeta.numero
+                    i.save()
+                info = Premium.objects.get(id=1)
+                al_dia = Premium_pago.objects.filter(id_user= request.user.id)
+                al_dia = str(al_dia[len(al_dia)-1]).replace('Premium_pago object (', '').replace(')','')
+                al_dia = Premium_pago.objects.get(id = int(al_dia))
+                al_dia_fecha=str(al_dia.fecha).replace('00:00:00+00:00','').split('-')
+                if al_dia_fecha[1] == "07":
+                    ok=True
+                else:
+                    ok=False
+                debe = 7 - int(al_dia_fecha[1])
+                return render (request,"ver_suscripcion.html", {"premium":info, "ok":ok, "debe":debe, "tarjeta":tarjeta, "cambiada":"si"})
+            info = Premium.objects.get(id=1)
+            al_dia = Premium_pago.objects.filter(id_user= request.user.id)
+            al_dia = str(al_dia[len(al_dia)-1]).replace('Premium_pago object (', '').replace(')','')
+            al_dia = Premium_pago.objects.get(id = int(al_dia))
+            al_dia_fecha=str(al_dia.fecha).replace('00:00:00+00:00','').split('-')
+            if al_dia_fecha[1] == "07":
+                ok=True
+            else:
+                ok=False
+            debe = 7 - int(al_dia_fecha[1])
+            tarjeta = Tarjeta.objects.get(id_user = request.user.id, numero =al_dia.nro_tarjeta)
+            return render (request,"ver_suscripcion.html", {"premium":info, "ok":ok, "debe":debe, "tarjeta":tarjeta, "errores": confirmacion, "men":"not"})
+
+
 
 class Estadisticas (HttpRequest):
 

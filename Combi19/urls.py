@@ -196,6 +196,9 @@ urlpatterns = [
     path('guardar_puntos/<int:id_viaje>/', views.FormularioComentario.guardar_puntos),
     path('ver_pasajeros/iniciar_viaje/<int:id_viaje>/', views.Testeo.iniciar_viaje),
 
+    path('nueva_tarjeta_suscripcion/', views.Suscripcion.cambiar_de_tarjeta),
+    path('procesar_otra_tarjeta_suscripcion/', views.Suscripcion.procesar_formulario_tarjeta_nueva),
+
     path('home/', views.home),
     path('accounts/', include ('django.contrib.auth.urls')),
     path('', views.home),

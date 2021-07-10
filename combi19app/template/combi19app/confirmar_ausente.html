@@ -28,46 +28,9 @@
   <input hidden class="col-sm col-form-label" type="text" name="nro_viaje" placeholder="p" id="nro_viaje">
   <input hidden class="col-sm col-form-label" type="text" name="estado" placeholder="p" id="estado">
   <input hidden class="col-sm col-form-label" type="text" name="tarjeta" placeholder="p" id="tarjeta">
-  <input hidden class="col-sm col-form-label" type="text" name="nro_asiento" placeholder="p" id="nro_asiento">
-
-  <input hidden type="text" name="fecha_salida"  id="fecha">
-  <input hidden type="text" name="fecha_llegada"  id="fecha2">
-  <input hidden type="text" name="hora_salida"  id="hora_salida">
-  <input hidden type="text" name="asientos_total"  id="asientos_total">
-  <input hidden type="text" name="asientos_disponibles"  id="asientos_disponibles">
-  <input hidden type="text" name="vendidos"  id="vendidos">
-  <input hidden type="text" name="precio"  id="precio">
-  <input hidden type="text" name="vehiculo"  id="vehiculo">
-  <input hidden type="text" name="chofer"  id="chofer">
-  <input hidden type="text" name="ruta"  id="ruta">
-
 
   <script>
-      var date = new Date("{{viaje.fecha_salida}}");
-      var date2 = new Date("{{viaje.fecha_llegada}}");
 
-      function formatDate(date) {
-        var day = date.getDate();
-        if (day < 10) {
-            day = "0" + day;
-        }
-        var month = date.getMonth() + 1;
-        if (month < 10) {
-            month = "0" + month;
-        }
-        var year = date.getFullYear();
-        return day + "/" + month + "/" + year;
-      }
-      document.getElementById('fecha').value = formatDate(date);
-      document.getElementById('fecha2').value = formatDate(date2);
-      document.getElementById("hora_salida").value = "{{viaje.hora_salida}}";
-      document.getElementById("precio").value = "{{viaje.precio}}".replace(',','.')
-      document.getElementById("vendidos").value = "{{viaje.vendidos}}"-1;
-      document.getElementById("asientos_total").value = "{{viaje.asientos_total}}";
-      document.getElementById("asientos_disponibles").value = "{{viaje.asientos_disponibles}}";
-      document.getElementById("chofer").value = "{{viaje.chofer.id}}";
-      document.getElementById("ruta").value = "{{viaje.ruta.id}}";
-      document.getElementById("vehiculo").value = "{{viaje.vehiculo.id}}";
       document.getElementById("id_user").value = "{{pasaje.id_user}}"
       document.getElementById("dni").value = "{{pasaje.dni}}"
       document.getElementById("nombre").value = "{{pasaje.nombre}}"
@@ -75,6 +38,5 @@
       document.getElementById("nro_viaje").value = "{{pasaje.nro_viaje_id}}"
       document.getElementById("estado").value = "Ausente: RECHAZADO"
       document.getElementById("tarjeta").value = "{{pasaje.tarjeta_id}}"
-      document.getElementById("nro_asiento").value = "{{pasaje.nro_asiento}}"
   </script>
   {% endblock %}
