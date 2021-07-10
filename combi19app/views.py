@@ -1310,13 +1310,13 @@ class FormularioComentario(HttpRequest):
         pasajes = Pasaje.objects.filter(id_user=request.user.id)
         habilita = []
         #faltaria agregar que el viaje sea realizado
-        puntuacion = {}
+        dic = {}
         hoy = datetime.today()
         hora = str((hoy.hour - 3)) +":"+ str(hoy.minute) +":"+ str(hoy.second)
         for i in viajes:
             puntuaron = Puntuar.objects.filter(id_viaje=i.id)
             if len(puntuaron) != 0:
-                dic = {i.id: i.puntaje/len(puntuaron)}
+                dic[i.id] = i.puntaje/len(puntuaron)
             if len(pasajes) != 0:
                 pasaje = Pasaje.objects.filter(id_user=request.user.id, nro_viaje_id=i.id)
                 if len(pasaje) != 0:
