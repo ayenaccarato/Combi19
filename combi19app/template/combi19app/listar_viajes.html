@@ -96,6 +96,7 @@
           <thead>
             <tr>
               <th>Viaje</th>
+              <th>Estado</th>
               <th>Fecha de salida</th>
               <th>Ciudad de origen</th>
               <th>Ciudad de destino</th>
@@ -109,6 +110,7 @@
             {% for viaje in viajes %}
             <tr>
               <td>{{viaje.id}}</td>
+              <td>{{viaje.estado}}</td>
               <td>{{viaje.fecha_salida}}</td>
             {% for r in rutas %}
               {% if r.id == viaje.ruta_id %}
@@ -121,7 +123,11 @@
 
               <td> <a class="btn btn-dark" href="/ver_pasajeros/{{viaje.id}}/" style="color:white;padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Pasajeros</a> </td>
               <td> <a class="btn btn-primary" href= "ver_detalle_viaje/{{viaje.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver detalle</a>
-              <td> <a class="btn btn-warning" href= "modificar_viaje/{{viaje.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Editar</a>  </td>
+              {% if viaje.estado != "cancelado" and viaje.estado != "realizado" and viaje.vendidos == 0 %}
+                <td> <a class="btn btn-warning" href= "modificar_viaje/{{viaje.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Editar</a>  </td>
+              {% else %}
+                <td>NO PUEDE EDITAR (viaje cancelado o realizado o tiene pasajes vendidos)</td>
+              {% endif %}
               <td> <a class="btn btn-danger" href= "eliminar_viaje/{{viaje.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Eliminar</a>  </td>
             </td>
 

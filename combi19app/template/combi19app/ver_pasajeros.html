@@ -130,8 +130,10 @@
                   <td>-</td>
                   <td> EL PASAJERO AUN NO FUE TESTEADO </td>
               {% else %}
-                {% if i.estado != "ELIMINADO" %}
+                {% if i.estado != "ELIMINADO" and i.estado != "Ausente: RECHAZADO" %}
                   <td> <a class="btn btn-primary" href= "/ver_test/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver test</a>  </td>
+                {% else %}
+                  <td></td>
                 {% endif %}
               {% endif %}
             </tr>
@@ -219,50 +221,50 @@
                   {% endif %}
 {% endif %}
 
-{% if base == "chofer_base.html" and viaje.estado == "iniciado" or viaje.estado == "realizado" %}
-    <h4>
-      <table>
-        <thead>
+{% if base == "chofer_base.html" %}
+  {% if viaje.estado == "iniciado" or viaje.estado == "realizado" %}
+      <h4>
+        <table>
+          <thead>
+            <tr>
+              <th>DNI</th>
+              <th>Nombre</th>
+              <th>Apellido</th>
+              <th>Estado del pasaje</th>
+              <th>reembolso</th>
+              <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in pasajeros %}
           <tr>
-            <th>DNI</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Estado del pasaje</th>
-            <th>reembolso</th>
-            <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for i in pasajeros %}
-        <tr>
-          <td>{{i.dni}}</td>
-          <td>{{i.nombre}}</td>
-          <td>{{i.apellido}}</td>
-          <td>{{i.estado}}</td>
-          {% if i.estado == "Presente: RECHAZADO" %}
-              <td>SI</td>
-          {% endif %}
-          {% if i.estado == "Presente: ACEPTADO" %}
-              <td>NO AMERITA</td>
-          {% endif %}
-          {% if i.estado == "Ausente: RECHAZADO" %}
-              <td>NO</td>
-          {% endif %}
-          {% if i.estado == "ELIMINADO" %}
-              <td>SI</td>
-          {% endif %}
-          {% if i.estado == "Presente: ACEPTADO" or i.estado == "Presente: RECHAZADO" %}
-                <td> <a class="btn btn-primary" href= "/ver_test/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver test</a>  </td>
-          {% else %}
-            <td></td>
-          {% endif %}
-        </tr>
-        {% endfor %}
-      </table>
-    </h4>
-      <br><br><br>
-
-
+            <td>{{i.dni}}</td>
+            <td>{{i.nombre}}</td>
+            <td>{{i.apellido}}</td>
+            <td>{{i.estado}}</td>
+            {% if i.estado == "Presente: RECHAZADO" %}
+                <td>SI</td>
+            {% endif %}
+            {% if i.estado == "Presente: ACEPTADO" %}
+                <td>NO AMERITA</td>
+            {% endif %}
+            {% if i.estado == "Ausente: RECHAZADO" %}
+                <td>NO</td>
+            {% endif %}
+            {% if i.estado == "ELIMINADO" %}
+                <td>SI</td>
+            {% endif %}
+            {% if i.estado == "Presente: ACEPTADO" or i.estado == "Presente: RECHAZADO" %}
+                  <td> <a class="btn btn-primary" href= "/ver_test/{{i.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;">Ver test</a>  </td>
+            {% else %}
+              <td></td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </table>
+      </h4>
+        <br><br><br>
+      {% endif %}
 {% endif %}
 
 
@@ -278,8 +280,10 @@
 
   {% endif %}
 </form>
-{% if base == "chofer_base.html" and viaje.asientos_disponibles != 0 %}
-<button class="btn btn-primary btn-lg btn-block" onclick="comprar()" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;">REALIZAR COMPRA DE PASAJES</a>
+{% if base == "chofer_base.html" and viaje.asientos_disponibles != 0 and viaje.estado == "activo" %}
+<p style="padding-left:500px;padding-right:500px;">
+  <button class="btn btn-primary btn-lg btn-block" onclick="comprar()" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;">REALIZAR COMPRA DE PASAJES</a>
+</p>
 {% endif %}
 <script>
 

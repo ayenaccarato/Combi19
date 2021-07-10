@@ -157,6 +157,8 @@ urlpatterns = [
     path('ver_pasaje/detalle/<int:id_viaje>/<int:id_pasaje>/cancelar', views.ComprarPasaje.cancelar_pasaje),
     path('ver_pasaje/detalle/cancelar/confirmar/<int:id_viaje>/<int:id_pasaje>/', views.ComprarPasaje.confirmar_cancelar_pasaje),
     path('ver_pasaje/detalle/<int:id_viaje>/', views.ComprarPasaje.ver_detalle_pasaje),
+    path('ver_pasaje/detalle/<int:id_viaje>/realizados/', views.ComprarPasaje.ver_detalle_pasaje_realizados),
+    path('reembolsos/', views.reembolso),
     path('listar_proximos_viajes/', views.ListarViajes.listar_proximos_viajes),
     path('listar_proximos_viajes/ver_detalle_viaje_chofer/<int:id_viaje>/', views.ListarViajes.mostrar_detalle_chofer),
     path('listar_viajes_realizados/ver_detalle_viaje_chofer/<int:id_viaje>/', views.ListarViajes.mostrar_detalle_chofer_realizados),

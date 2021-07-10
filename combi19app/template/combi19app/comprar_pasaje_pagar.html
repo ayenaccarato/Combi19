@@ -4,7 +4,7 @@
 {% block content %}
   {% csrf_token %}
     {% if aceptado == "si" %}
-      {% if base == "usuario_base.html"%}
+      {% if base == "usuario_base.html" or base == "premium_base.html" %}
       <div class='alert alert-success' role='alert'>
           <h4>
         El pago se realizo exitosamente!
@@ -57,7 +57,7 @@
 
   <script>
   console.log("ok");
-  if("{{base}}" != "usuario_base.html"){
+  if("{{base}}" == "chofer_base.html"){
     console.log("ok");
 
     var count = 5;
@@ -71,4 +71,5 @@
 
 
   </script>
+
 {% endblock %}

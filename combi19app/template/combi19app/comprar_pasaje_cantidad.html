@@ -10,7 +10,13 @@ crossorigin="anonymous"></script>
   {% csrf_token %}
 
   <form action="comprar_pasaje_completar_datos" method="GET">
+    {% if base == "usuario_base.html" or "premium_base.html" %}
+      <a class="btn btn-dark" href="/buscar_viaje_origen" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:left">Volver</a>
+    {% else %}
+    <a class="btn btn-dark" href="/ver_pasajeros/{{viaje.id}}/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:left">Volver</a>
+    {% endif %}
 
+<div class="container">
 <center>
   <input type="hidden" value="false" name="post" >
   <input type="hidden" value="0" name="actual" >
@@ -23,18 +29,16 @@ crossorigin="anonymous"></script>
   <div class="card-body">
     <h5 class="card-title">{{ruta.nombre}}</h5>
     <p class="card-text">
-      <label for="pasajes">Numero de pasajes:</label>
-      <input type="number" value="1" id="pasajes" name="pasajes"
-           min="1" max={{viaje.asientos_disponibles}}></p>
-           <button class="btn btn-primary btn-lg btn-block" type="submit" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;">INICIAR COMPRA</a>
+      <label for="pasajes">Cantidad de pasajes:</label>
+      <input type="number" value="1" id="pasajes" name="pasajes" min="1" max={{viaje.asientos_disponibles}}></p>
+        <br>
+           <p style="padding-left:420px;padding-right:420px;"><button class="btn btn-primary btn-lg btn-block" type="submit" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;">INICIAR COMPRA</button></p>
   </div>
 </div>
 
-
-
 </center>
-
-
+<br><br><br><br>
+</div>
 
 
 
@@ -43,6 +47,5 @@ crossorigin="anonymous"></script>
 
 
     </script>
-
 
 {% endblock %}

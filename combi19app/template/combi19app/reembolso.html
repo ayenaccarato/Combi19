@@ -1,0 +1,35 @@
+{% extends base %}
+{% block title %}Reembolso{% endblock %}
+{% block h1 %}<center>Reembolsos</center>{% endblock %}
+{% block content %}
+
+<div class = "container">
+  <h4>
+    {% if ok %}
+        {% for i in pasajes%}
+        <div class='alert alert-primary' role='alert' style="float:center;padding-right:200px;">
+          <br>
+            PASAJE A NOMBRE DE: {{i.nombre}} {{i.apellido}}<br>
+            {% for x in viajes %}
+              {% if i.nro_viaje_id == x.id %}
+                VIAJE A: {{x.ruta}}<br>
+                FECHA: {{x.fecha_salida}}<br>
+              {% endif %}
+            {% endfor %}
+            ESTADO DEL PASAJE: {{i.estado}}<br>
+            <br>
+            ***REEMBOLSO DEL 100% DEL DINERO*** <br>
+
+        </div>
+        <br>
+      {% endfor %}
+      {% else %}
+      <div class='alert alert-primary' role='alert' style="float:center;padding-right:200px;">
+        <br>
+          NO POSEE REEMBOLSOS
+      </div>
+      {% endif %}
+    </h4>
+    <a class="btn btn-dark" href="/home/" style="padding-top:10px;padding-bottom:10px;padding-left:30px;padding-right:30px;float:left">Atras</a>
+</div>
+{% endblock %}

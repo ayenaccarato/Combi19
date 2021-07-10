@@ -12,6 +12,7 @@ crossorigin="anonymous"></script>
     {% csrf_token %}
     <center>
     <!-- Modal -->
+    <br><br><br><br><br><br>
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -39,6 +40,7 @@ crossorigin="anonymous"></script>
     <input hidden type="text" name="tarjeta"  id="tarjeta">
 
   <form action="buscar_viaje" method="POST">
+    <br><br>
     <button class="btn btn-primary" href="/comprar_pasaje_completar_datos/{{viaje.id}}/?actual={{actual}}-{{cant}} " type="submit" style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;">Agregar pasaje{{actual}}/{{cant}}</button>
     <button class="btn btn-danger"  style="padding-top:5px;padding-bottom:5px;padding-left:5px;padding-right:5px;" data-toggle="modal" data-target="#exampleModal" >Cancelar</button>
 
