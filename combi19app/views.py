@@ -1310,9 +1310,13 @@ class FormularioComentario(HttpRequest):
         pasajes = Pasaje.objects.filter(id_user=request.user.id)
         habilita = []
         #faltaria agregar que el viaje sea realizado
+        puntuacion = {}
         hoy = datetime.today()
         hora = str((hoy.hour - 3)) +":"+ str(hoy.minute) +":"+ str(hoy.second)
         for i in viajes:
+            puntuaron = Puntuar.objects.filter(id_viaje=i.id)
+            if len(puntuaron) != 0:
+                dic = {i.id: i.puntaje/len(puntuaron)}
             if len(pasajes) != 0:
                 pasaje = Pasaje.objects.filter(id_user=request.user.id, nro_viaje_id=i.id)
                 if len(pasaje) != 0:
@@ -1325,15 +1329,15 @@ class FormularioComentario(HttpRequest):
             nombre_chofer[i.chofer]= chofer.nombre +' '+ chofer.apellido
 
         if (request.user.tipo_usuario == 1):
-             return render (request, "carteleraPasajero.html",{"base": "admin_base.html", "tipo": request.user.tipo_usuario,"viajes": viajes_hechos,'viajes_usuario': set(viajes_usuario), "anuncios":anuncios, "is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer})
+             return render (request, "carteleraPasajero.html",{"base": "admin_base.html", "tipo": request.user.tipo_usuario,"viajes": viajes_hechos,'viajes_usuario': set(viajes_usuario), "anuncios":anuncios, "is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer, 'puntuaron': dic})
         else:
              if (request.user.tipo_usuario == 2):
-                 return render (request, "carteleraPasajero.html",{"base": "chofer_base.html","tipo": request.user.tipo_usuario,"anuncios":anuncios ,"viajes":viajes_hechos,'viajes_usuario': set(viajes_usuario),"is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer})
+                 return render (request, "carteleraPasajero.html",{"base": "chofer_base.html","tipo": request.user.tipo_usuario,"anuncios":anuncios ,"viajes":viajes_hechos,'viajes_usuario': set(viajes_usuario),"is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer, 'puntuaron': dic})
              else:
                  if request.user.is_premium:
-                      return render (request, "carteleraPasajero.html",{"base": "premium_base.html","tipo": request.user.tipo_usuario,"anuncios":anuncios ,"viajes_usuario": set(viajes_usuario), "viajes":viajes_hechos, "is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer, "habilitados": set(habilita)})
+                      return render (request, "carteleraPasajero.html",{"base": "premium_base.html","tipo": request.user.tipo_usuario,"anuncios":anuncios ,"viajes_usuario": set(viajes_usuario), "viajes":viajes_hechos, "is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer, "habilitados": set(habilita), 'puntuaron': dic})
                  else:
-                     return render (request, "carteleraPasajero.html",{"base": "usuario_base.html","tipo": request.user.tipo_usuario,"anuncios":anuncios ,"viajes_usuario": set(viajes_usuario), "viajes":viajes_hechos, "is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer, "habilitados": set(habilita)})
+                     return render (request, "carteleraPasajero.html",{"base": "usuario_base.html","tipo": request.user.tipo_usuario,"anuncios":anuncios ,"viajes_usuario": set(viajes_usuario), "viajes":viajes_hechos, "is_c":len(viajes_hechos), "is_a":len(anuncios), "usuario":usuario, "nombre_chofer":nombre_chofer, "habilitados": set(habilita), 'puntuaron': dic})
 
 
     def puntuar(request, id_viaje):
