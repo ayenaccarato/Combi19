@@ -46,35 +46,35 @@ crossorigin="anonymous"></script>
 <script>
 
 $( "#fecha3" )
-  .focus(function() {
-
+  .click(function() {
+    $( "#fecha4" ).val("").datepicker("update");
   })
 
 $( "#fecha3" )
   .focusout(function() {
     $( "#fecha4" ).prop("disabled",false);
-    console.log( $("#fecha3").datepicker("getDate"))
-  $('#fecha4').datepicker('setStartDate', $("#fecha3").datepicker("getDate"));
+      var date = $('#fecha3').datepicker('getDate');
+      console.log(date)
+  });
+
+
+$( "#fecha4" )
+  .click(function() {
+    var date = $('#fecha3').datepicker('getDate');
+    console.log(date);
+    $( "#fecha3" ).prop("disabled",false);
+    $('#fecha4').datepicker('setStartDate', date);
   })
 
-  $( "#fecha4" )
-    .focus(function() {
-      $( "#fecha3" ).prop("disabled",false);
-    })
 
 
-    function formatDate(date) {
-      var day = date.getDate();
-      if (day < 10) {
-          day = "0" + day;
-      }
-      var month = date.getMonth() + 1;
-      if (month < 10) {
-          month = "0" + month;
-      }
-      var year = date.getFullYear();
-      return day + "/" + month + "/" + year;
+    function updateDate(inputs, selected){
+      console.log("okk")
+     var minDate = new Date(selected.date.valueOf());
+     $('#fecha4').datepicker('setStartDate', minDate);
     }
+
+
 
 </script>
 {% endblock %}
