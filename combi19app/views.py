@@ -8,6 +8,7 @@ from django.views.generic.edit import UpdateView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django import db
+from django.db.models import Q
 from datetime import datetime, timedelta, date
 import dateutil.parser
 db.connections.close_all()
@@ -1579,7 +1580,18 @@ class ComprarPasaje(HttpRequest):
         elif request.user.tipo_usuario != 2:
             return render (request, "comprar_pasaje_menu.html", {"base":"usuario_base.html", "viaje": viaje, "tipo_asiento":tipo_asiento,"nombre":nombre, "hora_llegada":hora_llegada, "chofer":chofer,"patente":patente,"precio":len(pasaje)*viaje.precio, "ya_tiene":len(pasaje)})
         else:
-            return render (request, "comprar_pasaje_menu.html", {"base":"chofer_base.html", "viaje": viaje, "tipo_asiento":tipo_asiento,"nombre":nombre, "hora_llegada":hora_llegada, "chofer":chofer,"patente":patente,"precio":len(pasaje)*viaje.precio, "ya_tiene":len(pasaje)})
+            ultimo = Pasaje.objects.last()
+            carrito = Ticket.objects.filter(id_user=request.user.id, viaje=id_viaje , id_pasaje = ultimo.id)
+            pasaje = Pasaje.objects.filter(id_user=request.user.id, nro_viaje_id = id_viaje, estado= 'no abonado')
+            precio_total_pasajes =len(pasaje)*viaje.precio
+            precio_total = 0
+            if len(carrito) != 0:
+                for i in carrito:
+                    precio_total = precio_total + i.precio_ticket
+            precio_total = precio_total + precio_total_pasajes
+            usuario = request.user.id
+            return render (request, "comprar_pasaje_tarjeta.html", {"cantidad":len(pasaje), "precio_pasajes":precio_total_pasajes, "base":"chofer_base.html", "mensaje":"no","viaje": viaje, "nombre":nombre, "ok":"no", "usuario":usuario,"cant":len(pasaje),"tiene_tarjeta":0,"carrito":carrito, "compro":len(carrito), "precio_total":precio_total})
+            #return render (request, "comprar_pasaje_menu.html", {"base":"chofer_base.html", "viaje": viaje, "tipo_asiento":tipo_asiento,"nombre":nombre, "hora_llegada":hora_llegada, "chofer":chofer,"patente":patente,"precio":len(pasaje)*viaje.precio, "ya_tiene":len(pasaje)})
     @login_required
     def mi_carrito(request,id_viaje):
         ultimo = Pasaje.objects.last()
@@ -2586,3 +2598,27 @@ class Estadisticas (HttpRequest):
         print(request.GET.get('fecha'))
         print(request.GET.get('fecha2'))
         return render (request, "estadisticas_pasajes_covid_ver.html",{"pasajeros":cant_pasajeros, "fecha":request.GET.get('fecha'), "fecha2":request.GET.get('fecha2'), "total":cant_pasajeros_total, "porcentaje":int(porcentaje)})
+
+    @login_required
+    def devolucion_pasajes(request):
+        return render (request, "estadisticas_devolucion_pasajes.html")
+
+    @login_required
+    def devolucion_pasajes_ver(request):
+        date = dateutil.parser.parse(request.GET.get('fecha'),dayfirst=True)
+        date2 = dateutil.parser.parse(request.GET.get('fecha2'),dayfirst=True)
+        viajes = Viaje.objects.filter(fecha_salida__gte=date,fecha_salida__lte=date2)
+        pasajeros = []
+        pasajeros_total = Pasaje.objects.all()
+        for v in viajes:
+            pasajeros_viaje = Pasaje.objects.filter(Q(estado = 'Presente: RECHAZADO') | Q(estado = 'cancelado')).filter(nro_viaje_id= v.id)
+            print(pasajeros_viaje)
+            for p in pasajeros_viaje:
+                pasajeros.append(p)
+        cant_pasajeros = len(set(pasajeros))
+        print(pasajeros)
+        cant_pasajeros_total = len(set(pasajeros_total))
+        porcentaje=(cant_pasajeros * 100/ cant_pasajeros_total)
+        print(request.GET.get('fecha'))
+        print(request.GET.get('fecha2'))
+        return render (request, "estadisticas_devolucion_pasajes_ver.html",{"pasajeros":cant_pasajeros, "fecha":request.GET.get('fecha'), "fecha2":request.GET.get('fecha2'), "total":cant_pasajeros_total, "porcentaje":int(porcentaje)})

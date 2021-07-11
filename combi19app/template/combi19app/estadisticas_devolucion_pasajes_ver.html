@@ -1,7 +1,7 @@
 {% extends "admin_base.html" %}
 {% load static %}
 {% block title %}Buscar viaje por ciudad{% endblock %}
-{% block h1 %}<center>Estadisticas de pasajes cancelados por covid</center>{% endblock %}
+{% block h1 %}<center>Pasajes cancelados</center>{% endblock %}
 {% block content %}
 <script src="https://code.jquery.com/jquery-2.2.4.min.js"
 integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
@@ -16,7 +16,7 @@ crossorigin="anonymous"></script>
               <p>
                 <div class="card-body">
                   <h5>
-                      <p class="card-text">Entre las fechas {{fecha}} y {{fecha2}} se cancelaron {{pasajeros}} pasajes por covid, que equivalen al {{porcentaje}}% del total</p>
+                      <p class="card-text">Entre las fechas {{fecha}} y {{fecha2}} se cancelaron {{pasajeros}} pasajes, que equivalen al {{porcentaje}}% del total</p>
                       <div class="progress">
                         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{viajes}}" aria-valuemin="0" aria-valuemax="{{total}}" style="width: {{porcentaje}}%"></div>
 

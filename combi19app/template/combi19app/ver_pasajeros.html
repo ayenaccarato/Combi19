@@ -109,6 +109,8 @@
           </thead>
           <tbody>
             {% for i in pasajeros %}
+          {% if i.estado != "no abonado" %}
+
             <tr>
               <td>{{i.dni}}</td>
               <td>{{i.nombre}}</td>
@@ -137,6 +139,8 @@
                 {% endif %}
               {% endif %}
             </tr>
+            {% endif %}
+
             {% endfor %}
           </table>
         </h4>
@@ -159,6 +163,8 @@
                   </thead>
                   <tbody>
                     {% for i in pasajeros %}
+                  {% if i.estado != "no abonado" %}
+
                     <tr>
                       <td>{{i.dni}}</td>
                       <td>{{i.nombre}}</td>
@@ -214,6 +220,8 @@
                           {% endif %}
                         {% endif %}
                     </tr>
+                    {% endif %}
+
                     {% endfor %}
                   </table>
                 </h4>
@@ -237,6 +245,8 @@
         </thead>
         <tbody>
           {% for i in pasajeros %}
+        {% if i.estado != "no abonado" %}
+
           <tr>
             <td>{{i.dni}}</td>
             <td>{{i.nombre}}</td>
@@ -260,6 +270,8 @@
               <td></td>
             {% endif %}
           </tr>
+          {% endif %}
+
           {% endfor %}
         </table>
       </h4>

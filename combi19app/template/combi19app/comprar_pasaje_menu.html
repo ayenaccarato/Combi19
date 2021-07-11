@@ -43,7 +43,7 @@
                 </div>
               </div>
             </div>
-
+        {% if base == "usuario_base.html" or base == "premium_base.html" %}
             <div class= "col-6" style="float:right;">
               <br>
             <center>
@@ -61,6 +61,16 @@
             </p>
             </h5>
             </div>
+          {% else %}
+          <center>
+            <br>
+            <br>
+            <br>
+            <br>
+              <a class="btn btn-success" href= "/comprar_pasaje/tarjeta/{{viaje.id}}" style="padding-top:10px;padding-bottom:10px;padding-left:40px;padding-right:50px;float:right">Proceder a pagar</a>
+        </center>
+        {% endif %}
+
           </div>
         </div>
       </div>

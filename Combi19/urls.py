@@ -133,6 +133,8 @@ urlpatterns = [
     path('estadisticas_registro_premium/buscar/', views.Estadisticas.registro_premium_ver),
     path('estadisticas_pasajes_covid/', views.Estadisticas.pasajes_covid),
     path('estadisticas_pasajes_covid/buscar/', views.Estadisticas.pasajes_covid_ver),
+    path('estadisticas_devolucion_pasajes/', views.Estadisticas.devolucion_pasajes),
+    path('estadisticas_devolucion_pasajes/buscar', views.Estadisticas.devolucion_pasajes_ver),
     path('viaje_buscar/', views.Estadisticas.viajes_ver),
     path('estadisticas_viajes', views.Estadisticas.viajes),
     path('estadisticas_pasajeros', views.Estadisticas.pasajeros),
